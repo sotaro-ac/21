@@ -85,3 +85,10 @@ a.btn:visited {
   color: black;
   border: 2px solid yellowgreen;
 }
+
+div.fig01 {
+  background-image: url(../img/game_screen.png);
+  background-size: 100% 100%;
+  width: 720px;
+  height: 468px;
+}
