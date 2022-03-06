@@ -1,0 +1,215 @@
+/* input button */
+.MY_Commands {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.clear_btn {
+    font-size: 16px;
+    color: #ffffff;
+    font-weight: bold;
+    padding: 8px 16px;
+    box-shadow: 0px 2px 2px #0000003b;
+    background: #11111133;
+    border-radius: 4px;
+    border-bottom: solid 3px #ffffff;
+}
+.clear_btn:hover {
+    transition: 0.4s;
+    background: #92ff3d75;
+}
+.clear_btn:disabled {
+    background: #ececec33;
+}
+.clear_btn:active {
+    transition: 0s;
+    transform: translateY(4px);
+    box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.2);
+    background: #c0ff90b0;
+    border-bottom: none;
+}
+input#SP_btn {
+    display: none;
+}
+.label_SP_btn {
+    font-size: 16px;
+    color: yellowgreen;
+    font-weight: bold;
+    padding: 10px 16px;
+    box-shadow: 0px 2px 2px #0000003b;
+    background: #11111133;
+    border-radius: 4px;
+    border: solid 2.5px yellowgreen;
+    margin: 4px 5px;
+}
+.label_SP_btn:hover {
+    transition: 0.4s;
+    color: #ffffff;
+    background: #92ff3d75;
+}
+input#SP_btn:disabled + label > .label_SP_btn {
+    background: #ececec33;
+}
+input#SP_btn:checked + label > .label_SP_btn {
+    transition: 0.4s;
+    color: #ffffff;
+    box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.2);
+    background: yellowgreen;
+}
+
+/* SP_Window */
+div#SP_Window {
+    display: grid;
+    grid-template-areas:
+        "sp0 sp1 sp2 sp3"
+        "sp4 sp5 sp6 sp7"
+        "sp8 sp9 sp10 sp11"
+        "sp12 sp13 sp14 sp15"
+        "spText spText spText spText";
+    grid-template-rows: 70px 70px 70px 70px 175px;
+    grid-template-columns: 70px 70px 70px 70px;
+    grid-gap: 6px;
+    width: 300px;
+    height: 480px;
+    padding: 6px;
+    background-color: #0000008e;
+    box-shadow: 0 0 10px 10px #0000008e;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+}
+#sp0 { grid-area: sp0; }
+#sp1 { grid-area: sp1; }
+#sp2 { grid-area: sp2; }
+#sp3 { grid-area: sp3; }
+#sp4 { grid-area: sp4; }
+#sp5 { grid-area: sp5; }
+#sp6 { grid-area: sp6; }
+#sp7 { grid-area: sp7; }
+#sp8 { grid-area: sp8; }
+#sp9 { grid-area: sp9; }
+#sp10 { grid-area: sp10; }
+#sp11 { grid-area: sp11; }
+#sp12 { grid-area: sp12; }
+#sp13 { grid-area: sp13; }
+#sp14 { grid-area: sp14; }
+#sp15 { grid-area: sp15; }
+#spText {
+    position: relative;
+    grid-area: spText;
+    border: 1px solid rgba(250, 235, 215, 0.60);
+    border-radius: 4px;
+}
+.spPrev {
+    position: relative;
+    border: 1px solid rgba(250, 235, 215, 0.60);
+    border-radius: 4px;
+}
+/* keyframes animation */
+@keyframes fade-in {
+    0% { opacity: 0; }
+    100% { opacity: 100; }
+}
+@keyframes twinkle-focus {
+    0% { box-shadow: 0 0 10px 0px #92ff3d75; }
+    100% { box-shadow: 0 0 5px 5px #92ff3d75; }
+}
+.spPrev:hover:not(:empty) { animation: twinkle-focus 1s infinite alternate; }
+input#SP_btn ~ div#SP_Window { visibility: collapse; }
+input#SP_btn:checked ~ div#SP_Window {
+    animation: fade-in .2s;
+    visibility: visible;
+}
+
+/* when SP_Card slot is Empty */
+.spPrev:empty::before,
+.spPrev:empty::after {
+    position: absolute;
+    top: 50%;
+    left: 7.5%;
+    content: "";
+    width: 85%;
+    border-top: solid 1px rgba(250, 235, 215, 0.60);
+}
+.spPrev:empty::before{ transform: skewY(-45deg); }
+.spPrev:empty::after { transform: skewY( 45deg); }
+
+div#spText p.SPname {
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 8px 10px;
+    margin: 0 auto;
+    border-bottom: solid 1.2px #ffffff;
+}
+div#spText p.SPtext {
+    color: #ffffff;
+    font-size: 16px;
+    padding: 10px 10px;
+    margin: 0 auto;
+    white-space: pre-wrap;
+}
+div#spText > div[class^="spID"][class$="txt"]{
+    position: absolute;
+    visibility: collapse;
+    padding: 10px;
+}
+div#SP_Window > div.spPrev > input {
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+}
+
+div.spID1 { background-image: url(../img/sp/1.png); background-size: 100% 100%; }
+div.spID2 { background-image: url(../img/sp/2.png); background-size: 100% 100%; }
+div.spID3 { background-image: url(../img/sp/3.png); background-size: 100% 100%; }
+div.spID4 { background-image: url(../img/sp/4.png); background-size: 100% 100%; }
+div.spID5 { background-image: url(../img/sp/5.png); background-size: 100% 100%; }
+div.spID6 { background-image: url(../img/sp/6.png); background-size: 100% 100%; }
+div.spID7 { background-image: url(../img/sp/7.png); background-size: 100% 100%; }
+div.spID8 { background-image: url(../img/sp/8.png); background-size: 100% 100%; }
+div.spID9 { background-image: url(../img/sp/9.png); background-size: 100% 100%; }
+div.spID10 { background-image: url(../img/sp/10.png); background-size: 100% 100%; }
+div.spID11 { background-image: url(../img/sp/11.png); background-size: 100% 100%; }
+div.spID12 { background-image: url(../img/sp/12.png); background-size: 100% 100%; }
+div.spID13 { background-image: url(../img/sp/13.png); background-size: 100% 100%; }
+div.spID14 { background-image: url(../img/sp/14.png); background-size: 100% 100%; }
+div.spID15 { background-image: url(../img/sp/15.png); background-size: 100% 100%; }
+div.spID16 { background-image: url(../img/sp/16.png); background-size: 100% 100%; }
+div.spID17 { background-image: url(../img/sp/17.png); background-size: 100% 100%; }
+div.spID18 { background-image: url(../img/sp/18.png); background-size: 100% 100%; }
+div.spID21 { background-image: url(../img/sp/21.png); background-size: 100% 100%; }
+div.spID22 { background-image: url(../img/sp/22.png); background-size: 100% 100%; }
+div.spID23 { background-image: url(../img/sp/23.png); background-size: 100% 100%; }
+div.spID24 { background-image: url(../img/sp/24.png); background-size: 100% 100%; }
+div.spID25 { background-image: url(../img/sp/25.png); background-size: 100% 100%; }
+div.spID26 { background-image: url(../img/sp/26.png); background-size: 100% 100%; }
+div.spID27 { background-image: url(../img/sp/27.png); background-size: 100% 100%; }
+
+div.spID1:hover ~ div#spText > div.spID1txt ,
+div.spID2:hover ~ div#spText > div.spID2txt ,
+div.spID3:hover ~ div#spText > div.spID3txt ,
+div.spID4:hover ~ div#spText > div.spID4txt ,
+div.spID5:hover ~ div#spText > div.spID5txt ,
+div.spID6:hover ~ div#spText > div.spID6txt ,
+div.spID7:hover ~ div#spText > div.spID7txt ,
+div.spID8:hover ~ div#spText > div.spID8txt ,
+div.spID9:hover ~ div#spText > div.spID9txt ,
+div.spID10:hover ~ div#spText > div.spID10txt ,
+div.spID11:hover ~ div#spText > div.spID11txt ,
+div.spID12:hover ~ div#spText > div.spID12txt ,
+div.spID13:hover ~ div#spText > div.spID13txt ,
+div.spID14:hover ~ div#spText > div.spID14txt ,
+div.spID15:hover ~ div#spText > div.spID15txt ,
+div.spID16:hover ~ div#spText > div.spID16txt ,
+div.spID17:hover ~ div#spText > div.spID17txt ,
+div.spID18:hover ~ div#spText > div.spID18txt ,
+div.spID21:hover ~ div#spText > div.spID21txt ,
+div.spID22:hover ~ div#spText > div.spID22txt ,
+div.spID23:hover ~ div#spText > div.spID23txt ,
+div.spID24:hover ~ div#spText > div.spID24txt ,
+div.spID25:hover ~ div#spText > div.spID25txt ,
+div.spID26:hover ~ div#spText > div.spID26txt ,
+div.spID27:hover ~ div#spText > div.spID27txt {
+    visibility: visible;
+}
