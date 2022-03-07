@@ -1,0 +1,15 @@
+@charset "utf8";
+
+.card {
+    width : 4em;
+    height: 4em;
+}
+
+#spList td {
+    padding: 12px;
+}
+
+#spList td > p {
+    margin-top: .4em;
+    margin-bottom: 0;
+}

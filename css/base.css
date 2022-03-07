@@ -2,62 +2,82 @@
 
 body {
   background-color: black;
-  color: white;
-  font-size: 18px;
+  color           : white;
+  font-size       : 18px;
 }
 
 span.green {
   color: yellowgreen;
 }
+
 span.red {
   color: tomato;
 }
+
 span.bold {
   font-weight: bold;
 }
+
 span.small {
   font-size: 10px;
 }
 
-h1{
-  color: yellowgreen;
-  margin: 2%;
-  font-size: 42px;
+.txt-c {
   text-align: center;
 }
+
+.txt-l {
+  text-align: left;
+}
+
+.txt-r {
+  text-align: right;
+}
+
+
+
+h1 {
+  color     : yellowgreen;
+  margin    : 2%;
+  font-size : 42px;
+  text-align: center;
+}
+
 h1#title {
   font-size: 120px;
 }
+
 h2 {
-  color: white;
-  font-size: 28px;
+  color       : white;
+  font-size   : 28px;
   padding-left: 10px;
-  border-left: 10px solid gray;
+  border-left : 10px solid gray;
 }
+
 h2:target {
   border-left: 10px solid white;
-  background: linear-gradient(90deg,#37ce00cc,#00000000);
+  background : linear-gradient(90deg, #37ce00cc, #00000000);
 }
 
 div.container {
-  width: 720px;
+  width : 720px;
   margin: 5px auto;
 }
 
 div#img {
-  width: calc(0.7*1195px);
-  height: calc(0.7*608px);
-  margin: 0 auto;
-  background-size: 100% 100%;
+  width           : calc(0.7*1195px);
+  height          : calc(0.7*608px);
+  margin          : 0 auto;
+  background-size : 100% 100%;
   background-image: url(../img/21.png);
 }
 
 div.link {
-  display: flex;
-  align-items: center;
+  display        : flex;
+  align-items    : center;
   justify-content: center;
-  margin: 5px auto;
-  font-size: 28px;
+  margin         : 5px auto;
+  font-size      : 28px;
 }
 
 a:link,
@@ -69,26 +89,28 @@ a:visited {
 a.btn:link,
 a.btn:visited {
   text-decoration: none;
-  color: white;
+  color          : white;
 }
+
 .btn {
-  color: white;
+  color           : white;
   background-color: black;
-  padding: 8px;
-  border: 2px solid white;
-  border-radius: 8px;
-  margin: 0 10px;
-  font-size: 28px;
+  padding         : 8px;
+  border          : 2px solid white;
+  border-radius   : 8px;
+  margin          : 0 10px;
+  font-size       : 28px;
 }
+
 .btn:hover {
   background-color: yellowgreen;
-  color: black;
-  border: 2px solid yellowgreen;
+  color           : black;
+  border          : 2px solid yellowgreen;
 }
 
 div.fig01 {
   background-image: url(../img/game_screen.png);
-  background-size: 100% 100%;
-  width: 720px;
-  height: 468px;
+  background-size : 100% 100%;
+  width           : 720px;
+  height          : 468px;
 }
