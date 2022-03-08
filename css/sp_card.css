@@ -1,27 +1,126 @@
 @charset "utf8";
 
-div.spID1 { background-image: url(../img/sp/1.png); background-size: 100% 100%; }
-div.spID2 { background-image: url(../img/sp/2.png); background-size: 100% 100%; }
-div.spID3 { background-image: url(../img/sp/3.png); background-size: 100% 100%; }
-div.spID4 { background-image: url(../img/sp/4.png); background-size: 100% 100%; }
-div.spID5 { background-image: url(../img/sp/5.png); background-size: 100% 100%; }
-div.spID6 { background-image: url(../img/sp/6.png); background-size: 100% 100%; }
-div.spID7 { background-image: url(../img/sp/7.png); background-size: 100% 100%; }
-div.spID8 { background-image: url(../img/sp/8.png); background-size: 100% 100%; }
-div.spID9 { background-image: url(../img/sp/9.png); background-size: 100% 100%; }
-div.spID10 { background-image: url(../img/sp/10.png); background-size: 100% 100%; }
-div.spID11 { background-image: url(../img/sp/11.png); background-size: 100% 100%; }
-div.spID12 { background-image: url(../img/sp/12.png); background-size: 100% 100%; }
-div.spID13 { background-image: url(../img/sp/13.png); background-size: 100% 100%; }
-div.spID14 { background-image: url(../img/sp/14.png); background-size: 100% 100%; }
-div.spID15 { background-image: url(../img/sp/15.png); background-size: 100% 100%; }
-div.spID16 { background-image: url(../img/sp/16.png); background-size: 100% 100%; }
-div.spID17 { background-image: url(../img/sp/17.png); background-size: 100% 100%; }
-div.spID18 { background-image: url(../img/sp/18.png); background-size: 100% 100%; }
-div.spID21 { background-image: url(../img/sp/21.png); background-size: 100% 100%; }
-div.spID22 { background-image: url(../img/sp/22.png); background-size: 100% 100%; }
-div.spID23 { background-image: url(../img/sp/23.png); background-size: 100% 100%; }
-div.spID24 { background-image: url(../img/sp/24.png); background-size: 100% 100%; }
-div.spID25 { background-image: url(../img/sp/25.png); background-size: 100% 100%; }
-div.spID26 { background-image: url(../img/sp/26.png); background-size: 100% 100%; }
-div.spID27 { background-image: url(../img/sp/27.png); background-size: 100% 100%; }
+div.spID1 {
+    background-image: url(../img/sp/1.png);
+    background-size : 100% 100%;
+}
+
+div.spID2 {
+    background-image: url(../img/sp/2.png);
+    background-size : 100% 100%;
+}
+
+div.spID3 {
+    background-image: url(../img/sp/3.png);
+    background-size : 100% 100%;
+}
+
+div.spID4 {
+    background-image: url(../img/sp/4.png);
+    background-size : 100% 100%;
+}
+
+div.spID5 {
+    background-image: url(../img/sp/5.png);
+    background-size : 100% 100%;
+}
+
+div.spID6 {
+    background-image: url(../img/sp/6.png);
+    background-size : 100% 100%;
+}
+
+div.spID7 {
+    background-image: url(../img/sp/7.png);
+    background-size : 100% 100%;
+}
+
+div.spID8 {
+    background-image: url(../img/sp/8.png);
+    background-size : 100% 100%;
+}
+
+div.spID9 {
+    background-image: url(../img/sp/9.png);
+    background-size : 100% 100%;
+}
+
+div.spID10 {
+    background-image: url(../img/sp/10.png);
+    background-size : 100% 100%;
+}
+
+div.spID11 {
+    background-image: url(../img/sp/11.png);
+    background-size : 100% 100%;
+}
+
+div.spID12 {
+    background-image: url(../img/sp/12.png);
+    background-size : 100% 100%;
+}
+
+div.spID13 {
+    background-image: url(../img/sp/13.png);
+    background-size : 100% 100%;
+}
+
+div.spID14 {
+    background-image: url(../img/sp/14.png);
+    background-size : 100% 100%;
+}
+
+div.spID15 {
+    background-image: url(../img/sp/15.png);
+    background-size : 100% 100%;
+}
+
+div.spID16 {
+    background-image: url(../img/sp/16.png);
+    background-size : 100% 100%;
+}
+
+div.spID17 {
+    background-image: url(../img/sp/17.png);
+    background-size : 100% 100%;
+}
+
+div.spID18 {
+    background-image: url(../img/sp/18.png);
+    background-size : 100% 100%;
+}
+
+div.spID21 {
+    background-image: url(../img/sp/21.png);
+    background-size : 100% 100%;
+}
+
+div.spID22 {
+    background-image: url(../img/sp/22.png);
+    background-size : 100% 100%;
+}
+
+div.spID23 {
+    background-image: url(../img/sp/23.png);
+    background-size : 100% 100%;
+}
+
+div.spID24 {
+    background-image: url(../img/sp/24.png);
+    background-size : 100% 100%;
+}
+
+div.spID25 {
+    background-image: url(../img/sp/25.png);
+    background-size : 100% 100%;
+}
+
+div.spID26 {
+    background-image: url(../img/sp/26.png);
+    background-size : 100% 100%;
+}
+
+div.spID27 {
+    background-image: url(../img/sp/27.png);
+    background-size : 100% 100%;
+}
