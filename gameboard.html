@@ -1,99 +1,114 @@
 <!DOCTYPE html>
 <html lang="ja">
+  <!-- HEAD -->
 
-<!-- HEAD -->
-
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>21 - Survival Game -</title>
-    <link rel="stylesheet" type="text/css" href="css/gameboard.css">
-    <link rel="stylesheet" type="text/css" href="css/sp_window+cards.css">
-</head>
-<!-- END of HEAD -->
+    <link rel="stylesheet" type="text/css" href="css/gameboard.css" />
+    <link rel="stylesheet" type="text/css" href="css/sp_window+cards.css" />
+  </head>
+  <!-- END of HEAD -->
 
-<!-- BODY -->
+  <!-- BODY -->
 
-<body>
+  <body>
     <h1>21</h1>
 
-    <!-- .YOUR or ENEMY -->
-    <div class='container YOUR'>
-        <div id='infoBoard' class='wrapper'>
-            <div class='message'>
-                <p><span class='YOUR'>YOUR</span>&nbsp;TURN</p>
-            </div>
+    <!-- .YOUR or .ENEMY -->
+    <div class="container YOUR">
+      <div id="infoBoard" class="wrapper">
+        <div class="message">
+          <p><span class="YOUR">YOUR</span>&nbsp;TURN</p>
         </div>
-        <!-- ENEMY -->
-        <div id='gameBoard' class='wrapper'>
-            <div class="EN_Hand">
-                <img class="Hand" src="img/en/hand.png" alt="Enemy's Hand">
-                <img class='Hand lost' src='img/en/lost/01.png'>
-                <img class='Hand lost' src='img/en/lost/02.png'>
-                <img class='Hand select' src='img/en/select/03.png'>
-                <img class='Hand select' src='img/en/select/04.png'>
-            </div>
-            <div class="EN_Cards">
-                <div class='numCard back'></div>
-                <div class='numCard'>4</div>
-                <div class='numCard'>8</div>
-            </div>
-            <div class="EN_PassiveSP">
-                <div class='spCard spID22'></div>
-            </div>
-            <div class="Blank"></div>
-            <div class="EN_countNum">
-                <span>12+?</span>/21
-            </div>
-            <!-- END of Enemy's Graphics -->
-            <!-- My Graphix -->
-            <div class="MY_Hand">
-                <img class="Hand" src="img/my/hand.png" alt="My Hand">
-                <img class='Hand lost' src='img/my/lost/01.png'>
-                <img class='Hand select' src='img/my/select/02.png'>
-                <img class='Hand select' src='img/my/select/03.png'>
-            </div>
-            <div class="MY_Cards">
-                <div class='numCard back'>11</div>
-                <div class='numCard'>7</div>
-                <div class='numCard'>3</div>
-            </div>
-            <div class="MY_PassiveSP">
-                <div class='spCard spID21'></div>
-                <div class='spCard spID21'></div>
-            </div>
-            <div class="MYInfo">
-                <div id="user_info">your_name<br>ID : your_id</div>
-            </div>
-            <div class="MY_countNum">
-                <span class='just'>21</span>
-            </div>
-            <!-- END of My Graphics -->
+      </div>
+      <!-- ENEMY -->
+      <div id="gameBoard" class="wrapper">
+        <div class="EN_Hand">
+          <img class="Hand" src="img/en/hand.png" alt="Enemy's Hand" />
+          <img class="Hand lost" src="img/en/lost/01.png" />
+          <img class="Hand lost" src="img/en/lost/02.png" />
+          <img class="Hand select" src="img/en/select/03.png" />
+          <img class="Hand select" src="img/en/select/04.png" />
         </div>
-        <!-- END of gameBoard -->
-
-        <hr>
-
-        <div class="MY_Commands">
-            <form id="command" action="gameboard.html" method="post">
-                <input type='hidden' name='userID' value='$userID'>
-                <button type='submit' class='clear_btn' name='stay'>STAY</button>
-                <button type='submit' class='clear_btn' name='draw'>DRAW</button>
-            </form>
-            <input id='SP_btn' type='checkbox' class='clear_btn' name='SP_Window'>
-            <label for='SP_btn'>
-                <span class='label_SP_btn'>SP[2]</span>
-            </label>
-            <!-- SP_Window -->
-            <div id='SP_Window'>
-
-            </div>
-            <!-- END of SP_Window -->
+        <div class="EN_Cards">
+          <div class="numCard back"></div>
+          <div class="numCard">4</div>
+          <div class="numCard">8</div>
         </div>
-        <!-- END of MY Commands -->
+        <div class="EN_PassiveSP">
+          <div class="spCard spID22"></div>
+        </div>
+        <div class="Blank"></div>
+        <div class="EN_countNum"><span>12+?</span>/21</div>
+        <!-- END of Enemy's Graphics -->
+        <!-- My Graphix -->
+        <div class="MY_Hand">
+          <img class="Hand" src="img/my/hand.png" alt="My Hand" />
+          <img class="Hand lost" src="img/my/lost/01.png" />
+          <img class="Hand select" src="img/my/select/02.png" />
+          <img class="Hand select" src="img/my/select/03.png" />
+        </div>
+        <div class="MY_Cards">
+          <div class="numCard back">11</div>
+          <div class="numCard">7</div>
+          <div class="numCard">3</div>
+        </div>
+        <div class="MY_PassiveSP">
+          <div class="spCard spID21"></div>
+          <div class="spCard spID21"></div>
+        </div>
+        <div class="MYInfo">
+          <div id="user_info">your_name<br />ID : your_id</div>
+        </div>
+        <div class="MY_countNum">
+          <span class="just">21</span>
+        </div>
+        <!-- END of My Graphics -->
+      </div>
+      <!-- END of gameBoard -->
+
+      <hr />
+
+      <div class="MY_Commands">
+        <form id="command" action="gameboard.html" method="post">
+          <input type="hidden" name="userID" value="$userID" />
+          <button type="submit" class="clear_btn" name="stay">STAY</button>
+          <button type="submit" class="clear_btn" name="draw">DRAW</button>
+        </form>
+        <input id="SP_btn" type="checkbox" class="clear_btn" name="SP_Window" />
+        <label for="SP_btn">
+          <span class="label_SP_btn">SP[1]</span>
+        </label>
+        <!-- SP_Window -->
+        <div id="SP_Window">
+          <div id="sp0" class="spPrev spID12">
+            <input type="submit" name="useSP" value="12" form="command" />
+          </div>
+          <div class="spPrev sp1"></div>
+          <div class="spPrev sp2"></div>
+          <div class="spPrev sp3"></div>
+          <div class="spPrev sp4"></div>
+          <div class="spPrev sp5"></div>
+          <div class="spPrev sp6"></div>
+          <div class="spPrev sp7"></div>
+          <div class="spPrev sp8"></div>
+          <div class="spPrev sp9"></div>
+          <div class="spPrev sp10"></div>
+          <div class="spPrev sp11"></div>
+          <div class="spPrev sp12"></div>
+          <div class="spPrev sp13"></div>
+          <div class="spPrev sp14"></div>
+          <div class="spPrev sp15"></div>
+        </div>
+        <script>
+
+        </script>
+        <!-- END of SP_Window -->
+      </div>
+      <!-- END of MY Commands -->
     </div>
     <!-- END of container -->
-
-</body>
-<!-- END of BODY -->
-
+  </body>
+  <!-- END of BODY -->
 </html>
