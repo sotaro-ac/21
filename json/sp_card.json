@@ -144,7 +144,7 @@
             "name": "SPチェンジ",
             "type": "active",
             "attr": [
-                "rare",
+                "epic",
                 "sp"
             ],
             "description": "自分のSPカードをランダムで2枚捨てる。さらにSPカードを3枚引く。"
@@ -174,7 +174,7 @@
             "name": "エクスチェンジ",
             "type": "active",
             "attr": [
-                "epic",
+                "rare",
                 "move"
             ],
             "description": "両プレイヤーがそれぞれ最後に引いたカードを交換する。"
