@@ -1,9 +1,6 @@
 // js/SPCard.js
 
 // export
-const _PATH_TO_SPCARD_JSON_ = "../json/sp_card.json";
-
-// export
 class SPCard {
 
     //
@@ -12,7 +9,7 @@ class SPCard {
     static list = [];   // SPカードリスト
 
     // private (ES2022)
-    static #PATH_TO_SPCARD_JSON = _PATH_TO_SPCARD_JSON_;
+    static #PATH_TO_SPCARD_JSON = "../json/sp_card.json";
 
     // setter
     static set PATH_TO_SPCARD_JSON(path) {
@@ -53,6 +50,7 @@ class SPCard {
     // 
     list = [];
     /**
+     * NOTE:
      * this.list に新しいIDリストを与えることで
      * 各プレイヤーが利用可能なSPカードを指定できる
      */
