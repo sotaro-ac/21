@@ -184,14 +184,14 @@
           const tbody = document.querySelector('#spList > tbody');
 
           // テーブルにSPカードを追加する
-          spList.sp_card.forEach(card => {
-            if (!card.name) return;
+          spList['sp_card'].forEach(card => {
+            if (!card['name']) return;
             const tr = document.createElement('tr');
             tr.innerHTML = `
-            <td><div class="card spID${card.id}"></div</td>
+            <td><div class="card spID${card['id']}"></div</td>
             <td>
-              <span class="bold green">${card.name}</span>
-              <p>${card.description}</p>
+              <span class="bold green">${card['name']}</span>
+              <p>${card['description']}</p>
             </td>
             `;
             tbody.appendChild(tr);

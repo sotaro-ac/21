@@ -3,156 +3,218 @@
         {
             "id": 0,
             "name": "",
+            "type": "",
+            "attr": ["draw"],
             "description": ""
         },
         {
             "id": 1,
             "name": "ドロー1",
+            "type": "active",
+            "attr": ["draw", "common"],
             "description": "山札に残っている場合のみ、「1」のカードを引く。"
         },
         {
             "id": 2,
             "name": "ドロー2",
+            "type": "active",
+            "attr": ["draw", "common"],
             "description": "山札に残っている場合のみ、「2」のカードを引く。"
         },
         {
             "id": 3,
             "name": "ドロー3",
+            "type": "active",
+            "attr": ["draw", "common"],
             "description": "山札に残っている場合のみ、「3」のカードを引く。"
         },
         {
             "id": 4,
             "name": "ドロー4",
+            "type": "active",
+            "attr": ["draw", "common"],
             "description": "山札に残っている場合のみ、「4」のカードを引く。"
         },
         {
             "id": 5,
             "name": "ドロー5",
+            "type": "active",
+            "attr": ["draw", "common"],
             "description": "山札に残っている場合のみ、「5」のカードを引く。"
         },
         {
             "id": 6,
             "name": "ドロー6",
+            "type": "active",
+            "attr": ["draw", "common"],
             "description": "山札に残っている場合のみ、「6」のカードを引く。"
         },
         {
             "id": 7,
             "name": "ドロー7",
+            "type": "active",
+            "attr": ["draw", "common"],
             "description": "山札に残っている場合のみ、「7」のカードを引く。"
         },
         {
             "id": 8,
             "name": "ドロー8",
+            "type": "active",
+            "attr": ["draw", "common"],
             "description": "山札に残っている場合のみ、「8」のカードを引く。"
         },
         {
             "id": 9,
             "name": "ドロー9",
+            "type": "active",
+            "attr": ["draw", "common"],
             "description": "山札に残っている場合のみ、「9」のカードを引く。"
         },
         {
             "id": 10,
             "name": "ドロー10",
+            "type": "active",
+            "attr": ["draw", "common"],
             "description": "山札に残っている場合のみ、「10」のカードを引く。"
         },
         {
             "id": 11,
             "name": "ドロー11",
+            "type": "active",
+            "attr": ["draw", "common"],
             "description": "山札に残っている場合のみ、「11」のカードを引く。"
         },
         {
             "id": 12,
             "name": "パーフェクトドロー",
+            "type": "active",
+            "attr": ["draw", "epic"],
             "description": "山札から一番良い数字を引く。"
         },
         {
             "id": 13,
             "name": "デストロイ",
+            "type": "active",
+            "attr": ["sp", "rare"],
             "description": "相手が最後に置いたSPカードを場から取り除く。"
         },
         {
             "id": 14,
             "name": "SPチェンジ",
+            "type": "active",
+            "attr": ["sp", "epic"],
             "description": "自分のSPカードをランダムで2枚捨てる。さらにSPカードを3枚引く。"
         },
         {
             "id": 15,
             "name": "リムーブ",
+            "type": "active",
+            "attr": ["move", "epic"],
             "description": "相手が最後に置いた表向きのカードを山札に戻す。"
         },
         {
             "id": 16,
             "name": "リターン",
+            "type": "active",
+            "attr": ["move", "epic"],
             "description": "自分が最後に引いた表向きのカードを山札に戻す。"
         },
         {
             "id": 17,
             "name": "エクスチェンジ",
+            "type": "active",
+            "attr": ["move", "epic"],
             "description": "両プレイヤーがそれぞれ最後に引いたカードを交換する。"
         },
         {
             "id": 18,
             "name": "ラブユアエネミー",
+            "type": "active",
+            "attr": ["draw", "legend"],
             "description": "山札から相手にとって一番良いカードを引かせる。"
         },
         {
             "id": 19,
             "name": "",
+            "type": "",
+            "attr": [""],
             "description": ""
         },
         {
             "id": 20,
             "name": "",
+            "type": "",
+            "attr": [""],
             "description": ""
         },
         {
             "id": 21,
             "name": "ベットアップ",
+            "type": "passive",
+            "attr": ["bet", "rare"],
             "description": "場に置かれている間、相手の賭け数を1つ増やす。"
         },
         {
             "id": 22,
             "name": "ベットアップ＋",
+            "type": "passive",
+            "attr": ["bet", "epic"],
             "description": "場に置かれている間、相手の賭け数を2つ増やす。"
         },
         {
             "id": 23,
             "name": "シールド",
+            "type": "passive",
+            "attr": ["bet", "rare"],
             "description": "場に置かれている間、自分の賭け数を1つ減らす。"
         },
         {
             "id": 24,
             "name": "シールド＋",
+            "type": "passive",
+            "attr": ["bet", "epic"],
             "description": "場に置かれている間、自分の賭け数を2つ減らす。"
         },
         {
             "id": 25,
             "name": "ゴール17",
+            "type": "passive",
+            "attr": ["goal", "legend"],
             "description": "場に置かれている間、勝利条件を17にする。 他の「ゴール」系カードが場にある場合、それを取り除く。"
         },
         {
             "id": 26,
             "name": "ゴール24",
+            "type": "passive",
+            "attr": ["goal", "legend"],
             "description": "場に置かれている間、勝利条件を24にする。 他の「ゴール」系カードが場にある場合、それを取り除く。"
         },
         {
             "id": 27,
             "name": "ゴール27",
+            "type": "passive",
+            "attr": ["goal", "legend"],
             "description": "場に置かれている間、勝利条件を27にする。 他の「ゴール」系カードが場にある場合、それを取り除く。"
         },
         {
             "id": 28,
             "name": "",
+            "type": "",
+            "attr": [""],
             "description": ""
         },
         {
             "id": 29,
             "name": "",
+            "type": "",
+            "attr": [""],
             "description": ""
         },
         {
             "id": 30,
             "name": "",
+            "type": "",
+            "attr": [""],
             "description": ""
         }
     ]
