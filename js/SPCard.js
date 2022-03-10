@@ -7,11 +7,11 @@ const _PATH_TO_SPCARD_JSON_ = "../json/sp_card.json";
 class SPCard {
 
     //
-    // STATIC
+    // STATIC (ES2022)
     //
     static list = [];   // SPカードリスト
 
-    // private
+    // private (ES2022)
     static #PATH_TO_SPCARD_JSON = _PATH_TO_SPCARD_JSON_;
 
     // setter
@@ -39,8 +39,17 @@ class SPCard {
             });
     };
 
+    // Promise
+    static #fetchPromise;
+
+    // Class Static Block (ES2022)
+    // * クラスが定義された時点で実行される
+    static {
+        SPCard.#fetchPromise = SPCard.#updateSPList();
+    }
+
     // 
-    // LOCAL
+    // PUBLIC LOCAL
     // 
     list = [];
     /**
@@ -52,7 +61,7 @@ class SPCard {
     // CONSTRUCTOR
     //
     constructor() {
-        SPCard.#updateSPList().then((res) => { this.init(); });
+        SPCard.#fetchPromise.then((res) => { this.init(); });
     }
 
     //
@@ -63,10 +72,8 @@ class SPCard {
      * インスタンスのSPカードリストを初期化する
      */
     init() {
-        // "name", 'type', 'description' がひとつでも欠けているデータは除く
-        this.list = SPCard.list.filter(
-            (card) => card.name !== "" || card.type !== "" || card.description !== ""
-        );
+        // "name", 'type', 'description' がひとつでも欠けているカードは除く
+        this.list = SPCard.list.filter((c) => c.name || c.type || c.description);
     }
 
     /**
@@ -76,18 +83,21 @@ class SPCard {
      * @returns {Array}
      */
     getIdList({ type, attr } = {}) {
-        // type または attr が指定されていれば該当するデータに絞る
+        // 
+        // type または attr が指定されていれば該当するカードに絞る
+        // 
         if (type && attr) {
-            return this.list.filter(
-                (c) => (c.type == type && c.attr.includes(attr)).map((c) => c.id)
-            );
-        } else if (type && !attr) {
-            return this.list.filter((c) => c.type === type).map((c) => c.id);
-        } else if (!type && attr) {
-            return this.list.filter((c) => c.attr.includes(attr)).map((c) => c.id);
-        } else {
-            return this.list.map((card) => card.id);
+            return this.list
+                .filter((c) => c.type == type && c.attr.includes(attr))
+                .map((c) => c.id);
         }
+        else if (type || attr) {
+            return this.list
+                .filter((c) => c.type == type || c.attr.includes(attr))
+                .map((c) => c.id);
+        }
+        // Defailt
+        return this.list.map(card => card.id);
     }
 
     /**

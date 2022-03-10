@@ -1,6 +1,7 @@
 # 21
 
 GitHub Pagesのテスト用に作成．
+書いていると，知らぬ間にES2022仕様のコードが混在していた．
 
 ## 学習スケジュール
 - Week 1：Vanilla Javascriptでゲームの動作を実現
