@@ -4,6 +4,6 @@
 // import { SPCard } from './SPCard.js';
 // import { GameStatus, DEFAULT } from './GameBoard.js';
 
-const spCard = new SPCard();
+// const spCard = new SPCard();
 const gameStatus = new GameStatus("id");
 

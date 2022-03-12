@@ -14,7 +14,7 @@ class SPCard {
     // setter
     static set PATH_TO_SPCARD_JSON(path) {
         SPCard.#PATH_TO_SPCARD_JSON = path;
-        SPCard.#updateSPList();
+        SPCard.#fetchPromise = SPCard.#updateSPList();
     }
 
     // getter
@@ -48,6 +48,7 @@ class SPCard {
     // 
     // PUBLIC LOCAL
     // 
+    initPromise;
     list = [];
     /**
      * NOTE:
@@ -59,7 +60,11 @@ class SPCard {
     // CONSTRUCTOR
     //
     constructor() {
-        SPCard.#fetchPromise.then((res) => { this.init(); });
+        this.initPromise = new Promise((resolve) => {
+            SPCard.#fetchPromise
+                .then((res) => { this.init(); })
+                .then((res) => { resolve(); });
+        });
     }
 
     //
@@ -107,12 +112,12 @@ class SPCard {
     drawCard(idList) {
         if (Array.isArray(idList)) {
             // 指定されていれば 配列idList の中からIDをひとつ選ぶ
-            const idx = Math.round(Math.random() * idList.length);
+            const idx = Math.floor(Math.random() * idList.length);
             return idList[idx];
         } else {
             // デフォルトでは this.list の中からIDをひとつ選ぶ
             const idArr = this.getIdList();
-            const idx = Math.round(Math.random() * idArr.length);
+            const idx = Math.floor(Math.random() * idArr.length);
             return idArr[idx];
         }
     }

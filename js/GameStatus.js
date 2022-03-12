@@ -13,22 +13,25 @@ const DEFAULT_PARAMS = {
 class GameStatus {
 
     userId;
+
+    round;
     turn;
+
+    whose_turn;
     stay;
-    first_player;
 
     deck = [];
     my_fingers;
     en_fingers;
 
     mySPDeck;
-    enDPDeck;
+    enSPDeck;
 
     myHand = [];
     enHand = [];
 
-    myHandSp = [];
-    enHandSp = [];
+    myHandSP = [];
+    enHandSP = [];
 
     my_passive_sp = [];
     en_passive_sp = [];
@@ -39,20 +42,76 @@ class GameStatus {
         this.init();
     }
 
-    init() {
-        this.deck = DEFAULT_PARAMS.DECK;
-        this.deck.sort(() => Math.random() - 0.5);  // shuffle
+    get myHandSum() {
+        return this.myHand.reduce((prev, curr) => { return prev + curr; });
+    }
 
+    get enHandSum() {
+        return this.enHand.reduce((prev, curr) => { return prev + curr; });
+    }
+
+    /**
+     * ゲームの初期化(リセット)
+     */
+    init() {
+        // round/turn setting
+        this.round = 1;
+        this.turn = 1;
+        this.stay = false;
+        this.whose_turn = "me";    // or random
+
+        // Deck
+        this.deck = DEFAULT_PARAMS.DECK;
+        this.deck.sort(() => Math.random() - 0.5);  // shuffle deck
+
+        // Fingers (Hit Point) <= default:  5
         this.my_fingers = DEFAULT_PARAMS.FINGERS;
         this.en_fingers = DEFAULT_PARAMS.FINGERS;
 
+        // Card in hand
         this.myHand = [this.deck.pop(), this.deck.pop()];
         this.enHand = [this.deck.pop(), this.deck.pop()];
 
-        this.mySPDeck = new SPCard();
-        this.enDPDeck = new SPCard();
+        // 
+        // Initialize SP card 
+        // 
 
-        this.myHandSp = [this.mySPDeck.drawCard()];
+        // SP card deck
+        this.mySPDeck = new SPCard();
+        this.enSPDeck = new SPCard();
+
+        // Initialize my SP card 
+        this.mySPDeck.initPromise.then((res) => {
+            const attrDraw = this.mySPDeck.getIdList({ attr: "draw" });
+            const attrRare = this.mySPDeck.getIdList({ attr: "rare" });
+            const attrEpic = this.mySPDeck.getIdList({ attr: "epic" });
+            const typePass = this.mySPDeck.getIdList({ type: "passive" });
+
+            this.myHandSP = [
+                this.mySPDeck.drawCard(attrDraw),
+                this.mySPDeck.drawCard(attrRare),
+                this.mySPDeck.drawCard(attrEpic),
+                this.mySPDeck.drawCard(typePass)
+            ];
+        });
+
+        // Initialize enemy's SP card
+        this.enSPDeck.initPromise.then((res) => {
+            this.enSPDeck.list = this.enSPDeck.list.filter(
+                (c) => !c.attr.includes("common")
+            );
+            const attrBet = this.enSPDeck.getIdList({ attr: "bet" });
+            const typeAct = this.enSPDeck.getIdList({ type: "active" });
+
+            this.enHandSP = [
+                this.enSPDeck.drawCard(),
+                this.enSPDeck.drawCard(attrBet),
+                this.enSPDeck.drawCard(attrBet),
+                this.enSPDeck.drawCard(typeAct)
+            ];
+
+            // console.log(this.enSPDeck, this.enHandSP);
+        });
     }
 
 }
