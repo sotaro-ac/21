@@ -36,10 +36,19 @@ class GameStatus {
     my_passive_sp = [];
     en_passive_sp = [];
 
+    initPromise;
+
 
     constructor(userId) {
         this.userId = userId;
-        this.init();
+        this.initPromise = new Promise((resolve) => {
+            new Promise((res) => {
+                this.init();
+                res();
+            }).then(() => {
+                resolve();
+            });
+        });
     }
 
     get myHandSum() {
