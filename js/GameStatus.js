@@ -5,13 +5,16 @@
 
 // export default {...}
 const DEFAULT_PARAMS = {
-    DECK: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-    FINGERS: 5
+    get DECK() { return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] },
+    get FINGERS() { return 5 },
+    get GOAL() { return 21 }
 };
 
 // export
 class GameStatus {
-
+    // 
+    // PUBLIC LOCAL
+    // 
     userId;
 
     round;
@@ -21,11 +24,11 @@ class GameStatus {
     stay;
 
     deck = [];
-    my_fingers;
-    en_fingers;
+    my_fingers = DEFAULT_PARAMS.FINGERS;
+    en_fingers = DEFAULT_PARAMS.FINGERS;
 
-    mySPDeck;
-    enSPDeck;
+    mySPDeck = new SPCard();
+    enSPDeck = new SPCard();
 
     myHand = [];
     enHand = [];
@@ -36,19 +39,18 @@ class GameStatus {
     my_passive_sp = [];
     en_passive_sp = [];
 
-    initPromise;
+    //
+    // CONSTRUCTOR
+    //
+    constructor(userId) { this.userId = userId; }
 
+    //
+    // METHOD
+    //
 
-    constructor(userId) {
-        this.userId = userId;
-        this.initPromise = new Promise((resolve) => {
-            new Promise((res) => {
-                this.init();
-                res();
-            }).then(() => {
-                resolve();
-            });
-        });
+    get goal() {
+        // do something 
+        return DEFAULT_PARAMS.GOAL;
     }
 
     get myHandSum() {
@@ -62,20 +64,24 @@ class GameStatus {
     /**
      * ゲームの初期化(リセット)
      */
-    init() {
+    init = () => new Promise((resolve) => {
         // round/turn setting
         this.round = 1;
         this.turn = 1;
         this.stay = false;
         this.whose_turn = "me";    // or random
 
-        // Deck
-        this.deck = DEFAULT_PARAMS.DECK;
-        this.deck.sort(() => Math.random() - 0.5);  // shuffle deck
-
         // Fingers (Hit Point) <= default:  5
         this.my_fingers = DEFAULT_PARAMS.FINGERS;
         this.en_fingers = DEFAULT_PARAMS.FINGERS;
+
+        // 
+        // Initialize card in hand
+        // 
+
+        // Deck
+        this.deck = DEFAULT_PARAMS.DECK;
+        this.deck.sort(() => Math.random() - 0.5);  // shuffle deck
 
         // Card in hand
         this.myHand = [this.deck.pop(), this.deck.pop()];
@@ -86,8 +92,8 @@ class GameStatus {
         // 
 
         // SP card deck
-        this.mySPDeck = new SPCard();
-        this.enSPDeck = new SPCard();
+        this.mySPDeck.init();
+        this.enSPDeck.init();
 
         // Initialize my SP card 
         this.mySPDeck.initPromise.then((res) => {
@@ -101,7 +107,7 @@ class GameStatus {
                 this.mySPDeck.drawCard(attrRare),
                 this.mySPDeck.drawCard(attrEpic),
                 this.mySPDeck.drawCard(typePass)
-            ];
+            ].sort((a, b) => a - b);    // sort by ascending order
         });
 
         // Initialize enemy's SP card
@@ -117,10 +123,12 @@ class GameStatus {
                 this.enSPDeck.drawCard(attrBet),
                 this.enSPDeck.drawCard(attrBet),
                 this.enSPDeck.drawCard(typeAct)
-            ];
-
-            // console.log(this.enSPDeck, this.enHandSP);
+            ].sort((a, b) => a - b);    // sort by ascending order
         });
-    }
+
+        resolve(this);
+    }).then((res) => {
+        return res;
+    });
 
 }

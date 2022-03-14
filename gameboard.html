@@ -26,7 +26,6 @@
       <div id="gameBoard" class="wrapper">
         <div class="EN_Hand">
           <img class="Hand" src="img/en/hand.png" alt="Enemy's Hand" />
-          <img class="Hand lost" src="img/en/lost/01.png" />
           <img class="Hand lost" src="img/en/lost/02.png" />
           <img class="Hand select" src="img/en/select/03.png" />
           <img class="Hand select" src="img/en/select/04.png" />
@@ -40,7 +39,9 @@
           <div class="spCard spID22"></div>
         </div>
         <div class="Blank"></div>
-        <div class="EN_countNum"><span>12+?</span>/21</div>
+        <div class="EN_countNum">
+          <span class="enHandSum">12+?</span>/<span class="goal">21</span>
+        </div>
         <!-- END of Enemy's Graphics -->
         <!-- My Graphix -->
         <div class="MY_Hand">
@@ -62,7 +63,7 @@
           <div id="user_info">your_name<br />ID : your_id</div>
         </div>
         <div class="MY_countNum">
-          <span class="just">21</span>
+          <span class="myHandSum just">21</span>/<span class="goal">21</span>
         </div>
         <!-- END of My Graphics -->
       </div>
@@ -82,10 +83,12 @@
         </label>
         <!-- SP_Window -->
         <div id="SP_Window">
-          <!-- <div id="sp0" class="spPrev spID12">
-            <input type="submit" name="useSP" value="12" form="command" />
-          </div>
-          <div class="spPrev sp1"></div> -->
+          <!--
+            <div id="sp0" class="spPrev spID12">
+              <input type="submit" name="useSP" value="12" form="command" />
+            </div>
+            <div class="spPrev sp1"></div>
+          -->
         </div>
         <script src="js/SPCard.js"></script>
         <script src="js/GameStatus.js"></script>
