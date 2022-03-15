@@ -9,7 +9,7 @@ class SPCard {
     static list = [];   // SPカードリスト
 
     // private (ES2022)
-    static #PATH_TO_SPCARD_JSON = "../json/sp_card.json";
+    static #PATH_TO_SPCARD_JSON = "json/sp_card.json";
 
     // setter
     static set PATH_TO_SPCARD_JSON(path) {
