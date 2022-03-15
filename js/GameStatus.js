@@ -7,7 +7,8 @@
 const DEFAULT_PARAMS = {
     get DECK() { return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] },
     get FINGERS() { return 5 },
-    get GOAL() { return 21 }
+    get GOAL() { return 21 },
+    get BET() { return 1 }
 };
 
 // export
@@ -24,21 +25,21 @@ class GameStatus {
     whose_turn;
     stay;
 
-    deck = [];
     myFingers = DEFAULT_PARAMS.FINGERS;
     enFingers = DEFAULT_PARAMS.FINGERS;
 
-    mySPDeck = new SPCard();
-    enSPDeck = new SPCard();
-
+    deck = [];
     myHand = [];
     enHand = [];
+
+    mySPDeck = new SPCard();
+    enSPDeck = new SPCard();
 
     myHandSP = [];
     enHandSP = [];
 
     myPassiveSP = [];
-    enPassiveSp = [];
+    enPassiveSP = [];
 
     //
     // CONSTRUCTOR
@@ -53,9 +54,71 @@ class GameStatus {
     //
 
     get goal() {
-        // do something 
-        return DEFAULT_PARAMS.GOAL;
+        let GOAL = DEFAULT_PARAMS.GOAL;
+
+        // SP attr of "goal" is should unique on the gameboard
+        const allPassSP = this.myPassiveSP.concat(this.enPassiveSP);
+        allPassSP.forEach((e, i) => {
+            switch (e) {
+                case 25: GOAL = 17; break;  // SP shield
+                case 26: GOAL = 24; break;  // SP shield +
+                case 27: GOAL = 27; break;  // SP shield +
+                default: break; // Others
+            }
+        });
+
+        return GOAL;
     }
+
+    get myBet() {
+        let BET = DEFAULT_PARAMS.BET;
+
+        // My Passive SP cards' abilities
+        this.myPassiveSP.forEach((e, i) => {
+            switch (e) {
+                case 23: BET = BET - 1; break;  // SP shield
+                case 24: BET = BET - 2; break;  // SP shield +
+                default: break; // Others
+            }
+        });
+
+        // En Passive SP cards' abilities
+        this.enPassiveSP.forEach((e, i) => {
+            switch (e) {
+                case 21: BET = BET + 1; break;  // Bet up
+                case 22: BET = BET + 2; break;  // Bet up +
+                default: break; // Others
+            }
+        });
+
+        return BET;
+    }
+
+    get enBet() {
+        let BET = DEFAULT_PARAMS.BET;
+
+        // My Passive SP cards' abilities
+        this.myPassiveSP.forEach((e, i) => {
+            switch (e) {
+                case 21: BET = BET + 1; break;  // Bet up
+                case 22: BET = BET + 2; break;  // Bet up +
+                default: break; // Others
+            }
+        });
+
+        // En Passive SP cards' abilities
+        this.enPassiveSP.forEach((e, i) => {
+            switch (e) {
+                case 23: BET = BET - 1; break;  // SP shield
+                case 24: BET = BET - 2; break;  // SP shield +
+                default: break; // Others
+            }
+        });
+
+        return BET;
+    }
+
+
 
     get myHandSum() {
         return this.myHand.reduce((prev, curr) => { return prev + curr; });

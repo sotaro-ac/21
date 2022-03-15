@@ -14,6 +14,8 @@
 // const spanGoal = document.querySelectorAll("span.goal");
 // const divMyPassSP = document.querySelector("#MY_PassiveSP");
 // const divEnPassSP = document.querySelector("#EN_PassiveSP");
+// const divMyHand = document.querySelector("#MY_Hand");
+// const divEnHand = document.querySelector("#EN_Hand");
 
 // const MAX_SP_HAND = 16;
 
@@ -93,8 +95,9 @@ class GameController {
     reflesh = () => {
         const gs = this.gameStatus;
 
-        // 手札合計値の目標値を設定
-        spanGoal.forEach((e) => { e.textContent = gs.goal });
+        // 
+        // プレイヤーの処理
+        // 
 
         // プレイヤーの手札合計値
         const spanHandSum = gs.myHandSum;
@@ -135,6 +138,10 @@ class GameController {
             divMyPassSP.appendChild(div);
         });
 
+        // 
+        // 相手の処理
+        // 
+
         // 相手の手札合計値(オープン前)
         const enHandSum = gs.enHandSum - gs.enHand[0];
         spanEnSum.textContent = `${enHandSum}+?`;
@@ -163,6 +170,59 @@ class GameController {
             div.className = `spCard spID${e}`;
             divEnPassSP.appendChild(div);
         });
+
+        // 
+        // Passive SPカード効果の処理
+        // 
+
+        // 手札合計値の目標値を設定
+        spanGoal.forEach((e) => { e.textContent = gs.goal });
+
+        // プレイヤーの指(HP)の表示
+        const my_lost = DEFAULT_PARAMS.FINGERS - gs.myFingers;
+        const my_bet = gs.myBet;
+        // while (divMyHand.lastChild.className != "Hand") {
+        while (divMyHand.children.length > 1) { divMyHand.lastChild.remove(); }
+        if (my_lost > 0) {
+            divMyHand.insertAdjacentHTML(
+                'beforeend',
+                `<img class="Hand lost" src="img/my/lost/0${my_lost}.png"/>`
+            );
+        }
+        if (my_bet > 0) {
+            const SELECT = Math.min(my_lost + my_bet, DEFAULT_PARAMS.FINGERS);
+            for (let i = my_lost + 1; i <= SELECT; i++) {
+                divMyHand.insertAdjacentHTML(
+                    'beforeend',
+                    `<img class="Hand select" src="img/my/select/0${i}.png"/>`
+                );
+            }
+        }
+
+        // 相手の指(HP)の表示
+        const en_lost = DEFAULT_PARAMS.FINGERS - gs.enFingers;
+        const en_bet = gs.enBet;
+        // while (divEnHand.lastChild.className != "Hand") {
+        while (divEnHand.children.length > 1) { divEnHand.lastChild.remove(); }
+        if (en_lost > 0) {
+            divEnHand.insertAdjacentHTML(
+                'beforeend',
+                `<img class="Hand lost" src="img/en/lost/0${en_lost}.png"/>`
+            );
+        }
+        if (en_bet > 0) {
+            const SELECT = Math.min(en_lost + en_bet, DEFAULT_PARAMS.FINGERS);
+            for (let i = en_lost + 1; i <= SELECT; i++) {
+                divEnHand.insertAdjacentHTML(
+                    'beforeend',
+                    `<img class="Hand select" src="img/en/select/0${i}.png"/>`
+                );
+            }
+        }
+
+        // 
+        // SPカードスロットの表示
+        // 
 
         const my_hand_sp = gs.myHandSP; //: Array       #自分のSPカード
 
