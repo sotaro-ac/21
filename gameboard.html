@@ -18,52 +18,74 @@
     <!-- .YOUR or .ENEMY -->
     <div class="container YOUR">
       <div id="infoBoard" class="wrapper">
-        <div class="message">
+        <div id="message">
           <p><span class="YOUR">YOUR</span>&nbsp;TURN</p>
         </div>
       </div>
       <!-- ENEMY -->
       <div id="gameBoard" class="wrapper">
-        <div class="EN_Hand">
+        <div id="EN_Hand">
           <img class="Hand" src="img/en/hand.png" alt="Enemy's Hand" />
-          <img class="Hand lost" src="img/en/lost/02.png" />
-          <img class="Hand select" src="img/en/select/03.png" />
-          <img class="Hand select" src="img/en/select/04.png" />
+          <!-- Example:
+            <img class="Hand lost" src="img/en/lost/02.png" />
+            <img class="Hand select" src="img/en/select/03.png" />
+            <img class="Hand select" src="img/en/select/04.png" />
+          -->
         </div>
-        <div class="EN_Cards">
-          <div class="numCard back"></div>
-          <div class="numCard">4</div>
-          <div class="numCard">8</div>
+        <div id="EN_Cards">
+          <!-- Example:
+            <div class="numCard back"></div>
+            <div class="numCard">4</div>
+            <div class="numCard">8</div>
+          -->
         </div>
-        <div class="EN_PassiveSP">
-          <div class="spCard spID22"></div>
+        <div id="EN_PassiveSP">
+          <!-- Example:
+            <div class="spCard spID21"></div>
+            <div class="spCard spID21"></div> 
+          -->
         </div>
-        <div class="Blank"></div>
-        <div class="EN_countNum">
-          <span class="enHandSum">12+?</span>/<span class="goal">21</span>
+        <div id="Blank"></div>
+        <div id="EN_countNum">
+          <!-- Example:
+            <span class="enHandSum">18+?</span>/<span class="goal">21</span>
+          -->
+          <span id="enHandSum">--</span>/<span class="goal">--</span>
         </div>
         <!-- END of Enemy's Graphics -->
         <!-- My Graphix -->
-        <div class="MY_Hand">
+        <div id="MY_Hand">
           <img class="Hand" src="img/my/hand.png" alt="My Hand" />
-          <img class="Hand lost" src="img/my/lost/01.png" />
-          <img class="Hand select" src="img/my/select/02.png" />
-          <img class="Hand select" src="img/my/select/03.png" />
+          <!-- Example:
+            <img class="Hand lost" src="img/my/lost/01.png" />
+            <img class="Hand select" src="img/my/select/02.png" />
+          -->
         </div>
-        <div class="MY_Cards">
-          <div class="numCard back">11</div>
-          <div class="numCard">7</div>
-          <div class="numCard">3</div>
+        <div id="MY_Cards">
+          <!-- Example:
+            <div class="numCard back"><div>11</div></div>
+            <div class="numCard">7</div>
+            <div class="numCard">3</div>
+          -->
         </div>
-        <div class="MY_PassiveSP">
-          <div class="spCard spID21"></div>
-          <div class="spCard spID21"></div>
+        <div id="MY_PassiveSP">
+          <!-- Example:
+            <div class="spCard spID22"></div>
+            <div class="spCard spID23"></div>
+          -->
         </div>
-        <div class="MYInfo">
+        <div id="MY_Info">
           <div id="user_info">your_name<br />ID : your_id</div>
         </div>
-        <div class="MY_countNum">
-          <span class="myHandSum just">21</span>/<span class="goal">21</span>
+        <div id="MY_countNum">
+          <!-- Example:
+            <span class="myHandSum">17</span>/<span class="goal">21</span>
+            or
+            <span class="myHandSum just">21</span>/<span class="goal">21</span>
+            or
+            <span class="myHandSum burst">24</span>/<span class="goal">21</span>
+          -->
+          <span id="myHandSum">--</span>/<span class="goal">--</span>
         </div>
         <!-- END of My Graphics -->
       </div>
@@ -71,64 +93,62 @@
 
       <hr />
 
-      <div class="MY_Commands">
-        <form id="command" action="gameboard.html" method="post">
+      <div id="MY_Commands">
+        <div id="command">
           <input type="hidden" name="userID" value="$userID" />
-          <button type="submit" class="clear_btn" name="stay">STAY</button>
-          <button type="submit" class="clear_btn" name="draw">DRAW</button>
-        </form>
+          <button type="button" class="clear_btn" name="stay">STAY</button>
+          <button type="button" class="clear_btn" name="draw">DRAW</button>
+        </div>
         <input id="SP_btn" type="checkbox" class="clear_btn" name="SP_Window" />
         <label for="SP_btn">
-          <span class="label_SP_btn">SP[--]</span>
+          <!-- Example:
+            <span class="label_SP_btn">SP[4]</span>
+          -->
+          <span id="label_SP_btn">SP[--]</span>
         </label>
         <!-- SP_Window -->
         <div id="SP_Window">
-          <!--
+          <!-- Example:
             <div id="sp0" class="spPrev spID12">
-              <input type="submit" name="useSP" value="12" form="command" />
+              <input type="button" name="useSP" value="12">
             </div>
-            <div class="spPrev sp1"></div>
+            <div id="sp1" class="spPrev"></div>
+            ...
           -->
+          <div id="spText">
+            <!-- Example:
+              <div class='spIDXXtxt'>
+                <p class='SPname'>SPカード名</p>
+                <p class='SPtext'>SPカードの説明</p>
+              </div>
+            -->
+          </div>
         </div>
-        <script src="js/SPCard.js"></script>
-        <script src="js/GameStatus.js"></script>
-        <script src="js/main.js"></script>
-        <script>
-          // const MAX_SP_HAND = 16;
-          // const sp_json = { sp_card: [4, 12, 6, 24, 16, 26] };
-          // const sp_hand = sp_json.sp_card.sort((a, b) => a - b);
-
-          // const SPWindow = document.getElementById("SP_Window");
-          // const labelSPBtn = document.getElementsByClassName("label_SP_btn")[0];
-
-          // // SPカードの所持数をSPボタンのラベルに表示する
-          // labelSPBtn.textContent = `SP[${sp_hand.length}]`;
-
-          // // SPカードのデータを読み込む
-          // fetch("json/sp_card.json")
-          //   .then((res) => {
-          //     return res.json();
-          //   })
-          //   .then((json) => {
-          //     // SPウィンドウにSPカードを追加する
-          //     for (let i = 0; i < MAX_SP_HAND; i++) {
-          //       const div = document.createElement("div");
-          //       if (i < sp_hand.length) {
-          //         div.id = `sp${i}`;
-          //         div.className = `spPrev spID${sp_hand[i]}`;
-          //       } else {
-          //         div.className = `spPrev sp${i}`;
-          //       }
-          //       SPWindow.appendChild(div);
-          //     }
-          //   });
-        </script>
-
         <!-- END of SP_Window -->
       </div>
       <!-- END of MY Commands -->
     </div>
     <!-- END of container -->
+    <script>
+      // export to "js/main.js"
+      const SPWindow = document.getElementById("SP_Window");
+      const SPText = document.getElementById("spText");
+      const labelSPBtn = document.querySelector("#label_SP_btn");
+      const divMyCard = document.querySelector("#MY_Cards");
+      const divEnCard = document.querySelector("#EN_Cards");
+      const spanMySum = document.querySelector("#myHandSum");
+      const spanEnSum = document.querySelector("#enHandSum");
+      const spanGoal = document.querySelectorAll("span.goal");
+      const divMyPassSP = document.querySelector("#MY_PassiveSP");
+      const divEnPassSP = document.querySelector("#EN_PassiveSP");
+      const divMyHand = document.querySelector("#MY_Hand");
+      const divEnHand = document.querySelector("#EN_Hand");
+
+      const MAX_SP_HAND = 16;
+    </script>
+    <script src="js/SPCard.js"></script>
+    <script src="js/GameStatus.js"></script>
+    <script src="js/main.js"></script>
   </body>
   <!-- END of BODY -->
 </html>

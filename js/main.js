@@ -4,99 +4,259 @@
 // import { SPCard } from './SPCard.js';
 // import { GameStatus, DEFAULT } from './GameStatus.js';
 
-const MAX_SP_HAND = 16;
-const SPWindow = document.getElementById("SP_Window");
-const labelSPBtn = document.getElementsByClassName("label_SP_btn")[0];
-const divMyCard = document.querySelector(".MY_Cards");
-const divEnCard = document.querySelector(".EN_Cards");
-const spanMySum = document.querySelector(".myHandSum");
-const spanEnSum = document.querySelector(".enHandSum");
-const spanGoal = document.querySelectorAll("span.goal");
+// const SPWindow = document.getElementById("SP_Window");
+// const SPText = document.getElementById("spText");
+// const labelSPBtn = document.getElementsByClassName("label_SP_btn")[0];
+// const divMyCard = document.querySelector(".MY_Cards");
+// const divEnCard = document.querySelector(".EN_Cards");
+// const spanMySum = document.querySelector(".myHandSum");
+// const spanEnSum = document.querySelector(".enHandSum");
+// const spanGoal = document.querySelectorAll("span.goal");
+// const divMyPassSP = document.querySelector("#MY_PassiveSP");
+// const divEnPassSP = document.querySelector("#EN_PassiveSP");
+// const divMyHand = document.querySelector("#MY_Hand");
+// const divEnHand = document.querySelector("#EN_Hand");
 
-const gameStatus = new GameStatus("id");
+// const MAX_SP_HAND = 16;
 
-gameStatus.init().then((gs) => {
+class GameController {
+    // 
+    // STATIC
+    // 
+    static #gameStatus = new GameStatus();
 
-    spanGoal.forEach((e) => { e.textContent = gs.goal });
+    // 
+    // CONSTRUCTOR
+    // 
+    constructor() {
 
-    const spanHandSum = gs.myHandSum;
-    spanMySum.textContent = spanHandSum;
-    if (gs.goal == spanHandSum) {
-        spanMySum.className = "myHandSum just";
-    } else if (gs.goal < spanHandSum) {
-        spanMySum.className = "myHandSum burst";
-    } else {
-        spanMySum.className = "myHandSum";
-    }
+        // 
+        // SPウィンドウをゲーム開始可能な状態にする
+        // 
+        if (!SPWindow.classList.contains("fullfilled")) {
+            const SP_CARD = new SPCard();
 
-    while (divMyCard.lastChild) {
-        divMyCard.removeChild(divMyCard.lastChild);
-    }
-    gs.myHand.forEach((e, i) => {
-        const div = document.createElement('div');
-        if (i == 0) {
-            div.className = "numCard back";
-        } else {
-            div.className = "numCard";
-        }
-        div.textContent = e;
-        divMyCard.appendChild(div);
-    });
-
-    const enHandSum = gs.enHandSum - gs.enHand[0];
-    spanEnSum.textContent = `${enHandSum}+?`;
-    // switch (true) {
-    //     case gs.goal == enHandSum:
-    //         spanEnSum.className = "enHandSum just";
-    //         break;
-    //     case gs.goal < enHandSum:
-    //         spanEnSum.className = "enHandSum burst";
-    //         break;
-    //     default:
-    //         spanEnSum.className = "enHandSum";
-    //         break;
-    // }
-
-    while (divEnCard.lastChild) {
-        divEnCard.removeChild(divEnCard.lastChild);
-    }
-    gs.enHand.forEach((e, i) => {
-        const div = document.createElement('div');
-        if (i == 0) {
-            div.className = "numCard back";
-        } else {
-            div.className = "numCard";
-            div.textContent = e;
-        }
-        divEnCard.appendChild(div);
-    });
-
-    // SPカードのデータを読み込む
-    fetch("json/sp_card.json")
-        .then((res) => {
-            return res.json();
-        })
-        .then((json) => {
-
-            const my_hand_sp = gs.myHandSP; //: Array   #自分のSPカード
-
-            // SPカードの所持数をSPボタンのラベルに表示する
-            labelSPBtn.textContent = `SP[${my_hand_sp.length}]`;
-            /**
-             *! ここに上記のコードを挿入すると
-             *! なぜかSPカード枚数がうまく反映される
-             */
-
-            // SPウィンドウにSPカードを追加する
+            // SPカードスロットの作成
             for (let i = 0; i < MAX_SP_HAND; i++) {
-                const div = document.createElement("div");
-                if (i < my_hand_sp.length) {
-                    div.id = `sp${i}`;
-                    div.className = `spPrev spID${my_hand_sp[i]}`;
-                } else {
-                    div.className = `spPrev sp${i}`;
-                }
-                SPWindow.appendChild(div);
+                const divSPCard = document.createElement('div');
+                divSPCard.id = `sp${i}`;
+                divSPCard.className = "spSlot";
+                // SPWindow.appendChild(div);   # 要素の位置依存なCSSの影響で不可
+                SPText.before(divSPCard);
             }
+
+            // すべてのSPカードの説明文を事前に用意する
+            SP_CARD.initPromise.then(() => {
+                const spData = SP_CARD.list;    //: JSON Object #SPカードの詳細
+
+                for (let i = 0; i < spData.length; i++) {
+                    const divSPText = document.createElement('div');
+                    const pSPname = document.createElement('p');
+                    const pSPtext = document.createElement('p');
+                    divSPText.className = `spID${spData[i].id}txt`;
+                    pSPname.className = "SPname";
+                    pSPtext.className = "SPtext";
+                    pSPname.textContent = spData[i].name;
+                    pSPtext.textContent = spData[i].description;
+                    divSPText.appendChild(pSPname);
+                    divSPText.appendChild(pSPtext);
+                    SPText.appendChild(divSPText);  // import SPText
+                }
+            });
+            SPWindow.classList.add("fullfilled");   // 開始可能
+        }
+    }
+
+    // 
+    // METHOD
+    // 
+
+    get gameStatus() {
+        return GameController.#gameStatus;
+    }
+
+    set user({ userId, userName }) {
+        this.gameStatus.userId = userId;
+        this.gameStatus.userName = userName;
+    }
+
+    newGame = () => {
+        this.gameStatus.init().then((gs) => {
+            this.reflesh();
         });
-});
+    }
+
+    newRound = (isMmyTurnFirst = false) => {
+        this.gameStatus.newRound(isMmyTurnFirst).then((gs) => {
+            this.reflesh();
+        });
+    }
+
+    reflesh = () => {
+        const gs = this.gameStatus;
+
+        // 
+        // プレイヤーの処理
+        // 
+
+        // プレイヤーの手札合計値
+        const spanHandSum = gs.myHandSum;
+        spanMySum.textContent = spanHandSum;
+        if (gs.goal == spanHandSum) {
+            spanMySum.className = "myHandSum just";
+        } else if (gs.goal < spanHandSum) {
+            spanMySum.className = "myHandSum burst";
+        } else {
+            spanMySum.className = "myHandSum";
+        }
+
+        // プレイヤーの手札の表示
+        while (divMyCard.lastChild) {
+            divMyCard.removeChild(divMyCard.lastChild);
+        }
+        gs.myHand.forEach((e, i) => {
+            const div = document.createElement('div');
+            if (i == 0) {
+                div.className = "numCard back";
+                const innerDiv = document.createElement('div');
+                innerDiv.textContent = e;
+                div.appendChild(innerDiv);
+            } else {
+                div.className = "numCard";
+                div.textContent = e;
+            }
+            divMyCard.appendChild(div);
+        });
+
+        // プレイヤーの Passive SPカードの表示
+        while (divMyPassSP.lastChild) {
+            divMyPassSP.removeChild(divMyPassSP.lastChild);
+        }
+        gs.myPassiveSP.forEach((e, i) => {
+            const div = document.createElement('div');
+            div.className = `spCard spID${e}`;
+            divMyPassSP.appendChild(div);
+        });
+
+        // 
+        // 相手の処理
+        // 
+
+        // 相手の手札合計値(オープン前)
+        const enHandSum = gs.enHandSum - gs.enHand[0];
+        spanEnSum.textContent = `${enHandSum}+?`;
+
+        // 相手の手札の表示(オープン前)
+        while (divEnCard.lastChild) {
+            divEnCard.removeChild(divEnCard.lastChild);
+        }
+        gs.enHand.forEach((e, i) => {
+            const div = document.createElement('div');
+            if (i == 0) {
+                div.className = "numCard back";
+            } else {
+                div.className = "numCard";
+                div.textContent = e;
+            }
+            divEnCard.appendChild(div);
+        });
+
+        // 相手の Passive SPカードの表示
+        while (divEnPassSP.lastChild) {
+            divEnPassSP.removeChild(divEnPassSP.lastChild);
+        }
+        gs.enPassiveSP.forEach((e, i) => {
+            const div = document.createElement('div');
+            div.className = `spCard spID${e}`;
+            divEnPassSP.appendChild(div);
+        });
+
+        // 
+        // Passive SPカード効果の処理
+        // 
+
+        // 手札合計値の目標値を設定
+        spanGoal.forEach((e) => { e.textContent = gs.goal });
+
+        // プレイヤーの指(HP)の表示
+        const my_lost = DEFAULT_PARAMS.FINGERS - gs.myFingers;
+        const my_bet = gs.myBet;
+        // while (divMyHand.lastChild.className != "Hand") {
+        while (divMyHand.children.length > 1) { divMyHand.lastChild.remove(); }
+        if (my_lost > 0) {
+            divMyHand.insertAdjacentHTML(
+                'beforeend',
+                `<img class="Hand lost" src="img/my/lost/0${my_lost}.png"/>`
+            );
+        }
+        if (my_bet > 0) {
+            const SELECT = Math.min(my_lost + my_bet, DEFAULT_PARAMS.FINGERS);
+            for (let i = my_lost + 1; i <= SELECT; i++) {
+                divMyHand.insertAdjacentHTML(
+                    'beforeend',
+                    `<img class="Hand select" src="img/my/select/0${i}.png"/>`
+                );
+            }
+        }
+
+        // 相手の指(HP)の表示
+        const en_lost = DEFAULT_PARAMS.FINGERS - gs.enFingers;
+        const en_bet = gs.enBet;
+        // while (divEnHand.lastChild.className != "Hand") {
+        while (divEnHand.children.length > 1) { divEnHand.lastChild.remove(); }
+        if (en_lost > 0) {
+            divEnHand.insertAdjacentHTML(
+                'beforeend',
+                `<img class="Hand lost" src="img/en/lost/0${en_lost}.png"/>`
+            );
+        }
+        if (en_bet > 0) {
+            const SELECT = Math.min(en_lost + en_bet, DEFAULT_PARAMS.FINGERS);
+            for (let i = en_lost + 1; i <= SELECT; i++) {
+                divEnHand.insertAdjacentHTML(
+                    'beforeend',
+                    `<img class="Hand select" src="img/en/select/0${i}.png"/>`
+                );
+            }
+        }
+
+        // 
+        // SPカードスロットの表示
+        // 
+
+        const my_hand_sp = gs.myHandSP; //: Array       #自分のSPカード
+
+        // SPカードの所持数をSPボタンのラベルに表示する
+        labelSPBtn.textContent = `SP[${my_hand_sp.length}]`;
+
+        // SPウィンドウのSPカードを更新する
+        for (let i = 0; i < MAX_SP_HAND; i++) {
+            // const divSPCard = document.createElement('div');
+            // divSPCard.id = `sp${i}`;
+            const divSPCard = document.getElementById(`sp${i}`);
+            divSPCard.innerHTML = "";
+            if (i < my_hand_sp.length) {
+                const spID = my_hand_sp[i];
+                // SPカードを追加: <div><input ...></div>
+                divSPCard.className = `spSlot spID${spID}`;
+                const input = document.createElement("input");
+                input.type = 'button';
+                input.name = "useSP";
+                input.value = spID;
+                divSPCard.appendChild(input);
+            } else {
+                divSPCard.className = "spSlot";
+            }
+            SPText.before(divSPCard);
+        }
+    }
+}
+
+const gc = new GameController("id");
+
+//
+// ONLOAD
+//
+document.body.onload = () => {
+    gc.newGame();
+};

@@ -77,6 +77,7 @@ class SPCard {
     init() {
         // "name", 'type', 'description' がひとつでも欠けているカードは除く
         this.list = SPCard.list.filter((c) => c.name || c.type || c.description);
+        return this;
     }
 
     /**
