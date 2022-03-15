@@ -1,7 +1,7 @@
 @charset "utf8";
 
 /* input button */
-.MY_Commands {
+#MY_Commands {
     display        : flex;
     align-items    : center;
     justify-content: center;
@@ -39,7 +39,7 @@ input#SP_btn {
     display: none;
 }
 
-.label_SP_btn {
+#label_SP_btn {
     font-size    : 16px;
     color        : yellowgreen;
     font-weight  : bold;
@@ -51,17 +51,17 @@ input#SP_btn {
     margin       : 4px 5px;
 }
 
-.label_SP_btn:hover {
+#label_SP_btn:hover {
     transition: 0.4s;
     color     : #ffffff;
     background: #92ff3d75;
 }
 
-input#SP_btn:disabled+label>.label_SP_btn {
+input#SP_btn:disabled+label>#label_SP_btn {
     background: #ececec33;
 }
 
-input#SP_btn:checked+label>.label_SP_btn {
+input#SP_btn:checked+label>#label_SP_btn {
     transition: 0.4s;
     color     : #ffffff;
     box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.2);

@@ -18,58 +18,62 @@
     <!-- .YOUR or .ENEMY -->
     <div class="container YOUR">
       <div id="infoBoard" class="wrapper">
-        <div class="message">
+        <div id="message">
           <p><span class="YOUR">YOUR</span>&nbsp;TURN</p>
         </div>
       </div>
       <!-- ENEMY -->
       <div id="gameBoard" class="wrapper">
-        <div class="EN_Hand">
+        <div id="EN_Hand">
           <img class="Hand" src="img/en/hand.png" alt="Enemy's Hand" />
           <img class="Hand lost" src="img/en/lost/02.png" />
           <img class="Hand select" src="img/en/select/03.png" />
           <img class="Hand select" src="img/en/select/04.png" />
         </div>
-        <div class="EN_Cards">
+        <div id="EN_Cards">
           <!-- Example:
             <div class="numCard back"></div>
             <div class="numCard">4</div>
             <div class="numCard">8</div>
           -->
         </div>
-        <div class="EN_PassiveSP">
-          <div class="spCard spID21"></div>
-          <div class="spCard spID21"></div>
+        <div id="EN_PassiveSP">
+          <!-- Example:
+            <div class="spCard spID21"></div>
+            <div class="spCard spID21"></div> 
+          -->
         </div>
-        <div class="Blank"></div>
-        <div class="EN_countNum">
+        <div id="Blank"></div>
+        <div id="EN_countNum">
           <!-- Example:
             <span class="enHandSum">18+?</span>/<span class="goal">21</span>
           -->
-          <span class="enHandSum">--</span>/<span class="goal">--</span>
+          <span id="enHandSum">--</span>/<span class="goal">--</span>
         </div>
         <!-- END of Enemy's Graphics -->
         <!-- My Graphix -->
-        <div class="MY_Hand">
+        <div id="MY_Hand">
           <img class="Hand" src="img/my/hand.png" alt="My Hand" />
           <img class="Hand lost" src="img/my/lost/01.png" />
           <img class="Hand select" src="img/my/select/02.png" />
         </div>
-        <div class="MY_Cards">
+        <div id="MY_Cards">
           <!-- Example:
             <div class="numCard back"><div>11</div></div>
             <div class="numCard">7</div>
             <div class="numCard">3</div>
           -->
         </div>
-        <div class="MY_PassiveSP">
-          <div class="spCard spID22"></div>
-          <div class="spCard spID23"></div>
+        <div id="MY_PassiveSP">
+          <!-- Example:
+            <div class="spCard spID22"></div>
+            <div class="spCard spID23"></div>
+          -->
         </div>
-        <div class="MYInfo">
+        <div id="MY_Info">
           <div id="user_info">your_name<br />ID : your_id</div>
         </div>
-        <div class="MY_countNum">
+        <div id="MY_countNum">
           <!-- Example:
             <span class="myHandSum">17</span>/<span class="goal">21</span>
             or
@@ -77,7 +81,7 @@
             or
             <span class="myHandSum burst">24</span>/<span class="goal">21</span>
           -->
-          <span class="myHandSum">--</span>/<span class="goal">--</span>
+          <span id="myHandSum">--</span>/<span class="goal">--</span>
         </div>
         <!-- END of My Graphics -->
       </div>
@@ -85,7 +89,7 @@
 
       <hr />
 
-      <div class="MY_Commands">
+      <div id="MY_Commands">
         <div id="command">
           <input type="hidden" name="userID" value="$userID" />
           <button type="button" class="clear_btn" name="stay">STAY</button>
@@ -96,7 +100,7 @@
           <!-- Example:
             <span class="label_SP_btn">SP[4]</span>
           -->
-          <span class="label_SP_btn">SP[--]</span>
+          <span id="label_SP_btn">SP[--]</span>
         </label>
         <!-- SP_Window -->
         <div id="SP_Window">
@@ -116,27 +120,27 @@
             -->
           </div>
         </div>
-        <script>
-          // export to "js/main.js"
-          const SPWindow = document.getElementById("SP_Window");
-          const SPText = document.getElementById("spText");
-          const labelSPBtn = document.getElementsByClassName("label_SP_btn")[0];
-          const divMyCard = document.querySelector(".MY_Cards");
-          const divEnCard = document.querySelector(".EN_Cards");
-          const spanMySum = document.querySelector(".myHandSum");
-          const spanEnSum = document.querySelector(".enHandSum");
-          const spanGoal = document.querySelectorAll("span.goal");
-
-          const MAX_SP_HAND = 16;
-        </script>
-        <script src="js/SPCard.js"></script>
-        <script src="js/GameStatus.js"></script>
-        <script src="js/main.js"></script>
         <!-- END of SP_Window -->
       </div>
       <!-- END of MY Commands -->
     </div>
     <!-- END of container -->
+    <script>
+      // export to "js/main.js"
+      const SPWindow = document.getElementById("SP_Window");
+      const SPText = document.getElementById("spText");
+      const labelSPBtn = document.querySelector("#label_SP_btn");
+      const divMyCard = document.querySelector("#MY_Cards");
+      const divEnCard = document.querySelector("#EN_Cards");
+      const spanMySum = document.querySelector("#myHandSum");
+      const spanEnSum = document.querySelector("#enHandSum");
+      const spanGoal = document.querySelectorAll("span.goal");
+
+      const MAX_SP_HAND = 16;
+    </script>
+    <script src="js/SPCard.js"></script>
+    <script src="js/GameStatus.js"></script>
+    <script src="js/main.js"></script>
   </body>
   <!-- END of BODY -->
 </html>
