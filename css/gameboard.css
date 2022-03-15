@@ -45,18 +45,18 @@ div#infoBoard {
     justify-content: center;
 }
 
-div.message {
+div#message {
     width : 100%;
     height: 100%;
 }
 
-div.message>p {
+div#message>p {
     font-size  : 20px;
     font-weight: bold;
     text-align : center;
 }
 
-div.message>p::first-line {
+div#message>p::first-line {
     font-size: 32px;
 }
 
@@ -68,13 +68,13 @@ span.ENEMY {
     color: tomato;
 }
 
-div.message.WIN span,
-div.message.victory span {
+div#message.WIN span,
+div#message.victory span {
     color: greenyellow;
 }
 
-div.message.LOSE span,
-div.message.defeat span {
+div#message.LOSE span,
+div#message.defeat span {
     color: tomato;
 }
 
@@ -100,59 +100,66 @@ div#gameBoard {
     transform: perspective(720px) translateZ(0px) rotateX(45deg);
 }
 
-div#gameBoard>div:not(:empty) {
+/* div#gameBoard>div:not(:empty), */
+#gameBoard>div {
     border: 1px solid #ffd8d880;
 }
 
-.EN_Hand {
+#EN_Hand {
     grid-area: EN_Hand;
 }
 
-.Blank {
+#Blank {
     grid-area: Blank;
 }
 
-.EN_countNum {
+#EN_countNum {
     grid-area: EN_countNum;
 }
 
-.EN_Cards {
+#EN_Cards {
     grid-area: EN_Cards;
 }
 
-.EN_PassiveSP {
+#EN_PassiveSP {
     grid-area: EN_PassiveSP;
 }
 
-.MY_Hand {
+#MY_Hand {
     grid-area: MY_Hand;
 }
 
-.MY_Info {
+#MY_Info {
     grid-area: MYInfo;
 }
 
-.MY_countNum {
+#MY_countNum {
     grid-area: MY_countNum;
 }
 
-.MY_Cards {
+#MY_Cards {
     grid-area: MY_Cards;
 }
 
-.MY_PassiveSP {
+#MY_PassiveSP {
     grid-area: MY_PassiveSP;
 }
 
-.EN_Cards,
-.EN_PassiveSP,
-.MY_Cards,
-.MY_PassiveSP {
+div#EN_PassiveSP,
+div#MY_PassiveSP {
+    background-color: rgba(16, 4, 25, 0.725);
+    border: 3px dashed #ffd8d880;
+}
+
+#EN_Cards,
+#EN_PassiveSP,
+#MY_Cards,
+#MY_PassiveSP {
     display: flex;
 }
 
-.EN_Cards>div.numCard,
-.EN_PassiveSP>div.spCard {
+#EN_Cards>div.numCard,
+#EN_PassiveSP>div.spCard {
     /* 2D Transform : Up side Down */
     transform: rotate(180deg);
     filter   : drop-shadow(-2px -2px 2px black);
@@ -196,8 +203,8 @@ div.spCard {
     background-color: darkgoldenrod;
 }
 
-div.EN_countNum,
-div.MY_countNum {
+div#EN_countNum,
+div#MY_countNum {
     font-size       : 32px;
     color           : antiquewhite;
     display         : flex;
@@ -207,13 +214,13 @@ div.MY_countNum {
     background-color: #3535358f;
 }
 
-div.MY_countNum>span.just,
-div.EN_countNum>span.just {
+div#MY_countNum>span.just,
+div#EN_countNum>span.just {
     color: greenyellow;
 }
 
-div.MY_countNum>span.burst,
-div.EN_countNum>span.burst {
+div#MY_countNum>span.burst,
+div#EN_countNum>span.burst {
     color: tomato;
 }
 
@@ -253,17 +260,17 @@ div.EN_countNum>span.burst {
     }
 }
 
-div.YOUR>div#gameBoard.draw>div.EN_Cards>.numCard:last-child,
-div.ENEMY>div#gameBoard.draw>div.MY_Cards>.numCard:last-child,
-div#gameBoard.new_game>div.EN_Cards>.numCard,
-div#gameBoard.new_game>div.MY_Cards>.numCard,
-div#gameBoard.new_round>div.EN_Cards>.numCard,
-div#gameBoard.new_round>div.MY_Cards>.numCard {
+div.YOUR>div#gameBoard.draw>div#EN_Cards>.numCard:last-child,
+div.ENEMY>div#gameBoard.draw>div#MY_Cards>.numCard:last-child,
+div#gameBoard.new_game>div#EN_Cards>.numCard,
+div#gameBoard.new_game>div#MY_Cards>.numCard,
+div#gameBoard.new_round>div#EN_Cards>.numCard,
+div#gameBoard.new_round>div#MY_Cards>.numCard {
     animation: slide_in 1s;
 }
 
-div.YOUR>div#gameBoard.draw>.EN_countNum>span,
-div.ENEMY>div#gameBoard.draw>.MY_countNum>span {
+div.YOUR>div#gameBoard.draw>#EN_countNum>span,
+div.ENEMY>div#gameBoard.draw>#MY_countNum>span {
     animation: showCount 1.5s;
 }
 
@@ -278,12 +285,12 @@ div.ENEMY>div#gameBoard.draw>.MY_countNum>span {
     }
 }
 
-.MY_Hand,
-.EN_Hand {
+#MY_Hand,
+#EN_Hand {
     position: relative;
 }
 
-.EN_Hand>img.Hand {
+#EN_Hand>img.Hand {
     width    : 225px;
     height   : 325px;
     position : absolute;
@@ -291,7 +298,7 @@ div.ENEMY>div#gameBoard.draw>.MY_countNum>span {
     filter   : drop-shadow(2px 2px 2px black);
 }
 
-.MY_Hand>img.Hand {
+#MY_Hand>img.Hand {
     width    : 225px;
     height   : 375px;
     position : absolute;
