@@ -25,8 +25,8 @@ class GameStatus {
     stay;
 
     deck = [];
-    my_fingers = DEFAULT_PARAMS.FINGERS;
-    en_fingers = DEFAULT_PARAMS.FINGERS;
+    myFingers = DEFAULT_PARAMS.FINGERS;
+    enFingers = DEFAULT_PARAMS.FINGERS;
 
     mySPDeck = new SPCard();
     enSPDeck = new SPCard();
@@ -37,8 +37,8 @@ class GameStatus {
     myHandSP = [];
     enHandSP = [];
 
-    my_passive_sp = [];
-    en_passive_sp = [];
+    myPassiveSP = [];
+    enPassiveSp = [];
 
     //
     // CONSTRUCTOR
@@ -78,8 +78,8 @@ class GameStatus {
 
 
         // Fingers (Hit Point) <= default:  5
-        this.my_fingers = DEFAULT_PARAMS.FINGERS;
-        this.en_fingers = DEFAULT_PARAMS.FINGERS;
+        this.myFingers = DEFAULT_PARAMS.FINGERS;
+        this.enFingers = DEFAULT_PARAMS.FINGERS;
 
         // 
         // Initialize card in hand
@@ -97,9 +97,14 @@ class GameStatus {
         // Initialize SP card 
         // 
 
+
         // SP card deck
         this.mySPDeck.init();
         this.enSPDeck.init();
+
+        // SP card on passive
+        this.myPassiveSP = [];
+        this.enPassiveSP = [];
 
         // Initialize my SP card 
         this.mySPDeck.initPromise.then((res) => {
@@ -164,6 +169,10 @@ class GameStatus {
         // 
         // Initialize SP card 
         // 
+
+        // SP card on passive
+        this.myPassiveSP = [];
+        this.enPassiveSP = [];
 
         // Initialize my SP card
         const typeActi = this.mySPDeck.getIdList({ type: "active" });

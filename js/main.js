@@ -12,6 +12,8 @@
 // const spanMySum = document.querySelector(".myHandSum");
 // const spanEnSum = document.querySelector(".enHandSum");
 // const spanGoal = document.querySelectorAll("span.goal");
+// const divMyPassSP = document.querySelector("#MY_PassiveSP");
+// const divEnPassSP = document.querySelector("#EN_PassiveSP");
 
 // const MAX_SP_HAND = 16;
 
@@ -123,11 +125,21 @@ class GameController {
             divMyCard.appendChild(div);
         });
 
+        // プレイヤーの Passive SPカードの表示
+        while (divMyPassSP.lastChild) {
+            divMyPassSP.removeChild(divMyPassSP.lastChild);
+        }
+        gs.myPassiveSP.forEach((e, i) => {
+            const div = document.createElement('div');
+            div.className = `spCard spID${e}`;
+            divMyPassSP.appendChild(div);
+        });
+
         // 相手の手札合計値(オープン前)
         const enHandSum = gs.enHandSum - gs.enHand[0];
         spanEnSum.textContent = `${enHandSum}+?`;
 
-        // 相手の手札合計値(オープン前)
+        // 相手の手札の表示(オープン前)
         while (divEnCard.lastChild) {
             divEnCard.removeChild(divEnCard.lastChild);
         }
@@ -140,6 +152,16 @@ class GameController {
                 div.textContent = e;
             }
             divEnCard.appendChild(div);
+        });
+
+        // 相手の Passive SPカードの表示
+        while (divEnPassSP.lastChild) {
+            divEnPassSP.removeChild(divEnPassSP.lastChild);
+        }
+        gs.enPassiveSP.forEach((e, i) => {
+            const div = document.createElement('div');
+            div.className = `spCard spID${e}`;
+            divEnPassSP.appendChild(div);
         });
 
         const my_hand_sp = gs.myHandSP; //: Array       #自分のSPカード
@@ -176,5 +198,5 @@ const gc = new GameController("id");
 // ONLOAD
 //
 document.body.onload = () => {
-  gc.newGame();
+    gc.newGame();
 };

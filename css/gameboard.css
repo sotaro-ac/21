@@ -100,7 +100,8 @@ div#gameBoard {
     transform: perspective(720px) translateZ(0px) rotateX(45deg);
 }
 
-div#gameBoard>div:not(:empty) {
+/* div#gameBoard>div:not(:empty), */
+#gameBoard>div {
     border: 1px solid #ffd8d880;
 }
 
@@ -142,6 +143,12 @@ div#gameBoard>div:not(:empty) {
 
 #MY_PassiveSP {
     grid-area: MY_PassiveSP;
+}
+
+div#EN_PassiveSP,
+div#MY_PassiveSP {
+    background-color: rgba(16, 4, 25, 0.725);
+    border: 3px dashed #ffd8d880;
 }
 
 #EN_Cards,
