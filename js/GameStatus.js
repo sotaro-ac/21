@@ -16,6 +16,7 @@ class GameStatus {
     // PUBLIC LOCAL
     // 
     userId;
+    userName;
 
     round;
     turn;
@@ -42,7 +43,10 @@ class GameStatus {
     //
     // CONSTRUCTOR
     //
-    constructor(userId) { this.userId = userId; }
+    constructor(userId = "----", userName = "----") {
+        this.userId = userId;
+        this.userName = userName;
+    }
 
     //
     // METHOD
@@ -63,13 +67,15 @@ class GameStatus {
 
     /**
      * ゲームの初期化(リセット)
+     * @returns (Promise)
      */
     init = () => new Promise((resolve) => {
         // round/turn setting
         this.round = 1;
         this.turn = 1;
         this.stay = false;
-        this.whose_turn = "me";    // or random
+        this.my_turn = true;    // or random
+
 
         // Fingers (Hit Point) <= default:  5
         this.my_fingers = DEFAULT_PARAMS.FINGERS;
@@ -127,8 +133,67 @@ class GameStatus {
         });
 
         resolve(this);
-    }).then((res) => {
-        return res;
+    });
+
+    /**
+     * 新しいラウンドの開始
+     * @param {boolean} isMmyTurnFirst 
+     * @returns {Promise}
+     */
+    newRound = (isMmyTurnFirst = false) => new Promise((resolve) => {
+        // round/turn setting
+        this.round = this.round + 1;
+        this.turn = 1;
+        this.stay = false;
+
+        // next turn: loser first
+        this.my_turn = (isMmyTurnFirst) ? true : this.my_turn;
+
+        // 
+        // Initialize card in hand
+        // 
+
+        // Deck
+        this.deck = DEFAULT_PARAMS.DECK;
+        this.deck.sort(() => Math.random() - 0.5);  // shuffle deck
+
+        // Card in hand
+        this.myHand = [this.deck.pop(), this.deck.pop()];
+        this.enHand = [this.deck.pop(), this.deck.pop()];
+
+        // 
+        // Initialize SP card 
+        // 
+
+        // Initialize my SP card
+        const typeActi = this.mySPDeck.getIdList({ type: "active" });
+        const typePass = this.mySPDeck.getIdList({ type: "passive" });
+
+        this.myHandSP = this.myHandSP.concat([
+            this.mySPDeck.drawCard(typeActi),
+            this.mySPDeck.drawCard(typePass)
+        ]);
+        // this.myHandSP.splice(-1, rm);
+        for (let i = this.myHandSP.length; i > MAX_SP_HAND; i--) {
+            this.myHandSP.pop();
+        }
+        this.myHandSP.sort((a, b) => a - b);    // sort by ascending order
+
+
+        // Initialize enemy's SP card
+        const attrBet = this.enSPDeck.getIdList({ attr: "bet" });
+
+        this.enHandSP = this.enHandSP.concat([
+            this.enSPDeck.drawCard(),
+            this.enSPDeck.drawCard(attrBet),
+        ])
+        // this.enHandSP.splice(-1, rm);
+        for (let i = this.enHandSP.length; i > MAX_SP_HAND; i--) {
+            this.enHandSP.pop();
+        }
+        this.enHandSP.sort((a, b) => a - b);    // sort by ascending order
+
+        resolve(this);
     });
 
 }

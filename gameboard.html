@@ -38,7 +38,8 @@
           -->
         </div>
         <div class="EN_PassiveSP">
-          <div class="spCard spID22"></div>
+          <div class="spCard spID21"></div>
+          <div class="spCard spID21"></div>
         </div>
         <div class="Blank"></div>
         <div class="EN_countNum">
@@ -53,7 +54,6 @@
           <img class="Hand" src="img/my/hand.png" alt="My Hand" />
           <img class="Hand lost" src="img/my/lost/01.png" />
           <img class="Hand select" src="img/my/select/02.png" />
-          <img class="Hand select" src="img/my/select/03.png" />
         </div>
         <div class="MY_Cards">
           <!-- Example:
@@ -63,8 +63,8 @@
           -->
         </div>
         <div class="MY_PassiveSP">
-          <div class="spCard spID21"></div>
-          <div class="spCard spID21"></div>
+          <div class="spCard spID22"></div>
+          <div class="spCard spID23"></div>
         </div>
         <div class="MYInfo">
           <div id="user_info">your_name<br />ID : your_id</div>
@@ -77,7 +77,7 @@
             or
             <span class="myHandSum burst">24</span>/<span class="goal">21</span>
           -->
-          <span class="myHandSum just">--</span>/<span class="goal">--</span>
+          <span class="myHandSum">--</span>/<span class="goal">--</span>
         </div>
         <!-- END of My Graphics -->
       </div>
@@ -86,11 +86,11 @@
       <hr />
 
       <div class="MY_Commands">
-        <form id="command" action="gameboard.html" method="post">
+        <div id="command">
           <input type="hidden" name="userID" value="$userID" />
-          <button type="submit" class="clear_btn" name="stay">STAY</button>
-          <button type="submit" class="clear_btn" name="draw">DRAW</button>
-        </form>
+          <button type="button" class="clear_btn" name="stay">STAY</button>
+          <button type="button" class="clear_btn" name="draw">DRAW</button>
+        </div>
         <input id="SP_btn" type="checkbox" class="clear_btn" name="SP_Window" />
         <label for="SP_btn">
           <!-- Example:
@@ -104,10 +104,31 @@
             <div id="sp0" class="spPrev spID12">
               <input type="button" name="useSP" value="12">
             </div>
-            <div class="spPrev sp1"></div>
+            <div id="sp1" class="spPrev"></div>
+            ...
           -->
-          <div id='spText'></div>
+          <div id="spText">
+            <!-- Example:
+              <div class='spIDXXtxt'>
+                <p class='SPname'>SPカード名</p>
+                <p class='SPtext'>SPカードの説明</p>
+              </div>
+            -->
+          </div>
         </div>
+        <script>
+          // export to "js/main.js"
+          const SPWindow = document.getElementById("SP_Window");
+          const SPText = document.getElementById("spText");
+          const labelSPBtn = document.getElementsByClassName("label_SP_btn")[0];
+          const divMyCard = document.querySelector(".MY_Cards");
+          const divEnCard = document.querySelector(".EN_Cards");
+          const spanMySum = document.querySelector(".myHandSum");
+          const spanEnSum = document.querySelector(".enHandSum");
+          const spanGoal = document.querySelectorAll("span.goal");
+
+          const MAX_SP_HAND = 16;
+        </script>
         <script src="js/SPCard.js"></script>
         <script src="js/GameStatus.js"></script>
         <script src="js/main.js"></script>
