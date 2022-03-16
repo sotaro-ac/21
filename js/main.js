@@ -1,4 +1,5 @@
 // js/main.js
+"use strict";
 
 // Does not work in browser
 // import { SPCard } from './SPCard.js';
@@ -80,16 +81,85 @@ class GameController {
         this.gameStatus.userName = userName;
     }
 
+    /**
+     * ゲームを開始する
+     */
+    run = () => { /* Now coding... */ }
+
     newGame = () => {
         this.gameStatus.init().then((gs) => {
             this.reflesh();
         });
     }
 
-    newRound = (isMmyTurnFirst = false) => {
+    newRound = (isMmyTurnFirst) => {
         this.gameStatus.newRound(isMmyTurnFirst).then((gs) => {
             this.reflesh();
         });
+    }
+
+    resultRound = () => {
+        const gs = this.gameStatus;
+        
+        // ラウンド勝者を判定 + ダメージの計算
+        const result = gs.judge();
+        if (result == "WIN") {
+            gs.enFingers = Math.max(gs.enFingers - gs.enBet, 0);
+        } else if (result == "LOSE") {
+            gs.myFingers = Math.max(gs.myFingers - gs.myBet, 0);
+        } else if (result == "EVEN") {
+            // Do something...
+        }
+
+        // 両者のカードをオープン
+        this.openCards();
+
+        // プレイヤー/相手の指(HP)の表示をリセット
+        while (divMyHand.children.length > 1) { divMyHand.lastChild.remove(); }
+        while (divEnHand.children.length > 1) { divEnHand.lastChild.remove(); }
+
+        // プレイヤーの指(HP)を表示
+        const my_lost = DEFAULT_PARAMS.FINGERS - gs.myFingers;
+        if (my_lost > 0) {
+            divMyHand.insertAdjacentHTML(
+                'beforeend',
+                `<img class="Hand lost" src="img/my/lost/0${my_lost}.png"/>`
+            );
+        }
+
+        // 相手の(HP)を表示
+        const en_lost = DEFAULT_PARAMS.FINGERS - gs.enFingers;
+        if (en_lost > 0) {
+            divEnHand.insertAdjacentHTML(
+                'beforeend',
+                `<img class="Hand lost" src="img/en/lost/0${en_lost}.png"/>`
+            );
+        }
+    }
+
+    openCards = () => {
+        const gs = this.gameStatus;
+
+        // プレイヤーの手札をオープン
+        const myFirstCard = divMyCard.firstChild;
+        myFirstCard.innerHTML = gs.myHand[0];
+        myFirstCard.className = "numCard";
+
+        // 相手の手札をオープン
+        const enFirstCard = divEnCard.firstChild;
+        enFirstCard.innerHTML = gs.enHand[0];
+        enFirstCard.className = "numCard";
+
+        // 相手の手札合計値をオープン
+        const enHandSum = gs.enHandSum;
+        spanEnSum.textContent = enHandSum;
+        if (gs.goal == enHandSum) {
+            spanEnSum.className = "just";
+        } else if (gs.goal < enHandSum) {
+            spanEnSum.className = "burst";
+        } else {
+            spanEnSum.className = "";
+        }
     }
 
     reflesh = () => {
@@ -100,14 +170,14 @@ class GameController {
         // 
 
         // プレイヤーの手札合計値
-        const spanHandSum = gs.myHandSum;
-        spanMySum.textContent = spanHandSum;
-        if (gs.goal == spanHandSum) {
-            spanMySum.className = "myHandSum just";
-        } else if (gs.goal < spanHandSum) {
-            spanMySum.className = "myHandSum burst";
+        const myHandSum = gs.myHandSum;
+        spanMySum.textContent = myHandSum;
+        if (gs.goal == myHandSum) {
+            spanMySum.className = "just";
+        } else if (gs.goal < myHandSum) {
+            spanMySum.className = "burst";
         } else {
-            spanMySum.className = "myHandSum";
+            spanMySum.className = "";
         }
 
         // プレイヤーの手札の表示
@@ -250,6 +320,11 @@ class GameController {
             SPText.before(divSPCard);
         }
     }
+
+    setMessage = () => {
+
+    }
+
 }
 
 const gc = new GameController("id");

@@ -1,4 +1,5 @@
 // js/GameStatus.js
+"use strict";
 
 // Does not work in browser
 // import { SPCard } from './SPCard.js';
@@ -9,6 +10,12 @@ const DEFAULT_PARAMS = {
     get FINGERS() { return 5 },
     get GOAL() { return 21 },
     get BET() { return 1 }
+};
+
+const PLAYER = {
+    ME: "ME",
+    EN: "ENEMY",
+    get RANDOM() { return (Math.random() > 0.5) ? this.ME : this.EN }
 };
 
 // export
@@ -22,7 +29,7 @@ class GameStatus {
     round;
     turn;
 
-    whose_turn;
+    roundFirst;     // "ME" or "ENEMY"
     stay;
 
     myFingers = DEFAULT_PARAMS.FINGERS;
@@ -118,8 +125,6 @@ class GameStatus {
         return BET;
     }
 
-
-
     get myHandSum() {
         return this.myHand.reduce((prev, curr) => { return prev + curr; });
     }
@@ -137,7 +142,7 @@ class GameStatus {
         this.round = 1;
         this.turn = 1;
         this.stay = false;
-        this.my_turn = true;    // or random
+        this.roundFirst = PLAYER.EN;    // or RANDOM
 
 
         // Fingers (Hit Point) <= default:  5
@@ -159,7 +164,6 @@ class GameStatus {
         // 
         // Initialize SP card 
         // 
-
 
         // SP card deck
         this.mySPDeck.init();
@@ -205,17 +209,17 @@ class GameStatus {
 
     /**
      * 新しいラウンドの開始
-     * @param {boolean} isMmyTurnFirst 
+     * @param {String} roundFirst   # for Debug
      * @returns {Promise}
      */
-    newRound = (isMmyTurnFirst = false) => new Promise((resolve) => {
+    newRound = (roundFirst = PLAYER.EN) => new Promise((resolve) => {
         // round/turn setting
         this.round = this.round + 1;
         this.turn = 1;
         this.stay = false;
 
-        // next turn: loser first
-        this.my_turn = (isMmyTurnFirst) ? true : this.my_turn;
+        // Next round: loser first
+        this.roundFirst = (roundFirst) ? roundFirst : this.roundFirst;
 
         // 
         // Initialize card in hand
@@ -267,5 +271,52 @@ class GameStatus {
 
         resolve(this);
     });
+
+    /**
+     * ラウンドの勝敗を判定する
+     * @returns {String} # -> "EVEN" / "WIN" / "LOSE"
+     */
+    judge = () => {
+        const my_pt = this.myHandSum - this.goal;
+        const en_pt = this.enHandSum - this.goal;
+
+        // 引き分け
+        //  - 数字が同じ
+        // プレイヤーの勝ち <--> 負け
+        //  - 数字が相手より大きい && お互いにGOALを超えない
+        //  - 数字がGOALを超えない && 相手がGOALを超えた
+        //  - 数字が相手より小さい && お互いにGOALを超えた
+
+        let result = null;
+
+        if (my_pt == en_pt) {
+            // Even
+            result = "EVEN";
+        } else if (0 <= my_pt && 0 <= en_pt) {
+            // No burst
+            result = (my_pt < en_pt) ? "WIN" : "LOSE";
+        } else if (my_pt < 0 && 0 <= en_pt) {
+            // Burst only of player
+            result = "LOSE";
+        } else if (0 <= my_pt && en_pt < 0) {
+            // Burst only of enemy
+            result = "WIN";
+        } else {
+            // Burst Both
+            result = (my_pt < en_pt) ? "LOSE" : "WIN";
+        }
+
+        return result;
+    }
+
+    /**
+     * ゲームの勝者を判定する（ゲームの決着が付いたかを判定する）
+     * @returns {null|String} # null: 未決着 | "ME" / "ENEMY": 決着
+     */
+    isGameEnd = () => {
+        if (this.myFingers <= 0) return PLAYER.EN;  // プレイヤーの負け
+        if (this.enFingers <= 0) return PLAYER.ME;  // 相手の負け
+        return null;                                // 未決着
+    }
 
 }

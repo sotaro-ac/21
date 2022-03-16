@@ -1,4 +1,5 @@
 // js/SPCard.js
+"use strict";
 
 // export
 class SPCard {
