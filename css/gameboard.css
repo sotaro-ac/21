@@ -21,6 +21,22 @@ h1 {
     text-align: center;
 }
 
+span.green {
+    color: yellowgreen;
+}
+
+span.red {
+    color: tomato;
+}
+
+span.bold {
+    font-weight: bold;
+}
+
+span.small {
+    font-size: 10px;
+}
+
 .container {
     width       : 1080px;
     position    : relative;
@@ -36,7 +52,7 @@ h1 {
 /* infoBoard */
 div#infoBoard {
     position       : absolute;
-    top            : 2.5%;
+    top            : 0.0%;
     left           : 27.7%;
     width          : 480px;
     height         : 120px;
@@ -51,12 +67,14 @@ div#message {
 }
 
 div#message>p {
-    font-size  : 20px;
-    font-weight: bold;
-    text-align : center;
+    font-size         : 20px;
+    font-weight       : bold;
+    text-align        : center;
+    margin-block-start: 0em;
+    margin-block-end  : 0.5em;
 }
 
-div#message>p::first-line {
+div#message>p:first-child {
     font-size: 32px;
 }
 
@@ -95,6 +113,7 @@ div#gameBoard {
     background           : radial-gradient(#619c4a, #305820, #10200a);
     box-shadow           : inset 0 0 25px 10px #000000ee;
     padding              : 25px;
+    margin-top           : 50px;
 
     /* 3D Transform */
     transform: perspective(720px) translateZ(0px) rotateX(45deg);
@@ -148,7 +167,7 @@ div#gameBoard {
 div#EN_PassiveSP,
 div#MY_PassiveSP {
     background-color: rgba(16, 4, 25, 0.725);
-    border: 3px dashed #ffd8d880;
+    border          : 3px dashed #ffd8d880;
 }
 
 #EN_Cards,

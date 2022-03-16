@@ -1,25 +1,29 @@
 <!DOCTYPE html>
 <html lang="ja">
   <!-- HEAD -->
-
   <head>
     <meta charset="UTF-8" />
     <title>21 - Survival Game -</title>
     <link rel="stylesheet" type="text/css" href="css/gameboard.css" />
+    <link rel="stylesheet" type="text/css" href="css/pop_up.css" />
     <link rel="stylesheet" type="text/css" href="css/sp_window+cards.css" />
   </head>
   <!-- END of HEAD -->
 
   <!-- BODY -->
-
   <body>
-    <h1>21</h1>
+    <!-- <h1>21</h1> -->
 
     <!-- .YOUR or .ENEMY -->
     <div class="container YOUR">
       <div id="infoBoard" class="wrapper">
         <div id="message">
-          <p><span class="YOUR">YOUR</span> TURN</p>
+          <p id="header"><span class="YOUR">WELCOME</span> CHALLENGER!</p>
+          <p id="notice"></p>
+          <!-- Example:
+            <p id="header"><span class="YOUR">YOUR</span> TURN</p>
+            <p id="notice">SPカードの効果は発動しなかったようだ...</p>
+           -->
         </div>
       </div>
       <!-- ENEMY -->
@@ -75,7 +79,7 @@
           -->
         </div>
         <div id="MY_Info">
-          <div id="user_info">your_name<br />ID : your_id</div>
+          <div id="user_info">USER NAME<br />ID : USER_ID</div>
         </div>
         <div id="MY_countNum">
           <!-- Example:
@@ -131,8 +135,12 @@
     <!-- END of container -->
     <script>
       // export to "js/main.js"
-      const SPWindow = document.querySelector("#SP_Window");
-      const SPText = document.querySelector("#spText");
+
+      // infoBoard
+      const pHeader = document.querySelector("#header");
+      const pNotice = document.querySelector("#notice");
+
+      // gameBoard
       const labelSPBtn = document.querySelector("#label_SP_btn");
       const divMyCard = document.querySelector("#MY_Cards");
       const divEnCard = document.querySelector("#EN_Cards");
@@ -144,11 +152,19 @@
       const divMyHand = document.querySelector("#MY_Hand");
       const divEnHand = document.querySelector("#EN_Hand");
 
+      // SP_Window
+      const SPWindow = document.querySelector("#SP_Window");
+      const SPText = document.querySelector("#spText");
+
       const MAX_SP_HAND = 16;
     </script>
     <script src="js/SPCard.js"></script>
     <script src="js/GameStatus.js"></script>
     <script src="js/main.js"></script>
+    <script>
+      const gc = new GameController("id");
+      document.body.onload = () => { gc.run(); };
+    </script>
   </body>
   <!-- END of BODY -->
 </html>

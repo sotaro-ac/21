@@ -82,9 +82,22 @@ class GameController {
     }
 
     /**
+     * メッセージヘッダー/通知を設定する
+     * @param {String} textHTML 
+     */
+    set setMsgHeader (textHTML) { pHeader.innerHTML = textHTML; }
+
+    set setMsgNotice (textHTML) { pNotice.innerHTML = textHTML; }
+
+    /**
      * ゲームを開始する
      */
-    run = () => { /* Now coding... */ }
+    run = async () => {
+        const gs = this.gameStatus;
+
+        this.newGame();
+
+    }
 
     newGame = () => {
         this.gameStatus.init().then((gs) => {
@@ -321,17 +334,4 @@ class GameController {
         }
     }
 
-    setMessage = () => {
-
-    }
-
 }
-
-const gc = new GameController("id");
-
-//
-// ONLOAD
-//
-document.body.onload = () => {
-    gc.newGame();
-};
