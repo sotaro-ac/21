@@ -14,6 +14,9 @@ body {
     font-size       : 15px;
     color           : #ffffff;
     background-color: black;
+    overflow-x      : hidden;
+    /* 要素選択を無効化 */
+    user-select     : none;
 }
 
 h1 {
@@ -47,6 +50,10 @@ span.small {
 .wrapper {
     margin-left : auto;
     margin-right: auto;
+}
+
+img {
+    pointer-events: none;
 }
 
 /* infoBoard */
@@ -222,8 +229,8 @@ div.spCard {
     background-color: darkgoldenrod;
 }
 
-div#EN_countNum,
-div#MY_countNum {
+#EN_countNum,
+#MY_countNum {
     font-size       : 32px;
     color           : antiquewhite;
     display         : flex;
@@ -233,13 +240,13 @@ div#MY_countNum {
     background-color: #3535358f;
 }
 
-div#MY_countNum>span.just,
-div#EN_countNum>span.just {
+span#myHandSum.just,
+span#enHandSum.just {
     color: greenyellow;
 }
 
-div#MY_countNum>span.burst,
-div#EN_countNum>span.burst {
+span#myHandSum.burst,
+span#enHandSum.burst {
     color: tomato;
 }
 
@@ -279,17 +286,13 @@ div#EN_countNum>span.burst {
     }
 }
 
-div.YOUR>div#gameBoard.draw>div#EN_Cards>.numCard:last-child,
-div.ENEMY>div#gameBoard.draw>div#MY_Cards>.numCard:last-child,
-div#gameBoard.new_game>div#EN_Cards>.numCard,
-div#gameBoard.new_game>div#MY_Cards>.numCard,
-div#gameBoard.new_round>div#EN_Cards>.numCard,
-div#gameBoard.new_round>div#MY_Cards>.numCard {
+/* Draw Animation */
+div.numCard.draw:last-child {
     animation: slide_in 1s;
 }
 
-div.YOUR>div#gameBoard.draw>#EN_countNum>span,
-div.ENEMY>div#gameBoard.draw>#MY_countNum>span {
+span#myHandSum.show,
+span#enHandSum.show {
     animation: showCount 1.5s;
 }
 

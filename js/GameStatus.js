@@ -18,6 +18,12 @@ const PLAYER = {
     get RANDOM() { return (Math.random() > 0.5) ? this.ME : this.EN }
 };
 
+const CMD = {
+    STAY: "STAY",
+    DRAW: "DRAW",
+    SP: "SP"
+};
+
 // export
 class GameStatus {
     // 
@@ -28,19 +34,20 @@ class GameStatus {
 
     round;
     turn;
+    isJudged;
 
     roundFirst;     // "ME" or "ENEMY"
     stay;
 
-    myFingers = DEFAULT_PARAMS.FINGERS;
-    enFingers = DEFAULT_PARAMS.FINGERS;
+    myFingers;
+    enFingers;
 
     deck = [];
     myHand = [];
     enHand = [];
 
-    mySPDeck = new SPCard();
-    enSPDeck = new SPCard();
+    mySPDeck;
+    enSPDeck;
 
     myHandSP = [];
     enHandSP = [];
@@ -54,6 +61,8 @@ class GameStatus {
     constructor(userId = "----", userName = "----") {
         this.userId = userId;
         this.userName = userName;
+        this.mySPDeck = new SPCard();
+        this.enSPDeck = new SPCard();
     }
 
     //
@@ -143,6 +152,7 @@ class GameStatus {
         this.turn = 1;
         this.stay = false;
         this.roundFirst = PLAYER.EN;    // or RANDOM
+        this.isJudged = false;
 
 
         // Fingers (Hit Point) <= default:  5
@@ -181,10 +191,10 @@ class GameStatus {
             const typePass = this.mySPDeck.getIdList({ type: "passive" });
 
             this.myHandSP = [
-                this.mySPDeck.drawCard(attrDraw),
-                this.mySPDeck.drawCard(attrRare),
-                this.mySPDeck.drawCard(attrEpic),
-                this.mySPDeck.drawCard(typePass)
+                this.mySPDeck.drawSPCard(attrDraw),
+                this.mySPDeck.drawSPCard(attrRare),
+                this.mySPDeck.drawSPCard(attrEpic),
+                this.mySPDeck.drawSPCard(typePass)
             ].sort((a, b) => a - b);    // sort by ascending order
         });
 
@@ -197,10 +207,10 @@ class GameStatus {
             const typeAct = this.enSPDeck.getIdList({ type: "active" });
 
             this.enHandSP = [
-                this.enSPDeck.drawCard(),
-                this.enSPDeck.drawCard(attrBet),
-                this.enSPDeck.drawCard(attrBet),
-                this.enSPDeck.drawCard(typeAct)
+                this.enSPDeck.drawSPCard(),
+                this.enSPDeck.drawSPCard(attrBet),
+                this.enSPDeck.drawSPCard(attrBet),
+                this.enSPDeck.drawSPCard(typeAct)
             ].sort((a, b) => a - b);    // sort by ascending order
         });
 
@@ -217,6 +227,7 @@ class GameStatus {
         this.round = this.round + 1;
         this.turn = 1;
         this.stay = false;
+        this.isJudged = false;
 
         // Next round: loser first
         this.roundFirst = (roundFirst) ? roundFirst : this.roundFirst;
@@ -246,8 +257,8 @@ class GameStatus {
         const typePass = this.mySPDeck.getIdList({ type: "passive" });
 
         this.myHandSP = this.myHandSP.concat([
-            this.mySPDeck.drawCard(typeActi),
-            this.mySPDeck.drawCard(typePass)
+            this.mySPDeck.drawSPCard(typeActi),
+            this.mySPDeck.drawSPCard(typePass)
         ]);
         // this.myHandSP.splice(-1, rm);
         for (let i = this.myHandSP.length; i > MAX_SP_HAND; i--) {
@@ -260,8 +271,8 @@ class GameStatus {
         const attrBet = this.enSPDeck.getIdList({ attr: "bet" });
 
         this.enHandSP = this.enHandSP.concat([
-            this.enSPDeck.drawCard(),
-            this.enSPDeck.drawCard(attrBet),
+            this.enSPDeck.drawSPCard(),
+            this.enSPDeck.drawSPCard(attrBet),
         ])
         // this.enHandSP.splice(-1, rm);
         for (let i = this.enHandSP.length; i > MAX_SP_HAND; i--) {
@@ -276,9 +287,11 @@ class GameStatus {
      * ラウンドの勝敗を判定する
      * @returns {String} # -> "EVEN" / "WIN" / "LOSE"
      */
-    judge = () => {
-        const my_pt = this.myHandSum - this.goal;
-        const en_pt = this.enHandSum - this.goal;
+    judge() {
+        /**
+         ** 勝敗判定後は新しいラウンド/ゲームを開始するまでSTAY不可能
+         */
+        this.isJudged = true;   // 勝敗判定フラグを立てる
 
         // 引き分け
         //  - 数字が同じ
@@ -287,7 +300,10 @@ class GameStatus {
         //  - 数字がGOALを超えない && 相手がGOALを超えた
         //  - 数字が相手より小さい && お互いにGOALを超えた
 
-        let result = null;
+        const my_pt = this.goal - this.myHandSum;
+        const en_pt = this.goal - this.enHandSum;
+
+        let result;
 
         if (my_pt == en_pt) {
             // Even
@@ -313,10 +329,47 @@ class GameStatus {
      * ゲームの勝者を判定する（ゲームの決着が付いたかを判定する）
      * @returns {null|String} # null: 未決着 | "ME" / "ENEMY": 決着
      */
-    isGameEnd = () => {
+    isGameEnd() {
         if (this.myFingers <= 0) return PLAYER.EN;  // プレイヤーの負け
         if (this.enFingers <= 0) return PLAYER.ME;  // 相手の負け
         return null;                                // 未決着
+    }
+
+    /**
+     * 相手(敵)の判断を処理する
+     * @return {Object} decision # -> {cmd: String, value: Number}
+     * # -> cmd: "STAY" or "DRAW" or "SP" | value: Number(spID)
+     */
+    enemyDecision() {
+        const decision = { cmd: CMD.STAY, value: null };
+
+        // 
+        // ここではSTAYフラグを更新しない
+        // 
+
+        // SP card
+        for (let i = 0; i < this.enHandSP.length; i++) {
+            const card = this.enHandSP[i];
+            if (21 <= card && card <= 24) {
+                decision.cmd = CMD.SP;
+                decision.value = card;
+                this.enHandSP.splice(i, 1); // SPカードを消費
+                // this.stay = false;          // STAYフラグを折る
+                return decision;
+            }
+        }
+
+        // Draw
+        if (this.enHandSum + 5 <= this.goal) {
+            decision.cmd = CMD.DRAW;
+            this.enHand.push(this.deck.pop());  // 手札をドローする
+            // this.stay = false;                  // STAYフラグを折る
+            return decision;
+        }
+
+        // STAY
+        // this.stay = true;   // STAYフラグを立てる
+        return decision;
     }
 
 }

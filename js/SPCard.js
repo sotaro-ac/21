@@ -111,7 +111,7 @@ class SPCard {
      * @param {Array} idList 
      * @returns {Number}
      */
-    drawCard(idList) {
+    drawSPCard(idList) {
         if (Array.isArray(idList)) {
             // 指定されていれば 配列idList の中からIDをひとつ選ぶ
             const idx = Math.floor(Math.random() * idList.length);
