@@ -95,13 +95,37 @@
       </div>
       <!-- END of gameBoard -->
 
-      <hr />
+      <!-- infoBorder -->
+      <div id="infoBorder">
+        <div id="infoBdrImg" hidden><img src="img/10000yen.png"></div>
+        <p id="infoBdrMsg">デスゲームに勝ち残り<br>賞金を手に入れろ！</p>
+        <div class="infoBtnContainer">
+          <button id="btnGS" class="infoBtn" type="button">GAME START</button>
+          <button id="btnNG" class="infoBtn" type="button" hidden>NEW GAME</button>
+          <button id="btnEG" class="infoBtn" type="button" hidden>END GAME</button>
+        </div>
+      </div>
+      </div>
 
+      <!-- infoPopUp -->
+      <div id="infoPopUp" hidden>
+        <div id="infoSP" hidden>
+          <div id="SPimg" class=""></div>
+          <p id="SPname">SPカード名</p>
+          <p id="SPtext">SPカードの詳細情報</p>
+        </div>
+        <div id="infoMsg">ここにメッセージを挿入</div>
+        <div class="infoBtnContainer">
+          <button id="btnPop" class="infoBtn" type="button">OK</button>
+        </div>
+      </div>
+      <!-- END of infoPopUp -->
+
+      <!-- MY Commands -->
       <div id="MY_Commands">
-        <div id="command">
-          <input type="hidden" name="userID" value="$userID" />
-          <button type="button" class="clear_btn" name="stay">STAY</button>
-          <button type="button" class="clear_btn" name="draw">DRAW</button>
+        <div id="comBtnContainer">
+          <button id="btnStay" type="button" class="clear_btn" disabled>STAY</button>
+          <button id="btnDraw" type="button" class="clear_btn" disabled>DRAW</button>
         </div>
         <input id="SP_btn" type="checkbox" class="clear_btn" name="SP_Window" />
         <label for="SP_btn">
@@ -152,6 +176,20 @@
       const divMyHand = document.querySelector("#MY_Hand");
       const divEnHand = document.querySelector("#EN_Hand");
 
+      // popUp
+      const divInfoPU = document.querySelector("#infoPopUp");
+      const divInfoSP = document.querySelector("#infoSP");
+      const divSPimg = document.querySelector("#SPimg");
+      const pSPname = document.querySelector("#SPname");
+      const pSPtext = document.querySelector("#SPtext");
+      const divInfoMsg = document.querySelector("#infoMsg");
+      const btnPop = document.querySelector("#btnPop");
+
+      // MY_Commands
+      const divMyCmd = document.querySelector("#MY_Commands");
+      const btnStay = document.querySelector("#btnStay");
+      const btnDraw = document.querySelector("#btnDraw");
+
       // SP_Window
       const SPWindow = document.querySelector("#SP_Window");
       const SPText = document.querySelector("#spText");
@@ -163,7 +201,9 @@
     <script src="js/main.js"></script>
     <script>
       const gc = new GameController("id");
-      document.body.onload = () => { gc.run(); };
+      document.body.onload = () => {
+        gc.run();
+      };
     </script>
   </body>
   <!-- END of BODY -->

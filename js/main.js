@@ -1,24 +1,43 @@
 // js/main.js
 "use strict";
 
-// Does not work in browser
-// import { SPCard } from './SPCard.js';
-// import { GameStatus, DEFAULT } from './GameStatus.js';
+//   // infoBoard
+//   const pHeader = document.querySelector("#header");
+//   const pNotice = document.querySelector("#notice");
 
-// const SPWindow = document.getElementById("SP_Window");
-// const SPText = document.getElementById("spText");
-// const labelSPBtn = document.getElementsByClassName("label_SP_btn")[0];
-// const divMyCard = document.querySelector(".MY_Cards");
-// const divEnCard = document.querySelector(".EN_Cards");
-// const spanMySum = document.querySelector(".myHandSum");
-// const spanEnSum = document.querySelector(".enHandSum");
-// const spanGoal = document.querySelectorAll("span.goal");
-// const divMyPassSP = document.querySelector("#MY_PassiveSP");
-// const divEnPassSP = document.querySelector("#EN_PassiveSP");
-// const divMyHand = document.querySelector("#MY_Hand");
-// const divEnHand = document.querySelector("#EN_Hand");
+//   // gameBoard
+//   const labelSPBtn = document.querySelector("#label_SP_btn");
+//   const divMyCard = document.querySelector("#MY_Cards");
+//   const divEnCard = document.querySelector("#EN_Cards");
+//   const spanMySum = document.querySelector("#myHandSum");
+//   const spanEnSum = document.querySelector("#enHandSum");
+//   const spanGoal = document.querySelectorAll("span.goal");
+//   const divMyPassSP = document.querySelector("#MY_PassiveSP");
+//   const divEnPassSP = document.querySelector("#EN_PassiveSP");
+//   const divMyHand = document.querySelector("#MY_Hand");
+//   const divEnHand = document.querySelector("#EN_Hand");
 
-// const MAX_SP_HAND = 16;
+//   // MY_Commands
+//   const divMyCmd = document.querySelector("#MY_Commands");
+//   const btnStay = document.querySelector("#btnStay");
+//   const btnDraw = document.querySelector("#btnDraw");
+
+//   // SP_Window
+//   const SPWindow = document.querySelector("#SP_Window");
+//   const SPText = document.querySelector("#spText");
+
+//   const MAX_SP_HAND = 16;
+
+const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
+
+const MSG = {
+    MY: {},
+    EN: {
+        get STAY() { return "相手は「STAY」を選択した。"; },
+        get DRAW() { return "相手は「DRAW」を選択した。"; },
+        get SP() { return "相手は「SPカード」を使用した"; },
+    }
+};
 
 class GameController {
     // 
@@ -30,12 +49,52 @@ class GameController {
     // CONSTRUCTOR
     // 
     constructor() {
+        // 
+        // コマンドリストをゲーム開始可能な状態にする
+        // 
+        if (!divMyCmd.classList.contains("fullfilled")) {
+            const gs = this.gameStatus;
+
+            // Draw
+            btnDraw.addEventListener('click', () => {
+                // 手札合計値がバースト or 手札が上限の６枚ある場合は無効
+                if (gs.goal < gs.myHandSum || 6 <= gs.myHand.length) return;
+
+                // 山札から手札にカードを１枚移動(ドロー)する
+                gs.myHand.push(gs.deck.pop());  // draw from deck
+                gs.stay = false;    // STAYフラグを折る
+                this.reflesh();     // アロー関数内：このthisはGCのインスタンス 
+                divMyCard.lastChild.classList.add("draw");
+                spanMySum.classList.add("show");
+                this.passTurn();
+            });
+
+            // Stay
+            btnStay.addEventListener('click', () => {
+                this.reflesh();     // アロー関数内：このthisはGCのインスタンス 
+                if (gs.stay) {
+                    this.resultRound();
+                } else {
+                    gs.stay = true; // STAYフラグを立てる
+                    this.passTurn();
+                }
+            });
+
+            // SP Slots
+
+
+            divMyCmd.classList.add("fullfilled");   // 開始可能
+        }
 
         // 
         // SPウィンドウをゲーム開始可能な状態にする
         // 
         if (!SPWindow.classList.contains("fullfilled")) {
             const SP_CARD = new SPCard();
+
+            // 不要な要素があれば削除
+            while (SPWindow.firstChild.id != "spText") SPWindow.firstChild.remove();
+            while (SPText.firstChild) SPText.firstChild.remove();
 
             // SPカードスロットの作成
             for (let i = 0; i < MAX_SP_HAND; i++) {
@@ -85,44 +144,152 @@ class GameController {
      * メッセージヘッダー/通知を設定する
      * @param {String} textHTML 
      */
-    set setMsgHeader (textHTML) { pHeader.innerHTML = textHTML; }
+    set setMsgHeader(textHTML) { pHeader.innerHTML = textHTML; }
 
-    set setMsgNotice (textHTML) { pNotice.innerHTML = textHTML; }
+    set setMsgNotice(textHTML) { pNotice.innerHTML = textHTML; }
+
+    /**
+     * ポップアップメッセージを表示する（[OK]ボタンを押すまで待機する）
+     * 主に STAY / DRAW / SPカード使用 についての確認用
+     * @param {String} textMsg # ポップアップに表示するメッセージ
+     * @param {Object} SPCard  # 任意のSPカードについてのJSONオブジェクト
+     * @returns {Promise}
+     */
+    showPopUp(textMsg, { id, name, type, description } = {}) {
+        return new Promise((resolve, reject) => {
+            // ポップアップとメッセージを表示
+            divInfoPU.hidden = false;
+            divInfoSP.hidden = true;
+            divInfoMsg.textContent = textMsg;
+
+            // SPカードの使用
+            if (id) {
+                divInfoSP.hidden = false;
+                divSPimg.className = `spID${id}`;
+                pSPname.textContent = name;
+                pSPtext.textContent = description;
+            }
+
+            // ポップアップの[OK]ボタンを押すまで待機
+            btnPop.addEventListener('click', () => {
+                divInfoPU.hidden = true;
+                divInfoSP.hidden = true;
+                // console.log("clicked!");
+                resolve();  // 待機状態からの解放
+            });
+        });
+    }
+
+    /**
+     * 画面中央にメッセージを表示する（ボタンを押すまで待機する）
+     * 
+     * @param {String} textMsg # 画面中央に表示するメッセージ
+     * @param {String} action  # "" / "GS" ? 
+     * @returns {Promise}
+     */
+    showBdrMsg(textMsg, action = "") {
+        return new Promise((resolve, reject) => {
+
+            // ポップアップの[OK]ボタンを押すまで待機
+            btnPop.addEventListener('click', () => {
+
+                resolve();  // 待機状態からの解放
+            });
+        });
+    }
 
     /**
      * ゲームを開始する
      */
-    run = async () => {
-        const gs = this.gameStatus;
-
+    run() {
         this.newGame();
-
     }
 
-    newGame = () => {
+    passTurn = async () => {
+        const gs = this.gameStatus;
+        const sp = gs.enSPDeck;
+        const decision = gs.enemyDecision();
+
+        // SPカードの使用
+        if (decision.cmd == CMD.SP) {
+            const spID = decision.value;
+            gs.stay = false;  // STAYフラグを折る
+
+            // Passive SPカードを使用した場合はボードに置く
+            const spPsv = sp.getIdList({ type: "passive" });
+            if (spPsv.some(id => id == spID)) {
+                gs.enPassiveSP.push(spID);
+            }
+            this.reflesh();
+
+            // SPカード使用のポップアップメッセージを表示
+            await this.showPopUp(MSG.EN.SP, sp.list.find(card => card.id == spID));
+        }
+        // Draw
+        else if (decision.cmd == CMD.DRAW) {
+            gs.stay = false;  // STAYフラグを折る
+            this.reflesh();
+            divEnCard.lastChild.classList.add("draw");
+            spanEnSum.classList.add("show");
+
+            // SPカード使用のポップアップメッセージを表示
+            await this.showPopUp(MSG.EN.DRAW);
+        }
+        // Stay
+        else if (decision.cmd == CMD.STAY) {
+            this.reflesh();
+
+            // SPカード使用のポップアップメッセージを表示
+            await this.showPopUp(MSG.EN.STAY);
+
+            if (gs.stay) {
+                this.resultRound();
+            } else {
+                gs.stay = true; // STAYフラグを立てる
+            }
+        }
+
+        // 再帰関数でループ
+        if (decision.cmd == CMD.SP) {
+            // 少しだけ待たせる（考えている真似）
+            await sleep(Math.random() * (1000 - 250) + 250);
+            this.passTurn();
+        }
+    }
+
+    newGame() {
         this.gameStatus.init().then((gs) => {
             this.reflesh();
+            for (const e of divMyCard.children) { e.classList.add("draw"); };
+            for (const e of divEnCard.children) { e.classList.add("draw"); };
+            spanMySum.classList.add("show");
         });
     }
 
-    newRound = (isMmyTurnFirst) => {
+    newRound(isMmyTurnFirst) {
         this.gameStatus.newRound(isMmyTurnFirst).then((gs) => {
             this.reflesh();
         });
     }
 
-    resultRound = () => {
+    resultRound() {
         const gs = this.gameStatus;
-        
+
         // ラウンド勝者を判定 + ダメージの計算
         const result = gs.judge();
         if (result == "WIN") {
             gs.enFingers = Math.max(gs.enFingers - gs.enBet, 0);
+            gs.roundFirst = PLAYER.EN;
         } else if (result == "LOSE") {
             gs.myFingers = Math.max(gs.myFingers - gs.myBet, 0);
+            gs.roundFirst = PLAYER.ME;
         } else if (result == "EVEN") {
             // Do something...
+            // gs.roundFirst = gs.roundFirst;
         }
+
+        // openCards()より前 && judge()より後に実行
+        this.reflesh();
 
         // 両者のカードをオープン
         this.openCards();
@@ -150,7 +317,7 @@ class GameController {
         }
     }
 
-    openCards = () => {
+    openCards() {
         const gs = this.gameStatus;
 
         // プレイヤーの手札をオープン
@@ -175,7 +342,7 @@ class GameController {
         }
     }
 
-    reflesh = () => {
+    reflesh() {
         const gs = this.gameStatus;
 
         // 
@@ -185,6 +352,7 @@ class GameController {
         // プレイヤーの手札合計値
         const myHandSum = gs.myHandSum;
         spanMySum.textContent = myHandSum;
+        spanMySum.className = "";
         if (gs.goal == myHandSum) {
             spanMySum.className = "just";
         } else if (gs.goal < myHandSum) {
@@ -227,7 +395,8 @@ class GameController {
 
         // 相手の手札合計値(オープン前)
         const enHandSum = gs.enHandSum - gs.enHand[0];
-        spanEnSum.textContent = `${enHandSum}+?`;
+        spanEnSum.textContent = `?+${enHandSum}`;
+        spanEnSum.className = "";
 
         // 相手の手札の表示(オープン前)
         while (divEnCard.lastChild) {
@@ -332,6 +501,27 @@ class GameController {
             }
             SPText.before(divSPCard);
         }
+
+        // 
+        // コマンドリストの表示 (下位のコードほど優先条件)
+        // 
+
+        //* 手札合計値がバースト or 手札が上限の６枚ある場合はドロー不可能
+        if (gs.goal < gs.myHandSum || 6 <= gs.myHand.length) {
+            btnDraw.disabled = true;
+        } else {
+            btnDraw.disabled = false;
+        }
+
+        //* 勝敗判定後は新しいラウンド/ゲームを開始するまでSTAY+DRAW不可能
+        if (gs.isJudged) {
+            btnStay.disabled = true;
+            btnDraw.disabled = true;
+        } else {
+            btnStay.disabled = false;
+            btnDraw.disabled = false;
+        }
+
     }
 
 }
