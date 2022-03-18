@@ -112,7 +112,7 @@ class GameStatus {
             }
         });
 
-        return BET;
+        return Math.max(BET, 0);
     }
 
     get enBet() {
@@ -136,7 +136,7 @@ class GameStatus {
             }
         });
 
-        return BET;
+        return Math.max(BET, 0);
     }
 
     get myHandSum() {
