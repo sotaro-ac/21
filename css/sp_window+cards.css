@@ -5,7 +5,9 @@
     display        : flex;
     align-items    : center;
     justify-content: center;
-
+    width          : 1080px;
+    margin         : 20px auto;
+    position       : relative;
 }
 
 #comBtnContainer {
@@ -76,7 +78,7 @@ input#SP_btn:checked+label>#label_SP_btn {
 }
 
 /* SP_Window */
-div#SP_Window {
+#SP_Window {
     display: grid;
     grid-template-areas:
         "sp0 sp1 sp2 sp3"
@@ -93,8 +95,8 @@ div#SP_Window {
     background-color     : #0000008e;
     box-shadow           : 0 0 10px 10px #0000008e;
     position             : absolute;
-    top                  : 0px;
-    right                : 0px;
+    top                  : -640px;
+    right                : 0;
 }
 
 #sp0 {
