@@ -34,9 +34,10 @@ const ACT = {
     get GS() { return "GAME_START"; },
     get GC() { return "GAME_CLEAR"; },
     get GE() { return "GAME_END"; },
+    get YR() { return "YOUR_ROUND"; },
+    get ER() { return "ENEMY_ROUND"; },
     get NT() { return "NOTICE_TIMEOUT"; },
-    get NR() { return "NEW_ROUND"; },
-    get DE() { return "DEFAULT"; }
+    get DE() { return "DEFAULT"; },
 };
 
 const MSG = {
@@ -75,28 +76,31 @@ class GameController {
         // 
         if (!divMyCmd.classList.contains("fullfilled")) {
             const gs = this.gameStatus;
+            const msec = 500;
+            const slideTime = 1000;
 
             // Draw
-            btnDraw.addEventListener('click', () => {
+            btnDraw.addEventListener('click', async () => {
                 // 手札合計値がバースト or 手札が上限の６枚ある場合は無効
                 if (gs.goal < gs.myHandSum || 6 <= gs.myHand.length) return;
 
                 // 山札から手札にカードを１枚移動(ドロー)する
                 gs.myHand.push(gs.deck.pop());  // draw from deck
-                gs.stay = false;    // STAYフラグを折る
-                this.reflesh();     // アロー関数内：このthisはGCのインスタンス 
+                gs.myStay = false;  // STAYフラグを折る
+                await this.reflesh();     // アロー関数内：このthisはGCのインスタンス 
                 divMyCard.lastChild.classList.add("draw");
                 spanMySum.classList.add("show");
+                await sleep(slideTime);
                 this.passTurn();
             });
 
             // Stay
             btnStay.addEventListener('click', () => {
-                this.reflesh();     // アロー関数内：このthisはGCのインスタンス 
-                if (gs.stay) {
+                // this.reflesh();     // アロー関数内：このthisはGCのインスタンス 
+                gs.myStay = true; // STAYフラグを立てる
+                if (gs.bothStay) {
                     this.resultRound();
                 } else {
-                    gs.stay = true; // STAYフラグを立てる
                     this.passTurn();
                 }
             });
@@ -215,17 +219,7 @@ class GameController {
                 case ACT.GC:
                     infoBdrImg.hidden = false;
                 case ACT.GE:
-                    btn1st.addEventListener('click', this.newGame(), { once: true });
-                    btn2nd.addEventListener('click', () => location.replace("index.html"), { once: true });
-                case ACT.NR:
-                    // New Round
-                    if (this.gameStatus.isJudged && !isGameEnd) {
-                        btn1st.addEventListener('click', this.newRound(), { once: true });
-                    }
                 case ACT.GS:
-                    infoBdrMsg.innerHTML = MSG.BDR[action];
-                    infoBtnContainer.hidden = false;
-                    infoBorder.hidden = false;
                     // Button 1st
                     if (!MSG.BUTTON[action][0]) btn1st.hidden = true;
                     else btn1st.hidden = false;
@@ -234,16 +228,10 @@ class GameController {
                     if (!MSG.BUTTON[action][1]) btn2nd.hidden = true;
                     else btn2nd.hidden = false;
                     btn2nd.textContent = MSG.BUTTON[action][1];
-                    break;
-
-                case ACT.NT:
-                    infoBdrMsg.innerHTML = textMsg;
-                    infoBtnContainer.hidden = true;
-                    infoBorder.hidden = false;
-                    break;
-
-                default:
-                    infoBdrMsg.innerHTML = textMsg;
+                case ACT.YR:
+                case ACT.ER:
+                    infoBdrMsg.innerHTML = MSG.BDR[action];
+                    infoBtnContainer.hidden = false;
                     infoBorder.hidden = false;
                     // Button 1st
                     if (!MSG.BUTTON[ACT.DE][0]) btn1st.hidden = true;
@@ -254,6 +242,32 @@ class GameController {
                     else btn2nd.hidden = false;
                     btn2nd.textContent = MSG.BUTTON[ACT.DE][1];
                     break;
+
+                case ACT.NT:
+                    infoBtnContainer.hidden = true;
+                default:
+                    // Button 1st
+                    if (!MSG.BUTTON[ACT.DE][0]) btn1st.hidden = true;
+                    else btn1st.hidden = false;
+                    btn1st.textContent = MSG.BUTTON[ACT.DE][0];
+                    // Button 2nd
+                    if (!MSG.BUTTON[ACT.DE][1]) btn2nd.hidden = true;
+                    else btn2nd.hidden = false;
+                    btn2nd.textContent = MSG.BUTTON[ACT.DE][1];
+                    infoBdrMsg.innerHTML = textMsg;
+                    infoBorder.hidden = false;
+                    break;
+            }
+
+            if (action == ACT.NT) {
+                const showTime = 3000;
+                setTimeout(() => {
+                    infoBorder.hidden = true;
+                    infoBdrImg.hidden = true;
+                    infoBtnContainer.hidden = true;
+                    btn1st.hidden = true;
+                    btn2nd.hidden = true;
+                }, showTime);
             }
 
             // ボーダーウィンドウのボタンを押すまで待機
@@ -264,6 +278,20 @@ class GameController {
                     infoBtnContainer.hidden = true;
                     btn1st.hidden = true;
                     btn2nd.hidden = true;
+
+                    switch (action) {
+                        case ACT.GE:
+                            if (btn == btn1st) this.newGame();
+                            if (btn == btn2nd) location.replace("index.html");
+                            break;
+                        case ACT.YR:
+                        case ACT.ER:
+                            this.newRound();
+                            break;
+                        default:
+                            break;
+                    }
+
                     resolve();  // 待機状態からの解放
                 }, { once: true });
             });
@@ -287,8 +315,12 @@ class GameController {
         btnStay.disabled = true;
         btnDraw.disabled = true;
 
-        // プレイヤーのターンに設定
+        // 相手のターンに設定
         gs.whoseTurn = PLAYER.EN;
+        this.setMsgHeader = `<span class="red">ENEMY</span> TURN`;
+
+        // 少しだけ待たせる（考えている真似）
+        await sleep(Math.random() * 1000 + 500);
 
         // SPカードの使用
         if (decision.cmd == CMD.SP) {
@@ -321,30 +353,25 @@ class GameController {
 
             // SPカード使用のポップアップメッセージを表示
             await this.showPopUp(MSG.POP.STAY);
-
-            if (gs.stay) {
-                this.resultRound();
-            } else {
-                gs.enStay = true; // STAYフラグを立てる
-            }
+            gs.enStay = true; // STAYフラグを立てる
+            if (gs.bothStay) this.resultRound();
         }
 
         // 再帰関数でループ
         if (decision.cmd == CMD.SP) {
-            // 少しだけ待たせる（考えている真似）
-            await sleep(Math.random() * (1000 - 250) + 250);
             this.passTurn();
+        } else if (!gs.bothStay) {
+            // プレイヤーのターンに設定
+            gs.whoseTurn = PLAYER.ME;
+            this.setMsgHeader = `<span class="green">YOUR</span> TURN`;
+            this.reflesh();
         }
-
-        // プレイヤーのターンに設定
-        gs.whoseTurn = PLAYER.ME;
-        this.reflesh();
     }
 
     newGame() {
-        this.gameStatus.init().then((gs) => {
+        this.gameStatus.init().then(async (gs) => {
 
-            this.reflesh();
+            await this.reflesh();
 
             const msec = 500;
             const slideTime = 1000;
@@ -387,18 +414,25 @@ class GameController {
                 }, msec + slideTime * i);   // タイミングをずらす
             }
 
-            this.showBdrMsg(MSG.BDR.GAME_START, ACT.GS);
-
-            if (gs.whoseTurn != PLAYER.ME) {
-                this.passTurn();
-            }
+            // メッセージ確認と時間経過の両方が完了すると then() 内部が実行される
+            Promise.all([
+                this.showBdrMsg(MSG.BDR.GAME_START, ACT.GS),
+                sleep(slideTime * mcards.length + msec)
+            ]).then((res) => {
+                if (gs.whoseTurn != PLAYER.ME) {
+                    this.setMsgHeader = `<span class="red">ENEMY</span> TURN`;
+                    this.passTurn();
+                } else {
+                    this.setMsgHeader = `<span class="green">YOUR</span> TURN`;
+                }
+            });
 
         });
     }
 
     newRound(isMmyTurnFirst) {
-        this.gameStatus.newRound(isMmyTurnFirst).then((gs) => {
-            this.reflesh();
+        this.gameStatus.newRound(isMmyTurnFirst).then(async (gs) => {
+            await this.reflesh();
 
             const msec = 500;
             const slideTime = 1000;
@@ -440,6 +474,8 @@ class GameController {
                     }
                 }, msec + slideTime * i);   // タイミングをずらす
             }
+
+            await sleep(slideTime * (mcards.length + 1));
 
             // ボーダーウィンドウを表示
             if (gs.roundFirst != PLAYER.ME) {
@@ -449,27 +485,41 @@ class GameController {
         });
     }
 
-    resultRound() {
+    resultRound = async () => {
         const gs = this.gameStatus;
+
+        this.setMsgHeader = `SHOWDOWN   `;
+        await sleep(800);
+        this.setMsgHeader = `SHOWDOWN.  `;
+        await sleep(800);
+        this.setMsgHeader = `SHOWDOWN.. `;
+        await sleep(800);
+        this.setMsgHeader = `SHOWDOWN...`;
+        await sleep(1400);
 
         // ラウンド勝者を判定 + ダメージの計算
         const result = gs.judge();
         if (result == "WIN") {
             gs.enFingers = Math.max(gs.enFingers - gs.enBet, 0);
             gs.roundFirst = PLAYER.EN;
+            this.setMsgHeader = `YOU <span class="green">WIN!</span>`;
         } else if (result == "LOSE") {
             gs.myFingers = Math.max(gs.myFingers - gs.myBet, 0);
             gs.roundFirst = PLAYER.ME;
+            this.setMsgHeader = `YOU <span class="red">LOSE!</span>`;
         } else if (result == "EVEN") {
             // Do something...
             gs.roundFirst = gs.roundFirst;
+            this.setMsgHeader = `DRAW!`;
         }
 
-        // openCards()より前 && judge()より後に実行
-        this.reflesh();
+        // // openCards()より前 && judge()より後に実行
+        // await this.reflesh();
 
         // 両者のカードをオープン
-        this.openCards();
+        await this.openCards();
+
+        await sleep(1000);
 
         // プレイヤー/相手の指(HP)の表示をリセット
         while (divMyHand.children.length > 1) { divMyHand.lastChild.remove(); }
@@ -493,16 +543,20 @@ class GameController {
             );
         }
 
+        await sleep(1000);
+
         // ボーダーウィンドウを表示
         if (gs.roundFirst != PLAYER.ME) {
-            this.showBdrMsg(MSG.BDR.ENEMY_ROUND, ACT.DE);
+            await this.showBdrMsg(MSG.BDR.ENEMY_ROUND, ACT.ER);
+            this.setMsgHeader = `<span class="red">ENEMY</span> TURN`;
         } else {
-            this.showBdrMsg(MSG.BDR.YOUR_ROUND, ACT.DE);
+            await this.showBdrMsg(MSG.BDR.YOUR_ROUND, ACT.YR);
+            this.setMsgHeader = `<span class="green">YOUR</span> TURN`;
         }
 
     }
 
-    openCards() {
+    openCards = () => new Promise((resolve, reject) => {
         const gs = this.gameStatus;
 
         // プレイヤーの手札をオープン
@@ -525,9 +579,11 @@ class GameController {
         } else {
             spanEnSum.className = "";
         }
-    }
 
-    reflesh() {
+        resolve();
+    });
+
+    reflesh = () => new Promise((resolve, reject) => {
         const gs = this.gameStatus;
 
         // 
@@ -707,6 +763,7 @@ class GameController {
             btnDraw.disabled = false;
         }
 
-    }
+        resolve();
+    });
 
 }
