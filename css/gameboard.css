@@ -8,8 +8,6 @@ div.test {
     left     : 1%;
 }
 
-/* debug */
-
 body {
     font-size       : 15px;
     color           : #ffffff;
@@ -286,14 +284,15 @@ span#enHandSum.burst {
     }
 }
 
+
 /* Draw Animation */
-div.numCard.draw:last-child {
-    animation: slide_in 1s;
+div.numCard.draw {
+    animation: slide_in 1.0s;
 }
 
 span#myHandSum.show,
 span#enHandSum.show {
-    animation: showCount 1.5s;
+    animation: showCount 1.0s;
 }
 
 /* keyframes animation */

@@ -35,9 +35,11 @@ class GameStatus {
     round;
     turn;
     isJudged;
+    whoseTurn;
 
     roundFirst;     // "ME" or "ENEMY"
-    stay;
+    myStay;
+    enStay;
 
     myFingers;
     enFingers;
@@ -68,6 +70,9 @@ class GameStatus {
     //
     // METHOD
     //
+
+    get bothStay() { return this.myStay && this.enStay; }
+    set bothStay(status) { this.myStay = !!status; this.enStay = !!status; }
 
     get goal() {
         let GOAL = DEFAULT_PARAMS.GOAL;
@@ -107,7 +112,7 @@ class GameStatus {
             }
         });
 
-        return BET;
+        return Math.max(BET, 0);
     }
 
     get enBet() {
@@ -131,7 +136,7 @@ class GameStatus {
             }
         });
 
-        return BET;
+        return Math.max(BET, 0);
     }
 
     get myHandSum() {
@@ -153,7 +158,7 @@ class GameStatus {
         this.stay = false;
         this.roundFirst = PLAYER.EN;    // or RANDOM
         this.isJudged = false;
-
+        this.whoseTurn = this.roundFirst;
 
         // Fingers (Hit Point) <= default:  5
         this.myFingers = DEFAULT_PARAMS.FINGERS;
@@ -231,6 +236,7 @@ class GameStatus {
 
         // Next round: loser first
         this.roundFirst = (roundFirst) ? roundFirst : this.roundFirst;
+        this.whoseTurn = this.roundFirst;
 
         // 
         // Initialize card in hand
@@ -354,7 +360,7 @@ class GameStatus {
                 decision.cmd = CMD.SP;
                 decision.value = card;
                 this.enHandSP.splice(i, 1); // SPカードを消費
-                // this.stay = false;          // STAYフラグを折る
+                // this.enStay = false;          // STAYフラグを折る
                 return decision;
             }
         }
@@ -363,12 +369,12 @@ class GameStatus {
         if (this.enHandSum + 5 <= this.goal) {
             decision.cmd = CMD.DRAW;
             this.enHand.push(this.deck.pop());  // 手札をドローする
-            // this.stay = false;                  // STAYフラグを折る
+            // this.enStay = false;                  // STAYフラグを折る
             return decision;
         }
 
         // STAY
-        // this.stay = true;   // STAYフラグを立てる
+        // this.enStay = true;   // STAYフラグを立てる
         return decision;
     }
 

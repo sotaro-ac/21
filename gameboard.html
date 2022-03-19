@@ -15,7 +15,7 @@
     <!-- <h1>21</h1> -->
 
     <!-- .YOUR or .ENEMY -->
-    <div class="container YOUR">
+    <div class="container">
       <div id="infoBoard" class="wrapper">
         <div id="message">
           <p id="header"><span class="YOUR">WELCOME</span> CHALLENGER!</p>
@@ -96,15 +96,13 @@
       <!-- END of gameBoard -->
 
       <!-- infoBorder -->
-      <div id="infoBorder">
+      <div id="infoBorder" hidden>
         <div id="infoBdrImg" hidden><img src="img/10000yen.png"></div>
-        <p id="infoBdrMsg">デスゲームに勝ち残り<br>賞金を手に入れろ！</p>
+        <p id="infoBdrMsg">ここにメッセージを挿入</p>
         <div class="infoBtnContainer">
-          <button id="btnGS" class="infoBtn" type="button">GAME START</button>
-          <button id="btnNG" class="infoBtn" type="button" hidden>NEW GAME</button>
-          <button id="btnEG" class="infoBtn" type="button" hidden>END GAME</button>
+          <button id="btn1st" class="infoBtn" type="button" hidden>BUTTON-01</button>
+          <button id="btn2nd" class="infoBtn" type="button" hidden>BUTTON-02</button>
         </div>
-      </div>
       </div>
 
       <!-- infoPopUp -->
@@ -132,7 +130,7 @@
           <!-- Example:
             <span class="label_SP_btn">SP[4]</span>
           -->
-          <span id="label_SP_btn">SP[--]</span>
+          <span id="label_SP_btn" title="SPカードを使用します">SP[--]</span>
         </label>
         <!-- SP_Window -->
         <div id="SP_Window">
@@ -176,7 +174,15 @@
       const divMyHand = document.querySelector("#MY_Hand");
       const divEnHand = document.querySelector("#EN_Hand");
 
-      // popUp
+      // infoBorder
+      const infoBorder = document.querySelector("#infoBorder");
+      const infoBdrImg = document.querySelector("#infoBdrImg");
+      const infoBdrMsg = document.querySelector("#infoBdrMsg");
+      const infoBtnContainer = document.querySelector("#infoBorder .infoBtnContainer");
+      const btn1st = document.querySelector("#btn1st");
+      const btn2ec = document.querySelector("#btn2nd");
+
+      // infoPopUp
       const divInfoPU = document.querySelector("#infoPopUp");
       const divInfoSP = document.querySelector("#infoSP");
       const divSPimg = document.querySelector("#SPimg");

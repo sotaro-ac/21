@@ -12,11 +12,12 @@
 #infoBorder {
     width           : 100%;
     padding         : 6px;
-    background-color: #0000008e;
-    box-shadow      : 0 0 10px 10px #0000008e;
+    background-color: rgba(0, 0, 0, 0.6);
+    box-shadow      : 0 0 10px 10px rgba(0, 0, 0, 0.60);
     position        : absolute;
     top             : 40%;
     animation       : fade-in .2s;
+    z-index         : 100;
 }
 
 #infoBorder #infoBdrMsg {
@@ -43,12 +44,12 @@
 #infoPopUp {
     width           : 300px;
     padding         : 6px;
-    background-color: rgba(0, 0, 0, 0.75);
-    box-shadow      : 0 0 10px 10px rgba(0, 0, 0, 0.75);
-    ;
-    position : absolute;
-    top      : 56%;
-    left     : 36%;
+    background-color: rgba(0, 0, 0, 0.60);
+    box-shadow      : 0 0 10px 10px rgba(0, 0, 0, 0.60);
+    position        : absolute;
+    top             : 56%;
+    left            : 36%;
+    z-index         : 50;
     animation: fade-in .2s;
 }
 
