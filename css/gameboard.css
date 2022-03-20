@@ -1,5 +1,10 @@
 @charset "UTF-8";
 
+/**
+ * TODO: レスポンシブ対応
+ */
+
+
 /* debug */
 div.test {
     font-size: 12px;
@@ -9,12 +14,14 @@ div.test {
 }
 
 body {
-    font-size       : 15px;
-    color           : #ffffff;
-    background-color: black;
-    overflow-x      : hidden;
+    font-size          : 15px;
+    color              : #ffffff;
+    background-color   : black;
+    position           : relative;
     /* 要素選択を無効化 */
-    user-select     : none;
+    user-select        : none;
+    /* 見切れた要素 */
+    /* overflow-x      : visible; */
 }
 
 h1 {
@@ -179,7 +186,8 @@ div#MY_PassiveSP {
 #EN_PassiveSP,
 #MY_Cards,
 #MY_PassiveSP {
-    display: flex;
+    display      : flex;
+    /* overflow-x: hidden; */
 }
 
 #EN_Cards>div.numCard,

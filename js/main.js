@@ -87,7 +87,7 @@ class GameController {
                 // 山札から手札にカードを１枚移動(ドロー)する
                 gs.myHand.push(gs.deck.pop());  // draw from deck
                 gs.myStay = false;  // STAYフラグを折る
-                await this.reflesh();     // アロー関数内：このthisはGCのインスタンス 
+                await this.reflesh();
                 divMyCard.lastChild.classList.add("draw");
                 spanMySum.classList.add("show");
                 await sleep(slideTime);
@@ -96,11 +96,10 @@ class GameController {
 
             // Stay
             btnStay.addEventListener('click', () => {
-                // this.reflesh();     // アロー関数内：このthisはGCのインスタンス 
-                gs.myStay = true; // STAYフラグを立てる
                 if (gs.bothStay) {
                     this.resultRound();
                 } else {
+                    gs.myStay = true; // STAYフラグを立てる
                     this.passTurn();
                 }
             });
@@ -302,8 +301,10 @@ class GameController {
     /**
      * ゲームを開始する
      */
-    run() {
-        this.newGame();
+    run = async () => {
+        // 
+        await this.newGame();
+        console.log("step out!");
     }
 
     passTurn = async () => {
@@ -319,7 +320,7 @@ class GameController {
         gs.whoseTurn = PLAYER.EN;
         this.setMsgHeader = `<span class="red">ENEMY</span> TURN`;
 
-        // 少しだけ待たせる（考えている真似）
+        // 少しだけ待たせる（疑似的な思考時間）
         await sleep(Math.random() * 1000 + 500);
 
         // SPカードの使用
@@ -353,8 +354,11 @@ class GameController {
 
             // SPカード使用のポップアップメッセージを表示
             await this.showPopUp(MSG.POP.STAY);
-            gs.enStay = true; // STAYフラグを立てる
-            if (gs.bothStay) this.resultRound();
+            if (gs.bothStay) {
+                this.resultRound();
+            } else {
+                gs.enStay = true; // STAYフラグを立てる
+            }
         }
 
         // 再帰関数でループ
@@ -368,7 +372,11 @@ class GameController {
         }
     }
 
-    newGame() {
+    /**
+     * 新しいゲームを開始する
+     * @returns {Promise}
+     */
+    newGame = () => new Promise ((resolve, reject) => {
         this.gameStatus.init().then(async (gs) => {
 
             await this.reflesh();
@@ -425,13 +433,17 @@ class GameController {
                 } else {
                     this.setMsgHeader = `<span class="green">YOUR</span> TURN`;
                 }
+                resolve()
             });
-
         });
-    }
+    });
 
-    newRound(isMmyTurnFirst) {
-        this.gameStatus.newRound(isMmyTurnFirst).then(async (gs) => {
+    /**
+     * 新しいラウンドを始める
+     * @param {Boolean} roundFirst # 指定したプレイヤーから始める(DEFAULT: 'EN')
+     */
+    newRound(roundFirst) {
+        this.gameStatus.newRound(roundFirst).then(async (gs) => {
             await this.reflesh();
 
             const msec = 500;
@@ -485,6 +497,9 @@ class GameController {
         });
     }
 
+    /**
+     * ラウンドの勝敗を決める
+     */
     resultRound = async () => {
         const gs = this.gameStatus;
 
