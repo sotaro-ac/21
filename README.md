@@ -19,6 +19,9 @@ GitHub Pagesのテスト用に作成．
   - [x] ボタン押下等のアクションに対する更新機能
   - [ ] ゲームが最低限遊べる状態にした（未達）
 
-- Week 3：Vanilla JavaScriptでゲームの動作を実現（Re:）
+- Week 3：Vanilla JavaScriptでゲームの動作を実現（Re:Re:）
   - [x] メッセージウィンドウの表示機能
+  - [ ] ゲームが最低限遊べる状態にした（未達）
+
+- Week 4：Vanilla JavaScriptでゲームの動作を実現（Final）
   - [ ] ゲームが最低限遊べる状態にした
