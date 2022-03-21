@@ -147,6 +147,11 @@ class GameStatus {
         return this.enHand.reduce((prev, curr) => { return prev + curr; });
     }
 
+    set roundFirst(player) {
+        this.roundFirst = player;
+        this.whoseTurn = player;
+    }
+
     /**
      * ゲームの初期化(リセット)
      * @returns (Promise)
