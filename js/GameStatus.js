@@ -40,6 +40,7 @@ class GameStatus {
     roundFirst;     // "ME" or "ENEMY"
     myStay;
     enStay;
+    useSP;
 
     myFingers;
     enFingers;
@@ -147,7 +148,7 @@ class GameStatus {
         return this.enHand.reduce((prev, curr) => { return prev + curr; });
     }
 
-    set roundFirst(player) {
+    set playFirst(player) {
         this.roundFirst = player;
         this.whoseTurn = player;
     }
@@ -164,6 +165,7 @@ class GameStatus {
         this.roundFirst = PLAYER.EN;    // or RANDOM
         this.isJudged = false;
         this.whoseTurn = this.roundFirst;
+        this.useSP = false;
 
         // Fingers (Hit Point) <= default:  5
         this.myFingers = DEFAULT_PARAMS.FINGERS;
@@ -238,6 +240,7 @@ class GameStatus {
         this.turn = 1;
         this.bothStay = false;
         this.isJudged = false;
+        this.useSP = false;
 
         // Next round: loser first
         this.roundFirst = (roundFirst) ? roundFirst : this.roundFirst;

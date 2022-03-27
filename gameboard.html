@@ -197,6 +197,7 @@
       const divMyCmd = document.querySelector("#MY_Commands");
       const btnStay = document.querySelector("#btnStay");
       const btnDraw = document.querySelector("#btnDraw");
+      const btnSP = document.querySelector("#SP_btn");
 
       // SP_Window
       const SPWindow = document.querySelector("#SP_Window");
@@ -209,9 +210,7 @@
     <script src="js/main.js"></script>
     <script>
       const gc = new GameController("id");
-      document.body.onload = () => {
-        gc.run();
-      };
+      document.body.onload = () => { gc.run(); };
     </script>
   </body>
   <!-- END of BODY -->

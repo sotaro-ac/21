@@ -1,39 +1,13 @@
 // js/main.js
 "use strict";
 
-//   // infoBoard
-//   const pHeader = document.querySelector("#header");
-//   const pNotice = document.querySelector("#notice");
-
-//   // gameBoard
-//   const labelSPBtn = document.querySelector("#label_SP_btn");
-//   const divMyCard = document.querySelector("#MY_Cards");
-//   const divEnCard = document.querySelector("#EN_Cards");
-//   const spanMySum = document.querySelector("#myHandSum");
-//   const spanEnSum = document.querySelector("#enHandSum");
-//   const spanGoal = document.querySelectorAll("span.goal");
-//   const divMyPassSP = document.querySelector("#MY_PassiveSP");
-//   const divEnPassSP = document.querySelector("#EN_PassiveSP");
-//   const divMyHand = document.querySelector("#MY_Hand");
-//   const divEnHand = document.querySelector("#EN_Hand");
-
-//   // MY_Commands
-//   const divMyCmd = document.querySelector("#MY_Commands");
-//   const btnStay = document.querySelector("#btnStay");
-//   const btnDraw = document.querySelector("#btnDraw");
-
-//   // SP_Window
-//   const SPWindow = document.querySelector("#SP_Window");
-//   const SPText = document.querySelector("#spText");
-
-//   const MAX_SP_HAND = 16;
-
+// FUNCTION
 const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
 
 const ACT = {
     get GS() { return "GAME_START"; },
     get GC() { return "GAME_CLEAR"; },
-    get GE() { return "GAME_END"; },
+    get GO() { return "GAME_OVER"; },
     get YR() { return "YOUR_ROUND"; },
     get ER() { return "ENEMY_ROUND"; },
     get NT() { return "NOTICE_TIMEOUT"; },
@@ -44,7 +18,7 @@ const MSG = {
     BDR: {
         get GAME_START() { return "デスゲームに勝ち残り<br>賞金を手に入れろ！"; },
         get GAME_CLEAR() { return "あなたはゲームに勝利して<br>賞金を手に入れた！"; },
-        get GAME_END() { return "あなたはゲームに敗北して<br>死んでしまった..."; },
+        get GAME_OVER() { return "あなたはゲームに敗北して<br>死んでしまった..."; },
         get YOUR_ROUND() { return "次のラウンドはあなたが先攻です。" },
         get ENEMY_ROUND() { return "次のラウンドは相手が先攻です。" },
     },
@@ -56,7 +30,7 @@ const MSG = {
     BUTTON: {
         get GAME_START() { return ["GAME START", ""]; },
         get GAME_CLEAR() { return ["NEW GAME", "END GAME"]; },
-        get GAME_END() { return ["NEW GAME", "END GAME"]; },
+        get GAME_OVER() { return ["NEW GAME", "END GAME"]; },
         get DEFAULT() { return ["OK", ""]; }
     }
 };
@@ -71,45 +45,6 @@ class GameController {
     // CONSTRUCTOR
     // 
     constructor() {
-        // 
-        // コマンドリストをゲーム開始可能な状態にする
-        // 
-        if (!divMyCmd.classList.contains("fullfilled")) {
-            const gs = this.gameStatus;
-            const msec = 500;
-            const slideTime = 1000;
-
-            // Draw
-            btnDraw.addEventListener('click', async () => {
-                // 手札合計値がバースト or 手札が上限の６枚ある場合は無効
-                if (gs.goal < gs.myHandSum || 6 <= gs.myHand.length) return;
-
-                // 山札から手札にカードを１枚移動(ドロー)する
-                gs.myHand.push(gs.deck.pop());  // draw from deck
-                gs.myStay = false;  // STAYフラグを折る
-                await this.reflesh();
-                divMyCard.lastChild.classList.add("draw");
-                spanMySum.classList.add("show");
-                await sleep(slideTime);
-                this.passTurn();
-            });
-
-            // Stay
-            btnStay.addEventListener('click', () => {
-                if (gs.bothStay) {
-                    this.resultRound();
-                } else {
-                    gs.myStay = true; // STAYフラグを立てる
-                    this.passTurn();
-                }
-            });
-
-            // SP Slots
-
-
-            divMyCmd.classList.add("fullfilled");   // 開始可能
-        }
-
         // 
         // SPウィンドウをゲーム開始可能な状態にする
         // 
@@ -217,8 +152,11 @@ class GameController {
             switch (action) {
                 case ACT.GC:
                     infoBdrImg.hidden = false;
-                case ACT.GE:
+                case ACT.GO:
                 case ACT.GS:
+                    infoBdrMsg.innerHTML = MSG.BDR[action];
+                    infoBtnContainer.hidden = false;
+                    infoBorder.hidden = false;
                     // Button 1st
                     if (!MSG.BUTTON[action][0]) btn1st.hidden = true;
                     else btn1st.hidden = false;
@@ -227,6 +165,8 @@ class GameController {
                     if (!MSG.BUTTON[action][1]) btn2nd.hidden = true;
                     else btn2nd.hidden = false;
                     btn2nd.textContent = MSG.BUTTON[action][1];
+                    break;
+
                 case ACT.YR:
                 case ACT.ER:
                     infoBdrMsg.innerHTML = MSG.BDR[action];
@@ -266,6 +206,7 @@ class GameController {
                     infoBtnContainer.hidden = true;
                     btn1st.hidden = true;
                     btn2nd.hidden = true;
+                    resolve();
                 }, showTime);
             } else {
 
@@ -279,13 +220,13 @@ class GameController {
                         btn2nd.hidden = true;
 
                         switch (action) {
-                            case ACT.GE:
-                                if (btn == btn1st) this.newGame();
-                                if (btn == btn2nd) location.replace("index.html");
+                            case ACT.GO:
+                                if (btn == btn1st) resolve(btn1st); // this.newGame()
+                                if (btn == btn2nd) resolve(btn2nd); // location.replace("index.html");
                                 break;
                             case ACT.YR:
                             case ACT.ER:
-                                this.newRound();
+                                // this.newRound();
                                 break;
                             default:
                                 break;
@@ -304,39 +245,150 @@ class GameController {
      */
     run = async () => {
         const gs = this.gameStatus;
-        // 
-        await this.newGame();
-        console.log("step out!");
+        const slideTime = 1000;
+        const timeOutNotice = 2000;
+        let timerIdNotice = null;
+        let prevTurn;
 
-        gs.roundFirst = PLAYER.RANDOM;
-        await this.showBdrMsg(`始めは${(gs.whoseTurn = PLAYER.ME) ? "あなた" : "相手"}のターンです。`, ACT.DE);
+        while (true) {
 
-        while (!gs.isGameEnd) {
-            if (gs.whoseTurn != PLAYER.ME) {
-                this.setMsgHeader = `<span class="red">ENEMY</span> TURN`;
-                await this.passTurn();
-            } else {
-                this.setMsgHeader = `<span class="green">YOUR</span> TURN`;
-                await this.showBdrMsg("あなたのターンはありません！", ACT.NT);
+            // ゲームの開始状態
+            await this.newGame();
+            prevTurn = gs.whoseTurn;
+
+            while (true) {  // !gs.isGameEnd
+                btnStay.disabled = true;
+                btnDraw.disabled = true;
+
+                // 相手のターン処理
+                if (gs.whoseTurn != PLAYER.ME) {
+                    this.setMsgHeader = `<span class="red">ENEMY</span> TURN`;
+                    btnStay.disabled = true;
+                    btnDraw.disabled = true;
+                    btnSP.checked = false;
+                    gs.enStay = false;  // STAYフラグを折る
+                    await this.passTurn();
+                }
+                // 自分のターン処理
+                else {
+                    this.setMsgHeader = `<span class="green">YOUR</span> TURN`;
+                    btnStay.disabled = false;
+                    btnDraw.disabled = false;
+                    gs.myStay = false;  // STAYフラグを折る
+
+                    //* 手札合計値がバースト or 手札が上限の６枚ある場合はドロー不可能
+                    if (gs.goal < gs.myHandSum || 6 <= gs.myHand.length) {
+                        btnDraw.disabled = true;
+                    } else {
+                        btnDraw.disabled = false;
+                    }
+
+                    // どれか１つのボタン押下まで待つ
+                    await new Promise((resolve, reject) => {
+
+                        const ac = new AbortController();
+                        const spBtns = document.querySelectorAll(".spSlot > input");
+
+                        // Draw
+                        btnDraw.addEventListener('click', async () => {
+                            ac.abort();
+                            // 手札合計値がバースト or 手札が上限の６枚ある場合は無効
+                            if (gs.goal < gs.myHandSum || 6 <= gs.myHand.length) return;
+
+                            // 山札から手札にカードを１枚移動(ドロー)する
+                            gs.myHand.push(gs.deck.pop());  // draw from deck
+                            // gs.myStay = false;  // STAYフラグを折る
+                            await this.reflesh();
+                            divMyCard.lastChild.classList.add("draw");
+                            spanMySum.classList.add("show");
+                            await sleep(slideTime);
+                            // 相手のターンに設定
+                            gs.whoseTurn = PLAYER.EN;
+                            resolve();
+                        }, { signal: ac.signal, once: true });
+
+                        // Stay
+                        btnStay.addEventListener('click', () => {
+                            ac.abort();
+                            gs.myStay = true; // STAYフラグを立てる
+                            // 相手のターンに設定
+                            gs.whoseTurn = PLAYER.EN;
+                            resolve();
+                        }, { signal: ac.signal, once: true });
+
+                        // SP Slots
+                        spBtns.forEach((e, i) => {
+                            e.addEventListener('click', (ev) => {
+                                const idx = Number(ev.target.parentElement.id.slice(2));
+                                const spID = Number(ev.target.value);
+                                const sp = gs.mySPDeck;
+                                ac.abort();
+
+                                gs.myHandSP.splice(idx, 1);
+                                console.log("called from ", ev.target); // SP効果発動！
+                                // Passive SPカードを使用した場合はボードに置く
+                                const spPsv = sp.getIdList({ type: "passive" });
+                                const spName = sp.list.find(c => c.id == spID).name;
+                                if (spPsv.some(id => id == spID)) {
+                                    gs.myPassiveSP.push(spID);
+                                } else {
+                                    this.setMsgNotice = `SPカード「${spName}」は<br>現在実装中です by 開発者`;
+                                    // 一定時間後にNoticeを非表示
+                                    if (timerIdNotice) clearTimeout(timerIdNotice);
+                                    timerIdNotice = setTimeout(() => {
+                                        this.setMsgNotice = "";
+                                    }, timeOutNotice);
+                                }
+                                // gs.myStay = false;  // STAYフラグを折る
+                                gs.useSP = true;
+                                this.reflesh();
+                                resolve();
+                            }, { signal: ac.signal, once: true });
+                        });
+                    });
+                }
+
+                // 両者が「STAY」ならラウンドの勝敗を決定する
+                // （ただし，SPカードを使用してSTAYした場合は無視）
+                if (gs.bothStay && !gs.useSP) {
+                    await this.resultRound();
+                    // ゲームの勝敗が付いている時
+                    if (gs.isGameEnd) {
+                        if (gs.isGameEnd == PLAYER.ME) {
+                            this.setMsgHeader = `YOU ARE THE <span class="green">SURVIVOR</span> !!`;
+                            let btn = await this.showBdrMsg(MSG.BDR.GAME_CLEAR, ACT.GC);
+                            if (btn == btn2nd) location.replace("index.html");
+                            console.log(btn);
+                        } else if (gs.isGameEnd == PLAYER.EN) {
+                            this.setMsgHeader = `YOU ARE <span class="red">DEAD</span> ...`;
+                            let btn = await this.showBdrMsg(MSG.BDR.GAME_OVER, ACT.GO);
+                            if (btn == btn2nd) location.replace("index.html");
+                            console.log(btn);
+                        } else {
+                            /* 勝負が付かなかった（現状はエラー） */
+                        }
+                        break;
+                    }
+                    // ゲームの勝敗が付いていない時
+                    await this.newRound();
+                }
+
+                // ターン進行処理
+                if (prevTurn != gs.whoseTurn) {
+                    prevTurn = gs.whoseTurn;
+                    gs.useSP = false;
+                    gs.turn++;
+                    console.log("ROUND " + gs.round + " : TURN " + gs.turn);
+                }
             }
-            console.log(gs.turn);
-            await sleep(1000);
-        }
 
+        }
     }
 
     passTurn = async () => {
         const gs = this.gameStatus;
         const sp = gs.enSPDeck;
         const decision = gs.enemyDecision();
-
-        // プレイヤーの操作を制限
-        btnStay.disabled = true;
-        btnDraw.disabled = true;
-
-        // // 相手のターンに設定
-        // gs.whoseTurn = PLAYER.EN;
-        // this.setMsgHeader = `<span class="red">ENEMY</span> TURN`;
 
         // 少しだけ待たせる（疑似的な思考時間）
         await sleep(Math.random() * 1000 + 500);
@@ -345,6 +397,7 @@ class GameController {
         if (decision.cmd == CMD.SP) {
             const spID = decision.value;
             gs.enStay = false;  // STAYフラグを折る
+            gs.useSP = true;
 
             // Passive SPカードを使用した場合はボードに置く
             const spPsv = sp.getIdList({ type: "passive" });
@@ -365,28 +418,15 @@ class GameController {
 
             // SPカード使用のポップアップメッセージを表示
             await this.showPopUp(MSG.POP.DRAW);
+            gs.whoseTurn = PLAYER.ME;
         }
         // Stay
         else if (decision.cmd == CMD.STAY) {
-            this.reflesh();
-
             // SPカード使用のポップアップメッセージを表示
             await this.showPopUp(MSG.POP.STAY);
-            if (gs.bothStay) {
-                this.resultRound();
-            } else {
-                gs.enStay = true; // STAYフラグを立てる
-            }
-        }
-
-        // 再帰関数でループ
-        if (decision.cmd == CMD.SP) {
-            this.passTurn();
-        } else if (!gs.bothStay) {
-            // プレイヤーのターンに設定
+            gs.enStay = true; // STAYフラグを立てる
+            // this.reflesh();
             gs.whoseTurn = PLAYER.ME;
-            this.setMsgHeader = `<span class="green">YOUR</span> TURN`;
-            this.reflesh();
         }
     }
 
@@ -398,6 +438,7 @@ class GameController {
         this.gameStatus.init().then(async (gs) => {
 
             await this.reflesh();
+            this.setMsgHeader = `<span class="green">WELCOME</span> CHALLENGER!`;
 
             const msec = 500;
             const slideTime = 1000;
@@ -441,27 +482,27 @@ class GameController {
             }
 
             // メッセージ確認と時間経過の両方が完了すると then() 内部が実行される
-            Promise.all([
+            await Promise.all([
                 this.showBdrMsg(MSG.BDR.GAME_START, ACT.GS),
                 sleep(slideTime * mcards.length + msec)
-            ]).then((res) => {
-                // if (gs.whoseTurn != PLAYER.ME) {
-                //     this.setMsgHeader = `<span class="red">ENEMY</span> TURN`;
-                //     this.passTurn();
-                // } else {
-                //     this.setMsgHeader = `<span class="green">YOUR</span> TURN`;
-                // }
-                resolve()
+            ]).then(async (res) => {
+                gs.playFirst = PLAYER.RANDOM;
+                await this.showBdrMsg(
+                    `最初は「${gs.roundFirst == PLAYER.ME
+                        ? `<span class="green">あなた</span>`
+                        : `<span class="red">相手</span>`}」のターンです。`
+                    , ACT.DE);
             });
+            resolve();
         });
     });
 
     /**
      * 新しいラウンドを始める
-     * @param {Boolean} roundFirst # 指定したプレイヤーから始める(DEFAULT: 'EN')
+     * @param {Boolean} roundFirst # 指定したプレイヤーから始める(DEBUG用)
      */
     newRound(roundFirst) {
-        this.gameStatus.newRound(roundFirst).then(async (gs) => {
+        return this.gameStatus.newRound(roundFirst).then(async (gs) => {
             await this.reflesh();
 
             const msec = 500;
@@ -507,10 +548,10 @@ class GameController {
 
             await sleep(slideTime * (mcards.length + 1));
 
-            // ボーダーウィンドウを表示
-            if (gs.roundFirst != PLAYER.ME) {
-                this.passTurn();
-            }
+            // // ボーダーウィンドウを表示
+            // if (gs.roundFirst != PLAYER.ME) {
+            //     this.passTurn();
+            // }
 
         });
     }
@@ -518,7 +559,7 @@ class GameController {
     /**
      * ラウンドの勝敗を決める
      */
-    resultRound = async () => {
+    resultRound = () => new Promise(async (resolve, reject) => {
         const gs = this.gameStatus;
 
         this.setMsgHeader = `SHOWDOWN   `;
@@ -534,15 +575,15 @@ class GameController {
         const result = gs.judge();
         if (result == "WIN") {
             gs.enFingers = Math.max(gs.enFingers - gs.enBet, 0);
-            gs.roundFirst = PLAYER.EN;
+            gs.playFirst = PLAYER.EN;
             this.setMsgHeader = `YOU <span class="green">WIN!</span>`;
         } else if (result == "LOSE") {
             gs.myFingers = Math.max(gs.myFingers - gs.myBet, 0);
-            gs.roundFirst = PLAYER.ME;
+            gs.playFirst = PLAYER.ME;
             this.setMsgHeader = `YOU <span class="red">LOSE!</span>`;
         } else if (result == "EVEN") {
             // Do something...
-            gs.roundFirst = gs.roundFirst;
+            gs.playFirst = gs.roundFirst;
             this.setMsgHeader = `DRAW!`;
         }
 
@@ -578,16 +619,20 @@ class GameController {
 
         await sleep(1000);
 
+        // ゲームの勝負が付いたら次のラウンドは無し
+        if (gs.isGameEnd) resolve();
+
         // ボーダーウィンドウを表示
         if (gs.roundFirst != PLAYER.ME) {
             await this.showBdrMsg(MSG.BDR.ENEMY_ROUND, ACT.ER);
-            this.setMsgHeader = `<span class="red">ENEMY</span> TURN`;
+            // this.setMsgHeader = `<span class="red">ENEMY</span> TURN`;
         } else {
             await this.showBdrMsg(MSG.BDR.YOUR_ROUND, ACT.YR);
-            this.setMsgHeader = `<span class="green">YOUR</span> TURN`;
+            // this.setMsgHeader = `<span class="green">YOUR</span> TURN`;
         }
 
-    }
+        resolve();
+    });
 
     openCards = () => new Promise((resolve, reject) => {
         const gs = this.gameStatus;
