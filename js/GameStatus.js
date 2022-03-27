@@ -40,6 +40,7 @@ class GameStatus {
     roundFirst;     // "ME" or "ENEMY"
     myStay;
     enStay;
+    useSP;
 
     myFingers;
     enFingers;
@@ -147,6 +148,11 @@ class GameStatus {
         return this.enHand.reduce((prev, curr) => { return prev + curr; });
     }
 
+    set playFirst(player) {
+        this.roundFirst = player;
+        this.whoseTurn = player;
+    }
+
     /**
      * ゲームの初期化(リセット)
      * @returns (Promise)
@@ -155,10 +161,11 @@ class GameStatus {
         // round/turn setting
         this.round = 1;
         this.turn = 1;
-        this.stay = false;
+        this.bothStay = false;
         this.roundFirst = PLAYER.EN;    // or RANDOM
         this.isJudged = false;
         this.whoseTurn = this.roundFirst;
+        this.useSP = false;
 
         // Fingers (Hit Point) <= default:  5
         this.myFingers = DEFAULT_PARAMS.FINGERS;
@@ -227,12 +234,13 @@ class GameStatus {
      * @param {String} roundFirst   # for Debug
      * @returns {Promise}
      */
-    newRound = (roundFirst = PLAYER.EN) => new Promise((resolve) => {
+    newRound = (roundFirst) => new Promise((resolve) => {
         // round/turn setting
         this.round = this.round + 1;
         this.turn = 1;
-        this.stay = false;
+        this.bothStay = false;
         this.isJudged = false;
+        this.useSP = false;
 
         // Next round: loser first
         this.roundFirst = (roundFirst) ? roundFirst : this.roundFirst;
@@ -335,7 +343,7 @@ class GameStatus {
      * ゲームの勝者を判定する（ゲームの決着が付いたかを判定する）
      * @returns {null|String} # null: 未決着 | "ME" / "ENEMY": 決着
      */
-    isGameEnd() {
+    get isGameEnd() {
         if (this.myFingers <= 0) return PLAYER.EN;  // プレイヤーの負け
         if (this.enFingers <= 0) return PLAYER.ME;  // 相手の負け
         return null;                                // 未決着

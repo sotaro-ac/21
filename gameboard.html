@@ -3,6 +3,8 @@
   <!-- HEAD -->
   <head>
     <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>21 - Survival Game -</title>
     <link rel="stylesheet" type="text/css" href="css/gameboard.css" />
     <link rel="stylesheet" type="text/css" href="css/pop_up.css" />
@@ -195,6 +197,7 @@
       const divMyCmd = document.querySelector("#MY_Commands");
       const btnStay = document.querySelector("#btnStay");
       const btnDraw = document.querySelector("#btnDraw");
+      const btnSP = document.querySelector("#SP_btn");
 
       // SP_Window
       const SPWindow = document.querySelector("#SP_Window");
@@ -207,9 +210,7 @@
     <script src="js/main.js"></script>
     <script>
       const gc = new GameController("id");
-      document.body.onload = () => {
-        gc.run();
-      };
+      document.body.onload = () => { gc.run(); };
     </script>
   </body>
   <!-- END of BODY -->
