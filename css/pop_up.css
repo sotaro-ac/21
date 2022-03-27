@@ -25,6 +25,7 @@
     font-weight: bold;
     color      : antiquewhite;
     text-align : center;
+    margin: 1em 0;
 }
 
 #infoBorder .infoBtn {
