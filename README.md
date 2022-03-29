@@ -9,4 +9,5 @@ GitHub Pagesのテスト用に作成．
 
 ## 学習スケジュール
 - Week 1 - 4：Vanilla JavaScriptでゲームの動作を実現
-- Week 5 - x: jQuery+SCSSに移行
+- Week 5 - x: jQuery+SCSSに移行      -> branch "dev-jQuery"
+- Week 5 - x: React+TypeScriptに移行 -> branch "dev-React"
