@@ -4,18 +4,10 @@ GitHub Pagesのテスト用に作成．
 
 ## 備考
 - 書いていると知らぬ間にES2022仕様のコードが混在してきたので，最新バージョンのブラウザで開く必要がありそう．
-- プログラムは過去にPHP+PostgreSQLで作成したものを移植している．
-- 画像素材は友人に作成してもらった．
+- プログラムは過去にPHP+CSS+PostgreSQLで作成したものを移植している．
+- 画像素材は[yaakoo](https://github.com/yaakoo)に作成してもらった．
 
 ## 学習スケジュール
-- Week 1：Vanilla Javascriptでゲームの動作を実現
-  - [x] 基本となる画像素材を用意した
-  - [x] ルール説明用のページを用意した
-  - [x] ゲームプレイ用のページを作成(移植)した
-  - [ ] ゲームが最低限遊べる状態にした (未達)
-
-- Week 2：Vanilla Javascriptでゲームの動作を実現（Re:）
-  - [x] 表示物の動的更新機能 (ユーザ情報以外)
-  - [ ] ボタン押下等のアクションに対する更新機能
-  - [ ] ゲームが最低限遊べる状態にした
-
+- Week 1 - 4：Vanilla JavaScriptでゲームの動作を実現
+- Week 5 - x: jQuery+SCSSに移行      -> branch "dev-jQuery"
+- Week 5 - x: React+TypeScriptに移行 -> branch "dev-React"

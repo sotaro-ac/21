@@ -128,11 +128,13 @@
           <button id="btnDraw" type="button" class="clear_btn" disabled>DRAW</button>
         </div>
         <input id="SP_btn" type="checkbox" class="clear_btn" name="SP_Window" />
-        <label for="SP_btn">
-          <!-- Example:
-            <span class="label_SP_btn">SP[4]</span>
-          -->
-          <span id="label_SP_btn" title="SPカードを使用します">SP[--]</span>
+        <label for="SP_btn" id="label_SP_btn" title="SPカードを使用します">
+          <div id="divSPBtn">
+            <!-- Example:
+              SP CARD <span class="label_SP_btn">4</span>
+            -->
+            SP CARD <span>--</span>
+          </div>
         </label>
         <!-- SP_Window -->
         <div id="SP_Window">
@@ -165,7 +167,7 @@
       const pNotice = document.querySelector("#notice");
 
       // gameBoard
-      const labelSPBtn = document.querySelector("#label_SP_btn");
+      const divSPBtn = document.querySelector("#divSPBtn");
       const divMyCard = document.querySelector("#MY_Cards");
       const divEnCard = document.querySelector("#EN_Cards");
       const spanMySum = document.querySelector("#myHandSum");
