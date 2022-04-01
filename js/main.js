@@ -246,7 +246,7 @@ class GameController {
     run = async () => {
         const gs = this.gameStatus;
         const slideTime = 1000;
-        const timeOutNotice = 2000;
+        const timeOutNotice = 2500;
         let timerIdNotice = null;
         let prevTurn;
 
@@ -266,6 +266,7 @@ class GameController {
                     btnStay.disabled = true;
                     btnDraw.disabled = true;
                     btnSP.checked = false;
+                    btnSP.disabled = true;
                     gs.enStay = false;  // STAYフラグを折る
                     await this.passTurn();
                 }
@@ -274,6 +275,7 @@ class GameController {
                     this.setMsgHeader = `<span class="green">YOUR</span> TURN`;
                     btnStay.disabled = false;
                     btnDraw.disabled = false;
+                    btnSP.disabled = false;
                     gs.myStay = false;  // STAYフラグを折る
 
                     //* 手札合計値がバースト or 手札が上限の６枚ある場合はドロー不可能
@@ -321,27 +323,22 @@ class GameController {
                             e.addEventListener('click', (ev) => {
                                 const idx = Number(ev.target.parentElement.id.slice(2));
                                 const spID = Number(ev.target.value);
-                                const sp = gs.mySPDeck;
+                                // const sp = gs.mySPDeck;
                                 ac.abort();
 
                                 gs.myHandSP.splice(idx, 1);
-                                console.log("called from ", ev.target); // SP効果発動！
-                                // Passive SPカードを使用した場合はボードに置く
-                                const spPsv = sp.getIdList({ type: "passive" });
-                                const spName = sp.list.find(c => c.id == spID).name;
-                                if (spPsv.some(id => id == spID)) {
-                                    gs.myPassiveSP.push(spID);
-                                } else {
-                                    this.setMsgNotice = `SPカード「${spName}」は<br>現在実装中です by 開発者`;
-                                    // 一定時間後にNoticeを非表示
-                                    if (timerIdNotice) clearTimeout(timerIdNotice);
-                                    timerIdNotice = setTimeout(() => {
-                                        this.setMsgNotice = "";
-                                    }, timeOutNotice);
-                                }
-                                // gs.myStay = false;  // STAYフラグを折る
-                                gs.useSP = true;
+                                // console.log("called from ", ev.target); // SP効果発動！
+
+                                this.setMsgNotice = gs.useSP(spID, gs.whoseTurn);
+                                // 一定時間後にNoticeを非表示
+                                if (timerIdNotice) clearTimeout(timerIdNotice);
+                                timerIdNotice = setTimeout(() => {
+                                    this.setMsgNotice = "";
+                                }, timeOutNotice);
+
+                                gs.bothStay = false;  // 両者のSTAYフラグを折る
                                 this.reflesh();
+                                // await this.animateSP();
                                 resolve();
                             }, { signal: ac.signal, once: true });
                         });
@@ -350,7 +347,11 @@ class GameController {
 
                 // 両者が「STAY」ならラウンドの勝敗を決定する
                 // （ただし，SPカードを使用してSTAYした場合は無視）
-                if (gs.bothStay && !gs.useSP) {
+                if (gs.bothStay) {
+                    btnStay.disabled = true;
+                    btnDraw.disabled = true;
+                    btnSP.checked = false;
+                    btnSP.disabled = true;
                     await this.resultRound();
                     // ゲームの勝敗が付いている時
                     if (gs.isGameEnd) {
@@ -376,7 +377,6 @@ class GameController {
                 // ターン進行処理
                 if (prevTurn != gs.whoseTurn) {
                     prevTurn = gs.whoseTurn;
-                    gs.useSP = false;
                     gs.turn++;
                     console.log("ROUND " + gs.round + " : TURN " + gs.turn);
                 }
@@ -385,10 +385,15 @@ class GameController {
         }
     }
 
+    /**
+     * 相手のターンを処理する
+     */
     passTurn = async () => {
         const gs = this.gameStatus;
         const sp = gs.enSPDeck;
         const decision = gs.enemyDecision();
+        const timeOutNotice = 2500;
+        let timerIdNotice = null;
 
         // 少しだけ待たせる（疑似的な思考時間）
         await sleep(Math.random() * 1000 + 500);
@@ -396,14 +401,18 @@ class GameController {
         // SPカードの使用
         if (decision.cmd == CMD.SP) {
             const spID = decision.value;
-            gs.enStay = false;  // STAYフラグを折る
-            gs.useSP = true;
-
-            // Passive SPカードを使用した場合はボードに置く
-            const spPsv = sp.getIdList({ type: "passive" });
-            if (spPsv.some(id => id == spID)) {
-                gs.enPassiveSP.push(spID);
-            }
+            gs.bothStay = false;  // 両者のSTAYフラグを折る
+            // // Passive SPカードを使用した場合はボードに置く
+            // const spPsv = sp.getIdList({ type: "passive" });
+            // if (spPsv.some(id => id == spID)) {
+            //     gs.enPassiveSP.push(spID);
+            // }
+            this.setMsgNotice = gs.useSP(spID, gs.whoseTurn);
+            // 一定時間後にNoticeを非表示
+            if (timerIdNotice) clearTimeout(timerIdNotice);
+            timerIdNotice = setTimeout(() => {
+                this.setMsgNotice = "";
+            }, timeOutNotice);
             this.reflesh();
 
             // SPカード使用のポップアップメッセージを表示
@@ -429,6 +438,10 @@ class GameController {
             gs.whoseTurn = PLAYER.ME;
         }
     }
+
+    animateSP = () => new Promise(async (resolve, reject) => {
+        
+    });
 
     /**
      * 新しいゲームを開始する
@@ -832,8 +845,16 @@ class GameController {
             btnDraw.disabled = false;
         }
 
+        if (gs.whoseTurn != PLAYER.ME) {
+            btnStay.disabled = true;
+            btnDraw.disabled = true;
+        } else {
+            btnStay.disabled = false;
+            btnDraw.disabled = false;
+        }
+
         //* 勝敗判定後は新しいラウンド/ゲームを開始するまでSTAY+DRAW不可能
-        if (gs.isJudged || gs.whoseTurn != PLAYER.ME) {
+        if (gs.isJudged) {
             btnStay.disabled = true;
             btnDraw.disabled = true;
         } else {

@@ -40,7 +40,7 @@ class GameStatus {
     roundFirst;     // "ME" or "ENEMY"
     myStay;
     enStay;
-    useSP;
+    // useSP;
 
     myFingers;
     enFingers;
@@ -165,7 +165,7 @@ class GameStatus {
         this.roundFirst = PLAYER.EN;    // or RANDOM
         this.isJudged = false;
         this.whoseTurn = this.roundFirst;
-        this.useSP = false;
+        // this.useSP = false;
 
         // Fingers (Hit Point) <= default:  5
         this.myFingers = DEFAULT_PARAMS.FINGERS;
@@ -240,7 +240,7 @@ class GameStatus {
         this.turn = 1;
         this.bothStay = false;
         this.isJudged = false;
-        this.useSP = false;
+        // this.useSP = false;
 
         // Next round: loser first
         this.roundFirst = (roundFirst) ? roundFirst : this.roundFirst;
@@ -368,7 +368,6 @@ class GameStatus {
                 decision.cmd = CMD.SP;
                 decision.value = card;
                 this.enHandSP.splice(i, 1); // SPカードを消費
-                // this.enStay = false;          // STAYフラグを折る
                 return decision;
             }
         }
@@ -377,13 +376,90 @@ class GameStatus {
         if (this.enHandSum + 5 <= this.goal) {
             decision.cmd = CMD.DRAW;
             this.enHand.push(this.deck.pop());  // 手札をドローする
-            // this.enStay = false;                  // STAYフラグを折る
             return decision;
         }
 
         // STAY
-        // this.enStay = true;   // STAYフラグを立てる
         return decision;
+    }
+
+    /**
+     * SPカード使用の処理を行う
+     * @param {Number} spID 
+     * @param {String} whoUse 
+     * @param {Number} idx 
+     * @returns {String} errMsg
+     */
+    useSP(spID, whoUse, idx) {
+        let errMsg = "";
+
+        if (!spID && !whoUse) {
+            console.log("spID or whoUse is undefined.");
+            return errMsg;
+        }
+
+        const P = {
+            A: whoUse,
+            B: (whoUse == PLAYER.ME) ? PLAYER.EN : PLAYER.ME
+        };
+        const DATA = {
+            ME: {
+                HAND: this.myHand,
+                HANDSP: this.myHandSP,
+                PASSSP: this.myPassiveSP,
+                SPDECK: this.mySPDeck
+            },
+            ENEMY: {
+                HAND: this.enHand,
+                HANDSP: this.enHandSP,
+                PASSSP: this.enPassiveSP,
+                SPDECK: this.enSPDeck
+            }
+        };
+
+        // SPカードを消費する
+        if (idx !== undefined) DATA[P.A].HANDSP.splice(idx, 1);
+
+        const spName = DATA[P.A].SPDECK.list.find(c => c.id == spID).name;
+        const spPsv = DATA[P.A].SPDECK.getIdList({ type: "passive" });
+        // const spAct = DATA[P.A].SPDECK.getIdList({ type: "active" });
+        switch (true) {
+            // Active SP Cards
+            case 1 <= spID && spID <= 11:   // spDraw_x()
+                if (6 <= DATA[P.A].HAND.length) {
+                    errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">場の数字カードが枚数上限です。</span>`;
+                    break;
+                }
+                const idx = this.deck.findIndex(card => card == spID);
+                if (idx != -1) {
+                    this.deck.splice(idx, 1);
+                    DATA[P.A].HAND.push(spID);
+                } else {
+                    errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">山札に「${spID}」は存在しません。</span>`;
+                }
+                break;
+            case spID == 12:
+            // .sort(() => Math.random() - 0.5)
+            case spID == 13:
+            case spID == 14:
+            case spID == 15:
+            case spID == 16:
+            case spID == 17:
+            case spID == 18:
+                errMsg = `SPカード「${spName}」は<br>現在実装中です by 開発者`;
+                break;
+            // Passive SP card
+            case spPsv.some(id => id == spID):
+                // Passive SPカードを使用した場合はボードに置く
+                DATA[P.A].PASSSP.push(spID);
+                break;
+
+            default:
+                errMsg = `Undefined SPCard ID: ${spID}`;
+                break;
+        }
+
+        return errMsg;
     }
 
 }
