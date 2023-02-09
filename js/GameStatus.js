@@ -417,6 +417,10 @@ class GameStatus {
             }
         };
 
+        // 
+        // SP Card Action
+        // 
+
         // SPカードを消費する
         if (idx !== undefined) DATA[P.A].HANDSP.splice(idx, 1);
 
@@ -424,8 +428,12 @@ class GameStatus {
         const spPsv = DATA[P.A].SPDECK.getIdList({ type: "passive" });
         // const spAct = DATA[P.A].SPDECK.getIdList({ type: "active" });
         switch (true) {
+            // 
             // Active SP Cards
-            case 1 <= spID && spID <= 11:   // spDraw_x()
+            // 
+            
+            // spDraw_x()
+            case 1 <= spID && spID <= 11:
                 if (6 <= DATA[P.A].HAND.length) {
                     errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">場の数字カードが枚数上限です。</span>`;
                     break;
@@ -438,9 +446,18 @@ class GameStatus {
                     errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">山札に「${spID}」は存在しません。</span>`;
                 }
                 break;
+            // Perfect Draw
             case spID == 12:
-            // .sort(() => Math.random() - 0.5)
+                // .sort(() => Math.random() - 0.5)
+                break;
+            // Destroy
             case spID == 13:
+                if (DATA[P.B].PASSSP.length < 1) {
+                    errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">場に相手のSPカードは存在しません。</span>`;
+                    break;
+                }
+                DATA[P.B].PASSSP.pop();
+                break;
             case spID == 14:
             case spID == 15:
             case spID == 16:
@@ -448,7 +465,10 @@ class GameStatus {
             case spID == 18:
                 errMsg = `SPカード「${spName}」は<br>現在実装中です by 開発者`;
                 break;
+
+            // 
             // Passive SP card
+            // 
             case spPsv.some(id => id == spID):
                 // Passive SPカードを使用した場合はボードに置く
                 DATA[P.A].PASSSP.push(spID);
