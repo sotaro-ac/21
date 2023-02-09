@@ -574,8 +574,40 @@ class GameStatus {
 
             // Love Your Enemy
             case spID == 18:
-                errMsg = `SPカード「${spName}」は<br>現在実装中です by 開発者`;
+
+                // 山札のカードが残っていない場合は失敗する
+                if (!this.deck.length) {
+                    errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">山札の数字カードが残っていません。</span>`;
+                    break;
+                }
+
+                // 使用者から見て相手側の数字カードが上限枚数であれば失敗
+                if (6 <= DATA[P.B].HAND.length) {
+                    errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">場の数字カードが枚数上限です。</span>`;
+                    break;
+                }
+
+                // メイン処理
+                {
+                    // 山札から探す数字カードの番号/添え字を取得する
+                    const handSum = DATA[P.B].HAND.reduce((a, b) => { return a + b });   // 相手の数字カードの合計値
+
+                    // コードの解釈についてはPerfect Draw (case 12)を参照
+                    const scores = this.deck.map(card => { return (card + handSum <= this.goal) ? card : -card });
+                    const scoreMax = scores.reduce((a, b) => { return Math.max(a, b) });
+
+                    // 一番スコアの高い数字カードの番号/添え字を取得する
+                    const numIdx = scores.indexOf(scoreMax);
+                    const requiredNum = this.deck[numIdx];
+
+                    // 山札から相手の手札に加える
+                    this.deck.splice(numIdx, 1);
+                    DATA[P.B].HAND.push(requiredNum);
+                }
+
                 break;
+
+            // errMsg = `SPカード「${spName}」は<br>現在実装中です by 開発者`;
 
             // 
             // Passive SP card
