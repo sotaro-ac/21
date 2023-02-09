@@ -23,9 +23,9 @@
 #infoBorder #infoBdrMsg {
     font-size  : 20px;
     font-weight: bold;
-    color      : antiquewhite;
+    color      : #ffffff;
     text-align : center;
-    margin: 1em 0;
+    margin     : 1em 0;
 }
 
 #infoBorder .infoBtn {
@@ -51,7 +51,7 @@
     top             : 56%;
     left            : 36%;
     z-index         : 50;
-    animation: fade-in .2s;
+    animation       : fade-in .2s;
 }
 
 #infoSP {
@@ -83,16 +83,16 @@
 #SPname {
     font-size    : 20px;
     font-weight  : bold;
-    color        : antiquewhite;
+    color        : #ffffff;
     text-align   : center;
     padding      : 4px;
     margin       : 6px 0px;
-    border-bottom: 1.2px solid antiquewhite;
+    border-bottom: 1.2px solid #ffffff;
 }
 
 #SPtext {
     font-size : 16px;
-    color     : antiquewhite;
+    color     : #ffffff;
     min-height: 2.5em;
     padding   : 4px 12px;
     margin    : .5em 0;
@@ -100,7 +100,7 @@
 
 #infoMsg {
     font-size      : 18px;
-    color          : antiquewhite;
+    color          : #ffffff;
     /* position */
     display        : flex;
     align-items    : center;

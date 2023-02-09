@@ -70,11 +70,11 @@ input#SP_btn {
     font-weight    : bold;
     background     : #11111133;
     border-radius  : 4px;
-    border         : solid .5px yellowgreen;
+    border         : solid .5px #92ff3d75;
     margin         : 0 .25em;
     padding        : 0;
     width          : 150px;
-    height         : 3em;
+    height         : 2.95em;
 }
 
 #label_SP_btn>#divSPBtn>span {
@@ -104,7 +104,7 @@ input#SP_btn {
 }
 
 input#SP_btn:disabled+#label_SP_btn>#divSPBtn {
-    background: #ececec33;
+    color     : yellowgreen;
 }
 
 input#SP_btn:disabled+#label_SP_btn>#divSPBtn>span {
