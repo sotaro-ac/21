@@ -523,6 +523,20 @@ class GameStatus {
 
             // Remove
             case spID == 15:
+                
+                // 使用者から見て相手側の数字カードが最初の1枚しか存在しない場合は失敗する
+                if (DATA[P.B].HAND.length < 2) {
+                    errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">裏向きの数字カードは山札に戻せません。</span>`;
+                    break;
+                }
+
+                // 相手が最後に引いた数字カードを山札に戻す
+                this.deck.push(DATA[P.B].HAND.pop());
+
+                // 山札をシャッフルする
+                this.deck.sort(() => Math.random() - 0.5);
+
+                break;
 
             // Return
             case spID == 16:
