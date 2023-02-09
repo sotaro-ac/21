@@ -432,26 +432,54 @@ class GameStatus {
             // Active SP Cards
             // 
 
-            // spDraw_x()
-            case 1 <= spID && spID <= 11:
+            // spDraw_x() + Perfect Draw
+            case 1 <= spID && spID <= 12:
+
+                // 山札のカードが残っていない場合は失敗する
+                if (!this.deck.length) {
+                    errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">山札の数字カードが残っていません。</span>`;
+                    break;
+                }
+
+                // 使用者の場の数字カードが6枚以上あれば失敗する
                 if (6 <= DATA[P.A].HAND.length) {
                     errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">場の数字カードが枚数上限です。</span>`;
                     break;
                 }
-                const idx = this.deck.findIndex(card => card == spID);
-                if (idx != -1) {
-                    this.deck.splice(idx, 1);
-                    DATA[P.A].HAND.push(spID);
+
+                // 山札から探す数字カードの番号/添え字を取得する
+                let requiredNum = -1;
+                let numIdx = -1;
+
+                if (spID == 12) {
+                    /* Perfect Drawの場合 */
+                    const handSum = DATA[P.A].HAND.reduce((a, b) => { return a + b });   // 使用者の数字カードの合計値
+                    
+                    /** 山札の数字カードXについて次のようなスコアを算出： 
+                     * - 手札合計 + X <= 目標値 となる X ほどスコアが高くなる
+                     * - 目標値 < 手札合計 + X の場合は X が大きいほどスコアが低くなる
+                     */
+                    const scores = this.deck.map(card => { return (card + handSum <= this.goal) ? card : -card });
+                    const scoreMax = scores.reduce((a, b) => { return Math.max(a,b) });
+                    
+                    // 一番スコアの高い数字カードの番号/添え字を取得する
+                    numIdx = scores.indexOf(scoreMax);
+                    requiredNum = this.deck[numIdx];
                 } else {
-                    errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">山札に「${spID}」は存在しません。</span>`;
+                    /* その他のドロー系SPカード */
+                    requiredNum = spID;
+                    numIdx = this.deck.findIndex(card => card == requiredNum);
                 }
+
+                if (numIdx != -1) {
+                    this.deck.splice(numIdx, 1);
+                    DATA[P.A].HAND.push(requiredNum);
+                } else {
+                    errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">山札に「${requiredNum}」は存在しません。</span>`;
+                }
+
                 break;
-            // Perfect Draw
-            case spID == 12:
-                // .sort(() => Math.random() - 0.5)
-                // 未実装
-                errMsg = `SPカード「${spName}」は<br>現在実装中です by 開発者`;
-                break;
+
             // Destroy
             case spID == 13:
                 if (DATA[P.B].PASSSP.length < 1) {
@@ -461,6 +489,7 @@ class GameStatus {
                 DATA[P.B].PASSSP.pop(); // 使用者から見て相手の最後に置いたSPカードを削除する
                 break;
             case spID == 14:
+            // .sort(() => Math.random() - 0.5)
             case spID == 15:
             case spID == 16:
             case spID == 17:
