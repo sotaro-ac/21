@@ -431,7 +431,7 @@ class GameStatus {
             // 
             // Active SP Cards
             // 
-            
+
             // spDraw_x()
             case 1 <= spID && spID <= 11:
                 if (6 <= DATA[P.A].HAND.length) {
@@ -449,6 +449,8 @@ class GameStatus {
             // Perfect Draw
             case spID == 12:
                 // .sort(() => Math.random() - 0.5)
+                // 未実装
+                errMsg = `SPカード「${spName}」は<br>現在実装中です by 開発者`;
                 break;
             // Destroy
             case spID == 13:
@@ -456,7 +458,7 @@ class GameStatus {
                     errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">場に相手のSPカードは存在しません。</span>`;
                     break;
                 }
-                DATA[P.B].PASSSP.pop();
+                DATA[P.B].PASSSP.pop(); // 使用者から見て相手の最後に置いたSPカードを削除する
                 break;
             case spID == 14:
             case spID == 15:
