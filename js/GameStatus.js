@@ -492,7 +492,7 @@ class GameStatus {
             // SP Change
             case spID == 14:
                 const removeNum = 2;    // Default: 2
-                
+
                 // SPカードがSPチェンジ以外にremoveNum枚なければ失敗する
                 if (DATA[P.A].HANDSP.length < removeNum) {
                     errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">手札に別のSPカードが${removeNum}枚以上必要です。</span>`;
@@ -523,7 +523,7 @@ class GameStatus {
 
             // Remove
             case spID == 15:
-                
+
                 // 使用者から見て相手側の数字カードが最初の1枚しか存在しない場合は失敗する
                 if (DATA[P.B].HAND.length < 2) {
                     errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">裏向きの数字カードは山札に戻せません。</span>`;
@@ -557,6 +557,20 @@ class GameStatus {
 
             // Exchange
             case spID == 17:
+
+                // 相手と自分どちらかの数字カードが最初の1枚目しかなければ失敗する
+                if (DATA[P.A].HAND.length < 2 || DATA[P.B].HAND.length < 2) {
+                    errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">裏向きの数字カードは交換できません。</span>`;
+                    break;
+                }
+
+                // お互いが最後に引いた数字カードを交換する
+                const popA = DATA[P.A].HAND.pop();
+                const popB = DATA[P.B].HAND.pop();
+                DATA[P.A].HAND.push(popB);
+                DATA[P.B].HAND.push(popA);
+
+                break;
 
             // Love Your Enemy
             case spID == 18:
