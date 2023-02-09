@@ -486,13 +486,23 @@ class GameStatus {
                     errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">場に相手のSPカードは存在しません。</span>`;
                     break;
                 }
-                DATA[P.B].PASSSP.pop(); // 使用者から見て相手の最後に置いたSPカードを削除する
+                DATA[P.B].PASSSP.pop(); // 使用者から見て相手側の最後に置いたSPカードを削除する
                 break;
+
+            // SP Change
             case spID == 14:
-            // .sort(() => Math.random() - 0.5)
+                // .sort(() => Math.random() - 0.5)
+
+            // Remove
             case spID == 15:
+
+            // Return
             case spID == 16:
+
+            // Exchange
             case spID == 17:
+
+            // Love Your Enemy
             case spID == 18:
                 errMsg = `SPカード「${spName}」は<br>現在実装中です by 開発者`;
                 break;
