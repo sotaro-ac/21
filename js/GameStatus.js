@@ -434,161 +434,167 @@ class GameStatus {
 
             // spDraw_x() + Perfect Draw
             case 1 <= spID && spID <= 12:
+                {
+                    // 山札のカードが残っていない場合は失敗する
+                    if (!this.deck.length) {
+                        errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">山札の数字カードが残っていません。</span>`;
+                        break;
+                    }
 
-                // 山札のカードが残っていない場合は失敗する
-                if (!this.deck.length) {
-                    errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">山札の数字カードが残っていません。</span>`;
-                    break;
+                    // 使用者の場の数字カードが6枚以上あれば失敗する
+                    if (6 <= DATA[P.A].HAND.length) {
+                        errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">場の数字カードが枚数上限です。</span>`;
+                        break;
+                    }
+
+                    let requiredNum = -1;
+                    let numIdx = -1;
+
+                    // 山札から探す数字カードの番号/添え字を取得する
+                    if (spID == 12) {
+                        /* Perfect Drawの場合 */
+                        const handSum = DATA[P.A].HAND.reduce((a, b) => { return a + b });   // 使用者の数字カードの合計値
+
+                        /** 山札の数字カードXについて次のようなスコアを算出： 
+                         * - 手札合計 + X <= 目標値 となる X ほどスコアが高くなる
+                         * - 目標値 < 手札合計 + X の場合は X が大きいほどスコアが低くなる
+                         */
+                        const scores = this.deck.map(card => { return (card + handSum <= this.goal) ? card : -card });
+                        const scoreMax = scores.reduce((a, b) => { return Math.max(a, b) });
+
+                        // 一番スコアの高い数字カードの番号/添え字を取得する
+                        numIdx = scores.indexOf(scoreMax);
+                        requiredNum = this.deck[numIdx];
+                    } else {
+                        /* その他のドロー系SPカード */
+                        requiredNum = spID;
+                        numIdx = this.deck.findIndex(card => card == requiredNum);
+                    }
+
+                    if (numIdx != -1) {
+                        this.deck.splice(numIdx, 1);
+                        DATA[P.A].HAND.push(requiredNum);
+                    } else {
+                        errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">山札に「${requiredNum}」は存在しません。</span>`;
+                    }
                 }
-
-                // 使用者の場の数字カードが6枚以上あれば失敗する
-                if (6 <= DATA[P.A].HAND.length) {
-                    errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">場の数字カードが枚数上限です。</span>`;
-                    break;
-                }
-
-                // 山札から探す数字カードの番号/添え字を取得する
-                let requiredNum = -1;
-                let numIdx = -1;
-
-                if (spID == 12) {
-                    /* Perfect Drawの場合 */
-                    const handSum = DATA[P.A].HAND.reduce((a, b) => { return a + b });   // 使用者の数字カードの合計値
-
-                    /** 山札の数字カードXについて次のようなスコアを算出： 
-                     * - 手札合計 + X <= 目標値 となる X ほどスコアが高くなる
-                     * - 目標値 < 手札合計 + X の場合は X が大きいほどスコアが低くなる
-                     */
-                    const scores = this.deck.map(card => { return (card + handSum <= this.goal) ? card : -card });
-                    const scoreMax = scores.reduce((a, b) => { return Math.max(a, b) });
-
-                    // 一番スコアの高い数字カードの番号/添え字を取得する
-                    numIdx = scores.indexOf(scoreMax);
-                    requiredNum = this.deck[numIdx];
-                } else {
-                    /* その他のドロー系SPカード */
-                    requiredNum = spID;
-                    numIdx = this.deck.findIndex(card => card == requiredNum);
-                }
-
-                if (numIdx != -1) {
-                    this.deck.splice(numIdx, 1);
-                    DATA[P.A].HAND.push(requiredNum);
-                } else {
-                    errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">山札に「${requiredNum}」は存在しません。</span>`;
-                }
-
                 break;
 
             // Destroy
             case spID == 13:
-                if (DATA[P.B].PASSSP.length < 1) {
-                    errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">場に相手のSPカードは存在しません。</span>`;
-                    break;
+                {
+                    // 使用者から見て相手側のパッシブSPカードが存在しなければ失敗
+                    if (DATA[P.B].PASSSP.length < 1) {
+                        errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">場に相手のSPカードは存在しません。</span>`;
+                        break;
+                    }
+
+                    // 使用者から見て相手側の最後に置いたSPカードを削除する
+                    DATA[P.B].PASSSP.pop();
                 }
-                DATA[P.B].PASSSP.pop(); // 使用者から見て相手側の最後に置いたSPカードを削除する
                 break;
 
             // SP Change
             case spID == 14:
-                const removeNum = 2;    // Default: 2
+                {
+                    const removeNum = 2;    // Default: 2
 
-                // SPカードがSPチェンジ以外にremoveNum枚なければ失敗する
-                if (DATA[P.A].HANDSP.length < removeNum) {
-                    errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">手札に別のSPカードが${removeNum}枚以上必要です。</span>`;
-                    break;
+                    // SPカードがSPチェンジ以外にremoveNum枚なければ失敗する
+                    if (DATA[P.A].HANDSP.length < removeNum) {
+                        errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">手札に別のSPカードが${removeNum}枚以上必要です。</span>`;
+                        break;
+                    }
+
+                    // 使用者の手持ちSPカードの順番をシャッフルする
+                    DATA[P.A].HANDSP.sort(() => Math.random() - 0.5);
+
+                    // シャッフル済のSPカードを先頭からremoveNum枚取り除き、新たに3枚追加する
+                    //* FIXME:
+                    // - 新たに追加されるSPカードの枚数を指定可能にする
+                    // - SPチェンジによって追加のSPチェンジを取得できないようにする
+                    DATA[P.A].HANDSP.splice(
+                        0, removeNum,
+                        DATA[P.A].SPDECK.drawSPCard(),
+                        DATA[P.A].SPDECK.drawSPCard(),
+                        DATA[P.A].SPDECK.drawSPCard()
+                    );
+
+                    // SPカード最大所持数を超過する場合は取り除く
+                    for (let i = DATA[P.A].HANDSP.length; i > MAX_SP_HAND; i--) {
+                        DATA[P.A].HANDSP.pop();
+                    }
+
+                    // SPカードをID順に並び変える
+                    DATA[P.A].HANDSP.sort((a, b) => a - b);
                 }
-
-                // 使用者の手持ちSPカードの順番をシャッフルする
-                DATA[P.A].HANDSP.sort(() => Math.random() - 0.5);
-
-                // シャッフル済のSPカードを先頭からremoveNum枚取り除き、新たに3枚追加する
-                //* FIXME:
-                // - 新たに追加されるSPカードの枚数を指定可能にする
-                // - SPチェンジによって追加のSPチェンジを取得できないようにする
-                DATA[P.A].HANDSP.splice(
-                    0, removeNum,
-                    DATA[P.A].SPDECK.drawSPCard(),
-                    DATA[P.A].SPDECK.drawSPCard(),
-                    DATA[P.A].SPDECK.drawSPCard()
-                );
-
-                // SPカード最大所持数を超過する場合は取り除く
-                for (let i = DATA[P.A].HANDSP.length; i > MAX_SP_HAND; i--) {
-                    DATA[P.A].HANDSP.pop();
-                }
-                DATA[P.A].HANDSP.sort((a, b) => a - b);
-
                 break;
 
             // Remove
             case spID == 15:
+                {
+                    // 使用者から見て相手側の数字カードが最初の1枚しか存在しない場合は失敗する
+                    if (DATA[P.B].HAND.length < 2) {
+                        errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">裏向きの数字カードは山札に戻せません。</span>`;
+                        break;
+                    }
 
-                // 使用者から見て相手側の数字カードが最初の1枚しか存在しない場合は失敗する
-                if (DATA[P.B].HAND.length < 2) {
-                    errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">裏向きの数字カードは山札に戻せません。</span>`;
-                    break;
+                    // 相手が最後に引いた数字カードを山札に戻す
+                    this.deck.push(DATA[P.B].HAND.pop());
+
+                    // 山札をシャッフルする
+                    this.deck.sort(() => Math.random() - 0.5);
                 }
-
-                // 相手が最後に引いた数字カードを山札に戻す
-                this.deck.push(DATA[P.B].HAND.pop());
-
-                // 山札をシャッフルする
-                this.deck.sort(() => Math.random() - 0.5);
-
                 break;
 
             // Return
             case spID == 16:
+                {
+                    // 使用者の数字カードが最初の1枚しか存在しない場合は失敗する
+                    if (DATA[P.A].HAND.length < 2) {
+                        errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">裏向きの数字カードは山札に戻せません。</span>`;
+                        break;
+                    }
 
-                // 使用者の数字カードが最初の1枚しか存在しない場合は失敗する
-                if (DATA[P.A].HAND.length < 2) {
-                    errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">裏向きの数字カードは山札に戻せません。</span>`;
-                    break;
+                    // 自分が最後に引いた数字カードを山札に戻す
+                    this.deck.push(DATA[P.A].HAND.pop());
+
+                    // 山札をシャッフルする
+                    this.deck.sort(() => Math.random() - 0.5);
                 }
-
-                // 自分が最後に引いた数字カードを山札に戻す
-                this.deck.push(DATA[P.A].HAND.pop());
-
-                // 山札をシャッフルする
-                this.deck.sort(() => Math.random() - 0.5);
-
                 break;
 
             // Exchange
             case spID == 17:
+                {
+                    // 相手と自分どちらかの数字カードが最初の1枚目しかなければ失敗する
+                    if (DATA[P.A].HAND.length < 2 || DATA[P.B].HAND.length < 2) {
+                        errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">裏向きの数字カードは交換できません。</span>`;
+                        break;
+                    }
 
-                // 相手と自分どちらかの数字カードが最初の1枚目しかなければ失敗する
-                if (DATA[P.A].HAND.length < 2 || DATA[P.B].HAND.length < 2) {
-                    errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">裏向きの数字カードは交換できません。</span>`;
-                    break;
+                    // お互いが最後に引いた数字カードを交換する
+                    const popA = DATA[P.A].HAND.pop();
+                    const popB = DATA[P.B].HAND.pop();
+                    DATA[P.A].HAND.push(popB);
+                    DATA[P.B].HAND.push(popA);
                 }
-
-                // お互いが最後に引いた数字カードを交換する
-                const popA = DATA[P.A].HAND.pop();
-                const popB = DATA[P.B].HAND.pop();
-                DATA[P.A].HAND.push(popB);
-                DATA[P.B].HAND.push(popA);
-
                 break;
 
             // Love Your Enemy
             case spID == 18:
-
-                // 山札のカードが残っていない場合は失敗する
-                if (!this.deck.length) {
-                    errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">山札の数字カードが残っていません。</span>`;
-                    break;
-                }
-
-                // 使用者から見て相手側の数字カードが上限枚数であれば失敗
-                if (6 <= DATA[P.B].HAND.length) {
-                    errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">場の数字カードが枚数上限です。</span>`;
-                    break;
-                }
-
-                // メイン処理
                 {
+                    // 山札のカードが残っていない場合は失敗する
+                    if (!this.deck.length) {
+                        errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">山札の数字カードが残っていません。</span>`;
+                        break;
+                    }
+
+                    // 使用者から見て相手側の数字カードが上限枚数であれば失敗
+                    if (6 <= DATA[P.B].HAND.length) {
+                        errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">場の数字カードが枚数上限です。</span>`;
+                        break;
+                    }
+
                     // 山札から探す数字カードの番号/添え字を取得する
                     const handSum = DATA[P.B].HAND.reduce((a, b) => { return a + b });   // 相手の数字カードの合計値
 
@@ -604,17 +610,27 @@ class GameStatus {
                     this.deck.splice(numIdx, 1);
                     DATA[P.B].HAND.push(requiredNum);
                 }
-
                 break;
 
-            // errMsg = `SPカード「${spName}」は<br>現在実装中です by 開発者`;
+
+            // case spID == xx:
+            //     {
+            //         // 山札のカードが残っていない場合は失敗する
+            //         if (!this.deck.length) {
+            //             errMsg = `SPカード「${spName}」は<br>現在実装中です by 開発者`;
+            //             break;
+            //         }
+            //     }
+
 
             // 
             // Passive SP card
             // 
             case spPsv.some(id => id == spID):
-                // Passive SPカードを使用した場合はボードに置く
-                DATA[P.A].PASSSP.push(spID);
+                {
+                    // Passive SPカードを使用した場合はボードに置く
+                    DATA[P.A].PASSSP.push(spID);
+                }
                 break;
 
             default:
