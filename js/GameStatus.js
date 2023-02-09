@@ -454,14 +454,14 @@ class GameStatus {
                 if (spID == 12) {
                     /* Perfect Drawの場合 */
                     const handSum = DATA[P.A].HAND.reduce((a, b) => { return a + b });   // 使用者の数字カードの合計値
-                    
+
                     /** 山札の数字カードXについて次のようなスコアを算出： 
                      * - 手札合計 + X <= 目標値 となる X ほどスコアが高くなる
                      * - 目標値 < 手札合計 + X の場合は X が大きいほどスコアが低くなる
                      */
                     const scores = this.deck.map(card => { return (card + handSum <= this.goal) ? card : -card });
-                    const scoreMax = scores.reduce((a, b) => { return Math.max(a,b) });
-                    
+                    const scoreMax = scores.reduce((a, b) => { return Math.max(a, b) });
+
                     // 一番スコアの高い数字カードの番号/添え字を取得する
                     numIdx = scores.indexOf(scoreMax);
                     requiredNum = this.deck[numIdx];
@@ -491,7 +491,35 @@ class GameStatus {
 
             // SP Change
             case spID == 14:
-                // .sort(() => Math.random() - 0.5)
+                const removeNum = 2;    // Default: 2
+                
+                // SPカードがSPチェンジ以外にremoveNum枚なければ失敗する
+                if (DATA[P.A].HANDSP.length < removeNum) {
+                    errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">手札に別のSPカードが${removeNum}枚以上必要です。</span>`;
+                    break;
+                }
+
+                // 使用者の手持ちSPカードの順番をシャッフルする
+                DATA[P.A].HANDSP.sort(() => Math.random() - 0.5);
+
+                // シャッフル済のSPカードを先頭からremoveNum枚取り除き、新たに3枚追加する
+                //* FIXME:
+                // - 新たに追加されるSPカードの枚数を指定可能にする
+                // - SPチェンジによって追加のSPチェンジを取得できないようにする
+                DATA[P.A].HANDSP.splice(
+                    0, removeNum,
+                    DATA[P.A].SPDECK.drawSPCard(),
+                    DATA[P.A].SPDECK.drawSPCard(),
+                    DATA[P.A].SPDECK.drawSPCard()
+                );
+
+                // SPカード最大所持数を超過する場合は取り除く
+                for (let i = DATA[P.A].HANDSP.length; i > MAX_SP_HAND; i--) {
+                    DATA[P.A].HANDSP.pop();
+                }
+                DATA[P.A].HANDSP.sort((a, b) => a - b);
+
+                break;
 
             // Remove
             case spID == 15:
