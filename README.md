@@ -1,4 +1,4 @@
-# 21
+# 21 [【GAME START】](https://sotaro-ac.github.io/21)
 
 **闇の《ブラックジャック》で遊ぼう！**
 ~~<small>某サバイバルホラーのミニゲームを再現！</small>~~
