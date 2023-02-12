@@ -35,7 +35,6 @@ span.small {
 }
 
 
-
 h1 {
   color     : yellowgreen;
   margin    : 2%;
@@ -43,8 +42,14 @@ h1 {
   text-align: center;
 }
 
-h1#title {
-  font-size: 120px;
+#title {
+  margin-top: 4rem;
+  font-size: 8rem;
+  line-height: 4rem;
+}
+
+#title-sub {
+  font-size: 2rem;
 }
 
 h2 {
