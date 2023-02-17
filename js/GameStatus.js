@@ -696,6 +696,12 @@ class GameStatus {
             // 
             case spPsv.some(id => id == spID):
                 {
+                    // 使用者の場のSPカードが上限であれば失敗する
+                    if (6 <= DATA[P.A].PASSSP.length) {
+                        errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">場の数字カードが枚数上限です。</span>`;
+                        break;
+                    }
+
                     // Passive SPカードを使用した場合はボードに置く
                     DATA[P.A].PASSSP.push(spID);
                 }
