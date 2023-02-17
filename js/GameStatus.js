@@ -383,6 +383,54 @@ class GameStatus {
         return decision;
     }
 
+    enemyDecision2() {
+        const decision = { cmd: CMD.STAY, value: null };
+
+        // 
+        // ここではSTAYフラグを更新しない
+        // 
+
+        // Draw
+        if (this.enHandSum + 5 <= this.goal) {
+            decision.cmd = CMD.DRAW;
+            this.enHand.push(this.deck.pop());  // 手札をドローする
+            return decision;
+        }
+
+        // SP card
+        for (let i = 0; i < this.enHandSP.length; i++) {
+            const card = this.enHandSP[i];
+
+            if (
+                21 <= card && card <= 22
+                && this.enHandSum - this.goal < 1   // バーストしていないとき
+            ) {
+                decision.cmd = CMD.SP;
+                decision.value = card;
+                this.enHandSP.splice(i, 1); // SPカードを消費
+                return decision;
+            }
+
+            if (23 <= card && card <= 24
+                && 0 < this.myBet   // 自身への掛け数が1以上のとき
+            ) {
+                // バーストした場合 or 負けるリスクが高い場合
+                if (
+                    0 < this.enHandSum - this.goal  // バーストしたとき
+                    || false                        // 負けるリスクが高い場合を実装する
+                ) {
+                    decision.cmd = CMD.SP;
+                    decision.value = card;
+                    this.enHandSP.splice(i, 1); // SPカードを消費
+                    return decision;
+                }
+            }
+        }
+
+        // STAY
+        return decision;
+    }
+
     /**
      * SPカード使用の処理を行う
      * @param {Number} spID 
