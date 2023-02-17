@@ -354,7 +354,27 @@ class GameStatus {
      * @return {Object} decision # -> {cmd: String, value: Number}
      * # -> cmd: "STAY" or "DRAW" or "SP" | value: Number(spID)
      */
-    enemyDecision() {
+
+    enemyDecision = () => {
+        let decision = { cmd: CMD.STAY, value: null };
+
+        switch (this.enFingers) {
+            case 5:
+            case 4:
+            case 3:
+                decision = this._enemyDecision1();
+                break
+            case 2:
+            case 1:
+                decision = this._enemyDecision2();
+                break
+            // default:
+        }
+
+        return decision;
+    }
+
+    _enemyDecision1() {
         const decision = { cmd: CMD.STAY, value: null };
 
         // 
@@ -383,7 +403,7 @@ class GameStatus {
         return decision;
     }
 
-    enemyDecision2() {
+    _enemyDecision2() {
         const decision = { cmd: CMD.STAY, value: null };
 
         // 
@@ -412,7 +432,7 @@ class GameStatus {
             }
 
             if (23 <= card && card <= 24
-                && 0 < this.myBet   // 自身への掛け数が1以上のとき
+                && 0 < this.enBet   // 自身への掛け数が1以上のとき
             ) {
                 // バーストした場合 or 負けるリスクが高い場合
                 if (
