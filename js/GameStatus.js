@@ -354,7 +354,27 @@ class GameStatus {
      * @return {Object} decision # -> {cmd: String, value: Number}
      * # -> cmd: "STAY" or "DRAW" or "SP" | value: Number(spID)
      */
-    enemyDecision() {
+
+    enemyDecision = () => {
+        let decision = { cmd: CMD.STAY, value: null };
+
+        switch (this.enFingers) {
+            case 5:
+            case 4:
+            case 3:
+                decision = this._enemyDecision1();
+                break
+            case 2:
+            case 1:
+                decision = this._enemyDecision2();
+                break
+            // default:
+        }
+
+        return decision;
+    }
+
+    _enemyDecision1() {
         const decision = { cmd: CMD.STAY, value: null };
 
         // 
@@ -377,6 +397,54 @@ class GameStatus {
             decision.cmd = CMD.DRAW;
             this.enHand.push(this.deck.pop());  // 手札をドローする
             return decision;
+        }
+
+        // STAY
+        return decision;
+    }
+
+    _enemyDecision2() {
+        const decision = { cmd: CMD.STAY, value: null };
+
+        // 
+        // ここではSTAYフラグを更新しない
+        // 
+
+        // Draw
+        if (this.enHandSum + 5 <= this.goal) {
+            decision.cmd = CMD.DRAW;
+            this.enHand.push(this.deck.pop());  // 手札をドローする
+            return decision;
+        }
+
+        // SP card
+        for (let i = 0; i < this.enHandSP.length; i++) {
+            const card = this.enHandSP[i];
+
+            if (
+                21 <= card && card <= 22
+                && this.enHandSum - this.goal < 1   // バーストしていないとき
+            ) {
+                decision.cmd = CMD.SP;
+                decision.value = card;
+                this.enHandSP.splice(i, 1); // SPカードを消費
+                return decision;
+            }
+
+            if (23 <= card && card <= 24
+                && 0 < this.enBet   // 自身への掛け数が1以上のとき
+            ) {
+                // バーストした場合 or 負けるリスクが高い場合
+                if (
+                    0 < this.enHandSum - this.goal  // バーストしたとき
+                    || false                        // 負けるリスクが高い場合を実装する
+                ) {
+                    decision.cmd = CMD.SP;
+                    decision.value = card;
+                    this.enHandSP.splice(i, 1); // SPカードを消費
+                    return decision;
+                }
+            }
         }
 
         // STAY
@@ -628,6 +696,12 @@ class GameStatus {
             // 
             case spPsv.some(id => id == spID):
                 {
+                    // 使用者の場のSPカードが上限であれば失敗する
+                    if (6 <= DATA[P.A].PASSSP.length) {
+                        errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">場の数字カードが枚数上限です。</span>`;
+                        break;
+                    }
+
                     // Passive SPカードを使用した場合はボードに置く
                     DATA[P.A].PASSSP.push(spID);
                 }
