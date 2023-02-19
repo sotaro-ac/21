@@ -361,9 +361,9 @@ class GameStatus {
         switch (this.enFingers) {
             case 5:
             case 4:
-            case 3:
                 decision = this._enemyDecision1();
                 break
+            case 3:
             case 2:
             case 1:
                 decision = this._enemyDecision2();
