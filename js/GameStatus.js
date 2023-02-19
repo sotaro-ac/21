@@ -361,9 +361,9 @@ class GameStatus {
         switch (this.enFingers) {
             case 5:
             case 4:
-            case 3:
                 decision = this._enemyDecision1();
                 break
+            case 3:
             case 2:
             case 1:
                 decision = this._enemyDecision2();
@@ -700,6 +700,14 @@ class GameStatus {
                     if (6 <= DATA[P.A].PASSSP.length) {
                         errMsg = `SPカード「${spName}」は発動に失敗した！<br><span class="red">場の数字カードが枚数上限です。</span>`;
                         break;
+                    }
+
+                    // Goal系のSPカードが場に既に存在する場合は削除する
+                    if (25 <= spID && spID <= 27) {
+                        DATA[P.A].PASSSP.splice(0, DATA[P.A].PASSSP.length,
+                            ...DATA[P.A].PASSSP.filter(id => id < 25 || 27 < id));
+                        DATA[P.B].PASSSP.splice(0, DATA[P.B].PASSSP.length,
+                            ...DATA[P.B].PASSSP.filter(id => id < 25 || 27 < id));
                     }
 
                     // Passive SPカードを使用した場合はボードに置く
