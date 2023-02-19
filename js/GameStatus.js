@@ -702,11 +702,13 @@ class GameStatus {
                         break;
                     }
 
-                    // // Goal系のSPカードが場に既に存在する場合は削除する
-                    // if (25 <= spID && spID <= 27) {
-                    //     this.myPassiveSP = this.myPassiveSP.filter(id => id < 25 || 27 < id);
-                    //     this.enPassiveSP = this.enPassiveSP.filter(id => id < 25 || 27 < id);
-                    // }
+                    // Goal系のSPカードが場に既に存在する場合は削除する
+                    if (25 <= spID && spID <= 27) {
+                        DATA[P.A].PASSSP.splice(0, DATA[P.A].PASSSP.length,
+                            ...DATA[P.A].PASSSP.filter(id => id < 25 || 27 < id));
+                        DATA[P.B].PASSSP.splice(0, DATA[P.B].PASSSP.length,
+                            ...DATA[P.B].PASSSP.filter(id => id < 25 || 27 < id));
+                    }
 
                     // Passive SPカードを使用した場合はボードに置く
                     DATA[P.A].PASSSP.push(spID);
