@@ -6,14 +6,15 @@ export function initializeGame() {
         if (!DOM.myCards || !DOM.enemyCards) {
             throw new Error('必要なDOM要素が見つかりません');
         }
-
-        const gc = new GameController("id");
+        const gc = new GameController('id');
         document.body.onload = () => {
             try {
                 gc.run();
             } catch (error) {
                 console.error('ゲームの実行中にエラーが発生しました:', error);
-                showErrorToUser('ゲームの実行中にエラーが発生しました。ページを再読み込みしてください。');
+                showErrorToUser(
+                    'ゲームの実行中にエラーが発生しました。ページを再読み込みしてください。'
+                );
             }
         };
     } catch (error) {
@@ -30,4 +31,4 @@ function showErrorToUser(message) {
     } else {
         alert(message);
     }
-} 
+}

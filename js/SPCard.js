@@ -1,16 +1,15 @@
 // js/SPCard.js
-"use strict";
+'use strict';
 
 // export
 export class SPCard {
-
     //
     // STATIC (ES2022)
     //
-    static list = [];   // SPカードリスト
+    static list = []; // SPカードリスト
 
     // private (ES2022)
-    static #PATH_TO_SPCARD_JSON = "json/sp_card.json";
+    static #PATH_TO_SPCARD_JSON = 'json/sp_card.json';
 
     // setter
     static set PATH_TO_SPCARD_JSON(path) {
@@ -28,10 +27,12 @@ export class SPCard {
      */
     static #updateSPList = () => {
         return fetch(SPCard.#PATH_TO_SPCARD_JSON)
-            .then((res) => { return res.json(); })
-            .then((json) => {
+            .then(res => {
+                return res.json();
+            })
+            .then(json => {
                 SPCard.list.length = 0;
-                json["sp_card"].forEach((card) => {
+                json['sp_card'].forEach(card => {
                     SPCard.list.push(card);
                 });
             });
@@ -46,9 +47,9 @@ export class SPCard {
         SPCard.#fetchPromise = SPCard.#updateSPList();
     }
 
-    // 
+    //
     // PUBLIC LOCAL
-    // 
+    //
     initPromise;
     list = [];
     /**
@@ -61,10 +62,14 @@ export class SPCard {
     // CONSTRUCTOR
     //
     constructor() {
-        this.initPromise = new Promise((resolve) => {
+        this.initPromise = new Promise(resolve => {
             SPCard.#fetchPromise
-                .then((res) => { this.init(); })
-                .then((res) => { resolve(); });
+                .then(res => {
+                    this.init();
+                })
+                .then(res => {
+                    resolve();
+                });
         });
     }
 
@@ -77,7 +82,7 @@ export class SPCard {
      */
     init() {
         // "name", 'type', 'description' がひとつでも欠けているカードは除く
-        this.list = SPCard.list.filter((c) => c.name || c.type || c.description);
+        this.list = SPCard.list.filter(c => c.name || c.type || c.description);
         return this;
     }
 
@@ -88,18 +93,13 @@ export class SPCard {
      * @returns {Array}
      */
     getIdList({ type, attr } = {}) {
-        // 
+        //
         // type または attr が指定されていれば該当するカードに絞る
-        // 
+        //
         if (type && attr) {
-            return this.list
-                .filter((c) => c.type == type && c.attr.includes(attr))
-                .map((c) => c.id);
-        }
-        else if (type || attr) {
-            return this.list
-                .filter((c) => c.type == type || c.attr.includes(attr))
-                .map((c) => c.id);
+            return this.list.filter(c => c.type == type && c.attr.includes(attr)).map(c => c.id);
+        } else if (type || attr) {
+            return this.list.filter(c => c.type == type || c.attr.includes(attr)).map(c => c.id);
         }
         // Defailt
         return this.list.map(card => card.id);
@@ -108,7 +108,7 @@ export class SPCard {
     /**
      * 利用可能なSPカードの中からランダムにひとつのIDを選択する
      * *[OPTION]:配列idList の中からIDをひとつ選ぶ
-     * @param {Array} idList 
+     * @param {Array} idList
      * @returns {Number}
      */
     drawSPCard(idList) {

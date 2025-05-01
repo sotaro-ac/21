@@ -1,34 +1,44 @@
 // js/GameStatus.js
-"use strict";
+'use strict';
 
 import { SPCard } from './SPCard.js';
 import { MAX_SP_HAND } from './domElements.js';
 
 // export default {...}
 export const DEFAULT_PARAMS = {
-    get DECK() { return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] },
-    get FINGERS() { return 5 },
-    get GOAL() { return 21 },
-    get BET() { return 1 }
+    get DECK() {
+        return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+    },
+    get FINGERS() {
+        return 5;
+    },
+    get GOAL() {
+        return 21;
+    },
+    get BET() {
+        return 1;
+    },
 };
 
 export const PLAYER = {
-    ME: "ME",
-    EN: "ENEMY",
-    get RANDOM() { return (Math.random() > 0.5) ? this.ME : this.EN }
+    ME: 'ME',
+    EN: 'ENEMY',
+    get RANDOM() {
+        return Math.random() > 0.5 ? this.ME : this.EN;
+    },
 };
 
 export const CMD = {
-    STAY: "STAY",
-    DRAW: "DRAW",
-    SP: "SP"
+    STAY: 'STAY',
+    DRAW: 'DRAW',
+    SP: 'SP',
 };
 
 // export
 export class GameStatus {
-    // 
+    //
     // PUBLIC LOCAL
-    // 
+    //
     userId;
     userName;
 
@@ -37,7 +47,7 @@ export class GameStatus {
     isJudged;
     whoseTurn;
 
-    roundFirst;     // "ME" or "ENEMY"
+    roundFirst; // "ME" or "ENEMY"
     myStay;
     enStay;
     // useSP;
@@ -61,7 +71,7 @@ export class GameStatus {
     //
     // CONSTRUCTOR
     //
-    constructor(userId = "----", userName = "----") {
+    constructor(userId = '----', userName = '----') {
         this.userId = userId;
         this.userName = userName;
         this.mySPDeck = new SPCard();
@@ -72,8 +82,13 @@ export class GameStatus {
     // METHOD
     //
 
-    get bothStay() { return this.myStay && this.enStay; }
-    set bothStay(status) { this.myStay = !!status; this.enStay = !!status; }
+    get bothStay() {
+        return this.myStay && this.enStay;
+    }
+    set bothStay(status) {
+        this.myStay = !!status;
+        this.enStay = !!status;
+    }
 
     get goal() {
         let GOAL = DEFAULT_PARAMS.GOAL;
@@ -82,10 +97,17 @@ export class GameStatus {
         const allPassSP = this.myPassiveSP.concat(this.enPassiveSP);
         allPassSP.forEach((e, i) => {
             switch (e) {
-                case 25: GOAL = 17; break;  // SP shield
-                case 26: GOAL = 24; break;  // SP shield +
-                case 27: GOAL = 27; break;  // SP shield +
-                default: break; // Others
+                case 25:
+                    GOAL = 17;
+                    break; // SP shield
+                case 26:
+                    GOAL = 24;
+                    break; // SP shield +
+                case 27:
+                    GOAL = 27;
+                    break; // SP shield +
+                default:
+                    break; // Others
             }
         });
 
@@ -98,18 +120,28 @@ export class GameStatus {
         // My Passive SP cards' abilities
         this.myPassiveSP.forEach((e, i) => {
             switch (e) {
-                case 23: BET = BET - 1; break;  // SP shield
-                case 24: BET = BET - 2; break;  // SP shield +
-                default: break; // Others
+                case 23:
+                    BET = BET - 1;
+                    break; // SP shield
+                case 24:
+                    BET = BET - 2;
+                    break; // SP shield +
+                default:
+                    break; // Others
             }
         });
 
         // En Passive SP cards' abilities
         this.enPassiveSP.forEach((e, i) => {
             switch (e) {
-                case 21: BET = BET + 1; break;  // Bet up
-                case 22: BET = BET + 2; break;  // Bet up +
-                default: break; // Others
+                case 21:
+                    BET = BET + 1;
+                    break; // Bet up
+                case 22:
+                    BET = BET + 2;
+                    break; // Bet up +
+                default:
+                    break; // Others
             }
         });
 
@@ -122,18 +154,28 @@ export class GameStatus {
         // My Passive SP cards' abilities
         this.myPassiveSP.forEach((e, i) => {
             switch (e) {
-                case 21: BET = BET + 1; break;  // Bet up
-                case 22: BET = BET + 2; break;  // Bet up +
-                default: break; // Others
+                case 21:
+                    BET = BET + 1;
+                    break; // Bet up
+                case 22:
+                    BET = BET + 2;
+                    break; // Bet up +
+                default:
+                    break; // Others
             }
         });
 
         // En Passive SP cards' abilities
         this.enPassiveSP.forEach((e, i) => {
             switch (e) {
-                case 23: BET = BET - 1; break;  // SP shield
-                case 24: BET = BET - 2; break;  // SP shield +
-                default: break; // Others
+                case 23:
+                    BET = BET - 1;
+                    break; // SP shield
+                case 24:
+                    BET = BET - 2;
+                    break; // SP shield +
+                default:
+                    break; // Others
             }
         });
 
@@ -141,11 +183,15 @@ export class GameStatus {
     }
 
     get myHandSum() {
-        return this.myHand.reduce((prev, curr) => { return prev + curr; });
+        return this.myHand.reduce((prev, curr) => {
+            return prev + curr;
+        });
     }
 
     get enHandSum() {
-        return this.enHand.reduce((prev, curr) => { return prev + curr; });
+        return this.enHand.reduce((prev, curr) => {
+            return prev + curr;
+        });
     }
 
     set playFirst(player) {
@@ -157,145 +203,144 @@ export class GameStatus {
      * ゲームの初期化(リセット)
      * @returns (Promise)
      */
-    init = () => new Promise((resolve) => {
-        // round/turn setting
-        this.round = 1;
-        this.turn = 1;
-        this.bothStay = false;
-        this.roundFirst = PLAYER.EN;    // or RANDOM
-        this.isJudged = false;
-        this.whoseTurn = this.roundFirst;
-        // this.useSP = false;
+    init = () =>
+        new Promise(resolve => {
+            // round/turn setting
+            this.round = 1;
+            this.turn = 1;
+            this.bothStay = false;
+            this.roundFirst = PLAYER.EN; // or RANDOM
+            this.isJudged = false;
+            this.whoseTurn = this.roundFirst;
+            // this.useSP = false;
 
-        // Fingers (Hit Point) <= default:  5
-        this.myFingers = DEFAULT_PARAMS.FINGERS;
-        this.enFingers = DEFAULT_PARAMS.FINGERS;
+            // Fingers (Hit Point) <= default:  5
+            this.myFingers = DEFAULT_PARAMS.FINGERS;
+            this.enFingers = DEFAULT_PARAMS.FINGERS;
 
-        // 
-        // Initialize card in hand
-        // 
+            //
+            // Initialize card in hand
+            //
 
-        // Deck
-        this.deck = DEFAULT_PARAMS.DECK;
-        this.deck.sort(() => Math.random() - 0.5);  // shuffle deck
+            // Deck
+            this.deck = DEFAULT_PARAMS.DECK;
+            this.deck.sort(() => Math.random() - 0.5); // shuffle deck
 
-        // Card in hand
-        this.myHand = [this.deck.pop(), this.deck.pop()];
-        this.enHand = [this.deck.pop(), this.deck.pop()];
+            // Card in hand
+            this.myHand = [this.deck.pop(), this.deck.pop()];
+            this.enHand = [this.deck.pop(), this.deck.pop()];
 
-        // 
-        // Initialize SP card 
-        // 
+            //
+            // Initialize SP card
+            //
 
-        // SP card deck
-        this.mySPDeck.init();
-        this.enSPDeck.init();
+            // SP card deck
+            this.mySPDeck.init();
+            this.enSPDeck.init();
 
-        // SP card on passive
-        this.myPassiveSP = [];
-        this.enPassiveSP = [];
+            // SP card on passive
+            this.myPassiveSP = [];
+            this.enPassiveSP = [];
 
-        // Initialize my SP card 
-        this.mySPDeck.initPromise.then((res) => {
-            const attrDraw = this.mySPDeck.getIdList({ attr: "draw" });
-            const attrRare = this.mySPDeck.getIdList({ attr: "rare" });
-            const attrEpic = this.mySPDeck.getIdList({ attr: "epic" });
-            const typePass = this.mySPDeck.getIdList({ type: "passive" });
+            // Initialize my SP card
+            this.mySPDeck.initPromise.then(res => {
+                const attrDraw = this.mySPDeck.getIdList({ attr: 'draw' });
+                const attrRare = this.mySPDeck.getIdList({ attr: 'rare' });
+                const attrEpic = this.mySPDeck.getIdList({ attr: 'epic' });
+                const typePass = this.mySPDeck.getIdList({ type: 'passive' });
 
-            this.myHandSP = [
-                this.mySPDeck.drawSPCard(attrDraw),
-                this.mySPDeck.drawSPCard(attrRare),
-                this.mySPDeck.drawSPCard(attrEpic),
-                this.mySPDeck.drawSPCard(typePass)
-            ].sort((a, b) => a - b);    // sort by ascending order
+                this.myHandSP = [
+                    this.mySPDeck.drawSPCard(attrDraw),
+                    this.mySPDeck.drawSPCard(attrRare),
+                    this.mySPDeck.drawSPCard(attrEpic),
+                    this.mySPDeck.drawSPCard(typePass),
+                ].sort((a, b) => a - b); // sort by ascending order
+            });
+
+            // Initialize enemy's SP card
+            this.enSPDeck.initPromise.then(res => {
+                this.enSPDeck.list = this.enSPDeck.list.filter(c => !c.attr.includes('common'));
+                const attrBet = this.enSPDeck.getIdList({ attr: 'bet' });
+                const typeAct = this.enSPDeck.getIdList({ type: 'active' });
+
+                this.enHandSP = [
+                    this.enSPDeck.drawSPCard(),
+                    this.enSPDeck.drawSPCard(attrBet),
+                    this.enSPDeck.drawSPCard(attrBet),
+                    this.enSPDeck.drawSPCard(typeAct),
+                ].sort((a, b) => a - b); // sort by ascending order
+            });
+
+            resolve(this);
         });
-
-        // Initialize enemy's SP card
-        this.enSPDeck.initPromise.then((res) => {
-            this.enSPDeck.list = this.enSPDeck.list.filter(
-                (c) => !c.attr.includes("common")
-            );
-            const attrBet = this.enSPDeck.getIdList({ attr: "bet" });
-            const typeAct = this.enSPDeck.getIdList({ type: "active" });
-
-            this.enHandSP = [
-                this.enSPDeck.drawSPCard(),
-                this.enSPDeck.drawSPCard(attrBet),
-                this.enSPDeck.drawSPCard(attrBet),
-                this.enSPDeck.drawSPCard(typeAct)
-            ].sort((a, b) => a - b);    // sort by ascending order
-        });
-
-        resolve(this);
-    });
 
     /**
      * 新しいラウンドの開始
      * @param {String} roundFirst   # for Debug
      * @returns {Promise}
      */
-    newRound = (roundFirst) => new Promise((resolve) => {
-        // round/turn setting
-        this.round = this.round + 1;
-        this.turn = 1;
-        this.bothStay = false;
-        this.isJudged = false;
-        // this.useSP = false;
+    newRound = roundFirst =>
+        new Promise(resolve => {
+            // round/turn setting
+            this.round = this.round + 1;
+            this.turn = 1;
+            this.bothStay = false;
+            this.isJudged = false;
+            // this.useSP = false;
 
-        // Next round: loser first
-        this.roundFirst = (roundFirst) ? roundFirst : this.roundFirst;
-        this.whoseTurn = this.roundFirst;
+            // Next round: loser first
+            this.roundFirst = roundFirst ? roundFirst : this.roundFirst;
+            this.whoseTurn = this.roundFirst;
 
-        // 
-        // Initialize card in hand
-        // 
+            //
+            // Initialize card in hand
+            //
 
-        // Deck
-        this.deck = DEFAULT_PARAMS.DECK;
-        this.deck.sort(() => Math.random() - 0.5);  // shuffle deck
+            // Deck
+            this.deck = DEFAULT_PARAMS.DECK;
+            this.deck.sort(() => Math.random() - 0.5); // shuffle deck
 
-        // Card in hand
-        this.myHand = [this.deck.pop(), this.deck.pop()];
-        this.enHand = [this.deck.pop(), this.deck.pop()];
+            // Card in hand
+            this.myHand = [this.deck.pop(), this.deck.pop()];
+            this.enHand = [this.deck.pop(), this.deck.pop()];
 
-        // 
-        // Initialize SP card 
-        // 
+            //
+            // Initialize SP card
+            //
 
-        // SP card on passive
-        this.myPassiveSP = [];
-        this.enPassiveSP = [];
+            // SP card on passive
+            this.myPassiveSP = [];
+            this.enPassiveSP = [];
 
-        // Initialize my SP card
-        const typeActi = this.mySPDeck.getIdList({ type: "active" });
-        const typePass = this.mySPDeck.getIdList({ type: "passive" });
+            // Initialize my SP card
+            const typeActi = this.mySPDeck.getIdList({ type: 'active' });
+            const typePass = this.mySPDeck.getIdList({ type: 'passive' });
 
-        this.myHandSP = this.myHandSP.concat([
-            this.mySPDeck.drawSPCard(typeActi),
-            this.mySPDeck.drawSPCard(typePass)
-        ]);
-        // this.myHandSP.splice(-1, rm);
-        for (let i = this.myHandSP.length; i > MAX_SP_HAND; i--) {
-            this.myHandSP.pop();
-        }
-        this.myHandSP.sort((a, b) => a - b);    // sort by ascending order
+            this.myHandSP = this.myHandSP.concat([
+                this.mySPDeck.drawSPCard(typeActi),
+                this.mySPDeck.drawSPCard(typePass),
+            ]);
+            // this.myHandSP.splice(-1, rm);
+            for (let i = this.myHandSP.length; i > MAX_SP_HAND; i--) {
+                this.myHandSP.pop();
+            }
+            this.myHandSP.sort((a, b) => a - b); // sort by ascending order
 
+            // Initialize enemy's SP card
+            const attrBet = this.enSPDeck.getIdList({ attr: 'bet' });
 
-        // Initialize enemy's SP card
-        const attrBet = this.enSPDeck.getIdList({ attr: "bet" });
+            this.enHandSP = this.enHandSP.concat([
+                this.enSPDeck.drawSPCard(),
+                this.enSPDeck.drawSPCard(attrBet),
+            ]);
+            // this.enHandSP.splice(-1, rm);
+            for (let i = this.enHandSP.length; i > MAX_SP_HAND; i--) {
+                this.enHandSP.pop();
+            }
+            this.enHandSP.sort((a, b) => a - b); // sort by ascending order
 
-        this.enHandSP = this.enHandSP.concat([
-            this.enSPDeck.drawSPCard(),
-            this.enSPDeck.drawSPCard(attrBet),
-        ])
-        // this.enHandSP.splice(-1, rm);
-        for (let i = this.enHandSP.length; i > MAX_SP_HAND; i--) {
-            this.enHandSP.pop();
-        }
-        this.enHandSP.sort((a, b) => a - b);    // sort by ascending order
-
-        resolve(this);
-    });
+            resolve(this);
+        });
 
     /**
      * ラウンドの勝敗を判定する
@@ -305,7 +350,7 @@ export class GameStatus {
         /**
          ** 勝敗判定後は新しいラウンド/ゲームを開始するまでSTAY不可能
          */
-        this.isJudged = true;   // 勝敗判定フラグを立てる
+        this.isJudged = true; // 勝敗判定フラグを立てる
 
         // 引き分け
         //  - 数字が同じ
@@ -321,19 +366,19 @@ export class GameStatus {
 
         if (my_pt == en_pt) {
             // Even
-            result = "EVEN";
+            result = 'EVEN';
         } else if (0 <= my_pt && 0 <= en_pt) {
             // No burst
-            result = (my_pt < en_pt) ? "WIN" : "LOSE";
+            result = my_pt < en_pt ? 'WIN' : 'LOSE';
         } else if (my_pt < 0 && 0 <= en_pt) {
             // Burst only of player
-            result = "LOSE";
+            result = 'LOSE';
         } else if (0 <= my_pt && en_pt < 0) {
             // Burst only of enemy
-            result = "WIN";
+            result = 'WIN';
         } else {
             // Burst Both
-            result = (my_pt < en_pt) ? "LOSE" : "WIN";
+            result = my_pt < en_pt ? 'LOSE' : 'WIN';
         }
 
         return result;
@@ -344,9 +389,9 @@ export class GameStatus {
      * @returns {null|String} # null: 未決着 | "ME" / "ENEMY": 決着
      */
     get isGameEnd() {
-        if (this.myFingers <= 0) return PLAYER.EN;  // プレイヤーの負け
-        if (this.enFingers <= 0) return PLAYER.ME;  // 相手の負け
-        return null;                                // 未決着
+        if (this.myFingers <= 0) return PLAYER.EN; // プレイヤーの負け
+        if (this.enFingers <= 0) return PLAYER.ME; // 相手の負け
+        return null; // 未決着
     }
 
     /**
@@ -362,24 +407,24 @@ export class GameStatus {
             case 5:
             case 4:
                 decision = this._enemyDecision1();
-                break
+                break;
             case 3:
             case 2:
             case 1:
                 decision = this._enemyDecision2();
-                break
+                break;
             // default:
         }
 
         return decision;
-    }
+    };
 
     _enemyDecision1() {
         const decision = { cmd: CMD.STAY, value: null };
 
-        // 
+        //
         // ここではSTAYフラグを更新しない
-        // 
+        //
 
         // SP card
         for (let i = 0; i < this.enHandSP.length; i++) {
@@ -395,7 +440,7 @@ export class GameStatus {
         // Draw
         if (this.enHandSum + 5 <= this.goal) {
             decision.cmd = CMD.DRAW;
-            this.enHand.push(this.deck.pop());  // 手札をドローする
+            this.enHand.push(this.deck.pop()); // 手札をドローする
             return decision;
         }
 
@@ -406,14 +451,14 @@ export class GameStatus {
     _enemyDecision2() {
         const decision = { cmd: CMD.STAY, value: null };
 
-        // 
+        //
         // ここではSTAYフラグを更新しない
-        // 
+        //
 
         // Draw
         if (this.enHandSum + 5 <= this.goal) {
             decision.cmd = CMD.DRAW;
-            this.enHand.push(this.deck.pop());  // 手札をドローする
+            this.enHand.push(this.deck.pop()); // 手札をドローする
             return decision;
         }
 
@@ -422,8 +467,9 @@ export class GameStatus {
             const card = this.enHandSP[i];
 
             if (
-                21 <= card && card <= 22
-                && this.enHandSum - this.goal < 1   // バーストしていないとき
+                21 <= card &&
+                card <= 22 &&
+                this.enHandSum - this.goal < 1 // バーストしていないとき
             ) {
                 decision.cmd = CMD.SP;
                 decision.value = card;
@@ -431,13 +477,15 @@ export class GameStatus {
                 return decision;
             }
 
-            if (23 <= card && card <= 24
-                && 0 < this.enBet   // 自身への掛け数が1以上のとき
+            if (
+                23 <= card &&
+                card <= 24 &&
+                0 < this.enBet // 自身への掛け数が1以上のとき
             ) {
                 // バーストした場合 or 負けるリスクが高い場合
                 if (
-                    0 < this.enHandSum - this.goal  // バーストしたとき
-                    || false                        // 負けるリスクが高い場合を実装する
+                    0 < this.enHandSum - this.goal || // バーストしたとき
+                    false // 負けるリスクが高い場合を実装する
                 ) {
                     decision.cmd = CMD.SP;
                     decision.value = card;
@@ -453,52 +501,52 @@ export class GameStatus {
 
     /**
      * SPカード使用の処理を行う
-     * @param {Number} spID 
-     * @param {String} whoUse 
-     * @param {Number} idx 
+     * @param {Number} spID
+     * @param {String} whoUse
+     * @param {Number} idx
      * @returns {String} errMsg
      */
     useSP(spID, whoUse, idx) {
-        let errMsg = "";
+        let errMsg = '';
 
         if (!spID && !whoUse) {
-            console.log("spID or whoUse is undefined.");
+            console.log('spID or whoUse is undefined.');
             return errMsg;
         }
 
         const P = {
             A: whoUse,
-            B: (whoUse == PLAYER.ME) ? PLAYER.EN : PLAYER.ME
+            B: whoUse == PLAYER.ME ? PLAYER.EN : PLAYER.ME,
         };
         const DATA = {
             ME: {
                 HAND: this.myHand,
                 HANDSP: this.myHandSP,
                 PASSSP: this.myPassiveSP,
-                SPDECK: this.mySPDeck
+                SPDECK: this.mySPDeck,
             },
             ENEMY: {
                 HAND: this.enHand,
                 HANDSP: this.enHandSP,
                 PASSSP: this.enPassiveSP,
-                SPDECK: this.enSPDeck
-            }
+                SPDECK: this.enSPDeck,
+            },
         };
 
-        // 
+        //
         // SP Card Action
-        // 
+        //
 
         // SPカードを消費する
         if (idx !== undefined) DATA[P.A].HANDSP.splice(idx, 1);
 
         const spName = DATA[P.A].SPDECK.list.find(c => c.id == spID).name;
-        const spPsv = DATA[P.A].SPDECK.getIdList({ type: "passive" });
+        const spPsv = DATA[P.A].SPDECK.getIdList({ type: 'passive' });
         // const spAct = DATA[P.A].SPDECK.getIdList({ type: "active" });
         switch (true) {
-            // 
+            //
             // Active SP Cards
-            // 
+            //
 
             // spDraw_x() + Perfect Draw
             case 1 <= spID && spID <= 12:
@@ -521,14 +569,20 @@ export class GameStatus {
                     // 山札から探す数字カードの番号/添え字を取得する
                     if (spID == 12) {
                         /* Perfect Drawの場合 */
-                        const handSum = DATA[P.A].HAND.reduce((a, b) => { return a + b });   // 使用者の数字カードの合計値
+                        const handSum = DATA[P.A].HAND.reduce((a, b) => {
+                            return a + b;
+                        }); // 使用者の数字カードの合計値
 
-                        /** 山札の数字カードXについて次のようなスコアを算出： 
+                        /** 山札の数字カードXについて次のようなスコアを算出：
                          * - 手札合計 + X <= 目標値 となる X ほどスコアが高くなる
                          * - 目標値 < 手札合計 + X の場合は X が大きいほどスコアが低くなる
                          */
-                        const scores = this.deck.map(card => { return (card + handSum <= this.goal) ? card : -card });
-                        const scoreMax = scores.reduce((a, b) => { return Math.max(a, b) });
+                        const scores = this.deck.map(card => {
+                            return card + handSum <= this.goal ? card : -card;
+                        });
+                        const scoreMax = scores.reduce((a, b) => {
+                            return Math.max(a, b);
+                        });
 
                         // 一番スコアの高い数字カードの番号/添え字を取得する
                         numIdx = scores.indexOf(scoreMax);
@@ -565,7 +619,7 @@ export class GameStatus {
             // SP Change
             case spID == 14:
                 {
-                    const removeNum = 2;    // Default: 2
+                    const removeNum = 2; // Default: 2
 
                     // SPカードがSPチェンジ以外にremoveNum枚なければ失敗する
                     if (DATA[P.A].HANDSP.length < removeNum) {
@@ -581,7 +635,8 @@ export class GameStatus {
                     // - 新たに追加されるSPカードの枚数を指定可能にする
                     // - SPチェンジによって追加のSPチェンジを取得できないようにする
                     DATA[P.A].HANDSP.splice(
-                        0, removeNum,
+                        0,
+                        removeNum,
                         DATA[P.A].SPDECK.drawSPCard(),
                         DATA[P.A].SPDECK.drawSPCard(),
                         DATA[P.A].SPDECK.drawSPCard()
@@ -664,11 +719,17 @@ export class GameStatus {
                     }
 
                     // 山札から探す数字カードの番号/添え字を取得する
-                    const handSum = DATA[P.B].HAND.reduce((a, b) => { return a + b });   // 相手の数字カードの合計値
+                    const handSum = DATA[P.B].HAND.reduce((a, b) => {
+                        return a + b;
+                    }); // 相手の数字カードの合計値
 
                     // コードの解釈についてはPerfect Draw (case 12)を参照
-                    const scores = this.deck.map(card => { return (card + handSum <= this.goal) ? card : -card });
-                    const scoreMax = scores.reduce((a, b) => { return Math.max(a, b) });
+                    const scores = this.deck.map(card => {
+                        return card + handSum <= this.goal ? card : -card;
+                    });
+                    const scoreMax = scores.reduce((a, b) => {
+                        return Math.max(a, b);
+                    });
 
                     // 一番スコアの高い数字カードの番号/添え字を取得する
                     const numIdx = scores.indexOf(scoreMax);
@@ -680,7 +741,6 @@ export class GameStatus {
                 }
                 break;
 
-
             // case spID == xx:
             //     {
             //         // 山札のカードが残っていない場合は失敗する
@@ -690,10 +750,9 @@ export class GameStatus {
             //         }
             //     }
 
-
-            // 
+            //
             // Passive SP card
-            // 
+            //
             case spPsv.some(id => id == spID):
                 {
                     // 使用者の場のSPカードが上限であれば失敗する
@@ -704,10 +763,16 @@ export class GameStatus {
 
                     // Goal系のSPカードが場に既に存在する場合は削除する
                     if (25 <= spID && spID <= 27) {
-                        DATA[P.A].PASSSP.splice(0, DATA[P.A].PASSSP.length,
-                            ...DATA[P.A].PASSSP.filter(id => id < 25 || 27 < id));
-                        DATA[P.B].PASSSP.splice(0, DATA[P.B].PASSSP.length,
-                            ...DATA[P.B].PASSSP.filter(id => id < 25 || 27 < id));
+                        DATA[P.A].PASSSP.splice(
+                            0,
+                            DATA[P.A].PASSSP.length,
+                            ...DATA[P.A].PASSSP.filter(id => id < 25 || 27 < id)
+                        );
+                        DATA[P.B].PASSSP.splice(
+                            0,
+                            DATA[P.B].PASSSP.length,
+                            ...DATA[P.B].PASSSP.filter(id => id < 25 || 27 < id)
+                        );
                     }
 
                     // Passive SPカードを使用した場合はボードに置く
@@ -722,5 +787,4 @@ export class GameStatus {
 
         return errMsg;
     }
-
 }

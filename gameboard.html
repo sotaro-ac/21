@@ -1,172 +1,178 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
-  <!-- HEAD -->
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>21 - Survival Game -</title>
-    <link rel="stylesheet" type="text/css" href="css/gameboard.css" />
-    <link rel="stylesheet" type="text/css" href="css/pop_up.css" />
-    <link rel="stylesheet" type="text/css" href="css/sp_window+cards.css" />
-  </head>
-  <!-- END of HEAD -->
+    <!-- HEAD -->
 
-  <!-- BODY -->
-  <body>
-    <!-- <h1>21</h1> -->
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>21 - Survival Game -</title>
+        <link rel="stylesheet" type="text/css" href="css/gameboard.css" />
+        <link rel="stylesheet" type="text/css" href="css/pop_up.css" />
+        <link rel="stylesheet" type="text/css" href="css/sp_window+cards.css" />
+    </head>
+    <!-- END of HEAD -->
 
-    <!-- .YOUR or .ENEMY -->
-    <div class="container">
-      <div id="infoBoard" class="wrapper">
-        <div id="message">
-          <p id="header"><span class="YOUR">WELCOME</span> CHALLENGER!</p>
-          <p id="notice"></p>
-          <!-- Example:
+    <!-- BODY -->
+
+    <body>
+        <!-- <h1>21</h1> -->
+
+        <!-- .YOUR or .ENEMY -->
+        <div class="container">
+            <div id="infoBoard" class="wrapper">
+                <div id="message">
+                    <p id="header"><span class="YOUR">WELCOME</span> CHALLENGER!</p>
+                    <p id="notice"></p>
+                    <!-- Example:
             <p id="header"><span class="YOUR">YOUR</span> TURN</p>
             <p id="notice">SPカードの効果は発動しなかったようだ...</p>
            -->
-        </div>
-      </div>
-      <!-- ENEMY -->
-      <div id="gameBoard" class="wrapper">
-        <div id="EN_Hand">
-          <img class="Hand" src="img/en/hand.png" alt="Enemy's Hand" />
-          <!-- Example:
+                </div>
+            </div>
+            <!-- ENEMY -->
+            <div id="gameBoard" class="wrapper">
+                <div id="EN_Hand">
+                    <img class="Hand" src="img/en/hand.png" alt="Enemy's Hand" />
+                    <!-- Example:
             <img class="Hand lost" src="img/en/lost/02.png" />
             <img class="Hand select" src="img/en/select/03.png" />
             <img class="Hand select" src="img/en/select/04.png" />
           -->
-        </div>
-        <div id="EN_Cards">
-          <!-- Example:
+                </div>
+                <div id="EN_Cards">
+                    <!-- Example:
             <div class="numCard back"></div>
             <div class="numCard">4</div>
             <div class="numCard">8</div>
           -->
-        </div>
-        <div id="EN_PassiveSP">
-          <!-- Example:
+                </div>
+                <div id="EN_PassiveSP">
+                    <!-- Example:
             <div class="spCard spID21"></div>
             <div class="spCard spID21"></div> 
           -->
-        </div>
-        <div id="Blank"></div>
-        <div id="EN_countNum">
-          <!-- Example:
+                </div>
+                <div id="Blank"></div>
+                <div id="EN_countNum">
+                    <!-- Example:
             <span class="enHandSum">18+?</span>/<span class="goal">21</span>
           -->
-          <span id="enHandSum">--</span>/<span class="goal">--</span>
-        </div>
-        <!-- END of Enemy's Graphics -->
-        <!-- My Graphix -->
-        <div id="MY_Hand">
-          <img class="Hand" src="img/my/hand.png" alt="My Hand" />
-          <!-- Example:
+                    <span id="enHandSum">--</span>/<span class="goal">--</span>
+                </div>
+                <!-- END of Enemy's Graphics -->
+                <!-- My Graphix -->
+                <div id="MY_Hand">
+                    <img class="Hand" src="img/my/hand.png" alt="My Hand" />
+                    <!-- Example:
             <img class="Hand lost" src="img/my/lost/01.png" />
             <img class="Hand select" src="img/my/select/02.png" />
           -->
-        </div>
-        <div id="MY_Cards">
-          <!-- Example:
+                </div>
+                <div id="MY_Cards">
+                    <!-- Example:
             <div class="numCard back"><div>11</div></div>
             <div class="numCard">7</div>
             <div class="numCard">3</div>
           -->
-        </div>
-        <div id="MY_PassiveSP">
-          <!-- Example:
+                </div>
+                <div id="MY_PassiveSP">
+                    <!-- Example:
             <div class="spCard spID22"></div>
             <div class="spCard spID23"></div>
           -->
-        </div>
-        <div id="MY_Info">
-          <div id="user_info">USER NAME<br />ID : USER_ID</div>
-        </div>
-        <div id="MY_countNum">
-          <!-- Example:
+                </div>
+                <div id="MY_Info">
+                    <div id="user_info">USER NAME<br />ID : USER_ID</div>
+                </div>
+                <div id="MY_countNum">
+                    <!-- Example:
             <span class="myHandSum">17</span>/<span class="goal">21</span>
             or
             <span class="myHandSum just">21</span>/<span class="goal">21</span>
             or
             <span class="myHandSum burst">24</span>/<span class="goal">21</span>
           -->
-          <span id="myHandSum">--</span>/<span class="goal">--</span>
-        </div>
-        <!-- END of My Graphics -->
-      </div>
-      <!-- END of gameBoard -->
+                    <span id="myHandSum">--</span>/<span class="goal">--</span>
+                </div>
+                <!-- END of My Graphics -->
+            </div>
+            <!-- END of gameBoard -->
 
-      <!-- infoBorder -->
-      <div id="infoBorder" hidden>
-        <div id="infoBdrImg" hidden><img src="img/10000yen.png"></div>
-        <p id="infoBdrMsg">ここにメッセージを挿入</p>
-        <div class="infoBtnContainer">
-          <button id="infoBtnFirst" class="infoBtn" type="button" hidden>BUTTON-01</button>
-          <button id="infoBtnSecond" class="infoBtn" type="button" hidden>BUTTON-02</button>
-        </div>
-      </div>
+            <!-- infoBorder -->
+            <div id="infoBorder" hidden>
+                <div id="infoBdrImg" hidden><img src="img/10000yen.png" /></div>
+                <p id="infoBdrMsg">ここにメッセージを挿入</p>
+                <div class="infoBtnContainer">
+                    <button id="infoBtnFirst" class="infoBtn" type="button" hidden>
+                        BUTTON-01
+                    </button>
+                    <button id="infoBtnSecond" class="infoBtn" type="button" hidden>
+                        BUTTON-02
+                    </button>
+                </div>
+            </div>
 
-      <!-- infoPopUp -->
-      <div id="infoPopUp" hidden>
-        <div id="infoSP" hidden>
-          <div id="infoSPImg" class=""></div>
-          <p id="infoSPName">SPカード名</p>
-          <p id="infoSPText">SPカードの詳細情報</p>
-        </div>
-        <div id="infoMsg">ここにメッセージを挿入</div>
-        <div class="infoBtnContainer">
-          <button id="infoBtnPop" class="infoBtn" type="button">OK</button>
-        </div>
-      </div>
-      <!-- END of infoPopUp -->
+            <!-- infoPopUp -->
+            <div id="infoPopUp" hidden>
+                <div id="infoSP" hidden>
+                    <div id="infoSPImg" class=""></div>
+                    <p id="infoSPName">SPカード名</p>
+                    <p id="infoSPText">SPカードの詳細情報</p>
+                </div>
+                <div id="infoMsg">ここにメッセージを挿入</div>
+                <div class="infoBtnContainer">
+                    <button id="infoBtnPop" class="infoBtn" type="button">OK</button>
+                </div>
+            </div>
+            <!-- END of infoPopUp -->
 
-      <!-- MY Commands -->
-      <div id="MY_Commands">
-        <div id="comBtnContainer">
-          <button id="btnStay" type="button" class="clear_btn" disabled>STAY</button>
-          <button id="btnDraw" type="button" class="clear_btn" disabled>DRAW</button>
-        </div>
-        <input id="SP_btn" type="checkbox" class="clear_btn" name="SP_Window" />
-        <label for="SP_btn" id="label_SP_btn" title="SPカードを使用します">
-          <div id="divSPBtn">
-            <!-- Example:
+            <!-- MY Commands -->
+            <div id="MY_Commands">
+                <div id="comBtnContainer">
+                    <button id="btnStay" type="button" class="clear_btn" disabled>STAY</button>
+                    <button id="btnDraw" type="button" class="clear_btn" disabled>DRAW</button>
+                </div>
+                <input id="SP_btn" type="checkbox" class="clear_btn" name="SP_Window" />
+                <label for="SP_btn" id="label_SP_btn" title="SPカードを使用します">
+                    <div id="divSPBtn">
+                        <!-- Example:
               SP CARD <span class="label_SP_btn">4</span>
             -->
-            SP CARD <span>--</span>
-          </div>
-        </label>
-        <!-- SP_Window -->
-        <div id="SP_Window">
-          <!-- Example:
+                        SP CARD <span>--</span>
+                    </div>
+                </label>
+                <!-- SP_Window -->
+                <div id="SP_Window">
+                    <!-- Example:
             <div id="sp0" class="spPrev spID12">
               <input type="button" name="useSP" value="12">
             </div>
             <div id="sp1" class="spPrev"></div>
             ...
           -->
-          <div id="SPTextContainer">
-            <!-- Example:
+                    <div id="SPTextContainer">
+                        <!-- Example:
               <div class='spIDXXtxt'>
                 <p class='SPname'>SPカード名</p>
                 <p class='SPtext'>SPカードの説明</p>
               </div>
             -->
-          </div>
+                    </div>
+                </div>
+                <!-- END of SP_Window -->
+            </div>
+            <!-- END of MY Commands -->
         </div>
-        <!-- END of SP_Window -->
-      </div>
-      <!-- END of MY Commands -->
-    </div>
-    <!-- END of container -->
-    <script type="module" src="js/SPCard.js"></script>
-    <script type="module" src="js/GameStatus.js"></script>
-    <script type="module" src="js/domElements.js"></script>
-    <script type="module" src="js/main.js"></script>
-    <script type="module">
-      import { initializeGame } from './js/init.js';
-      document.addEventListener('DOMContentLoaded', initializeGame);
-    </script>
-  </body>
-  <!-- END of BODY -->
+        <!-- END of container -->
+        <script type="module" src="js/SPCard.js"></script>
+        <script type="module" src="js/GameStatus.js"></script>
+        <script type="module" src="js/domElements.js"></script>
+        <script type="module" src="js/main.js"></script>
+        <script type="module">
+            import { initializeGame } from './js/init.js';
+            document.addEventListener('DOMContentLoaded', initializeGame);
+        </script>
+    </body>
+    <!-- END of BODY -->
 </html>

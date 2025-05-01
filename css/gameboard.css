@@ -16,24 +16,24 @@
 /* debug */
 div.test {
     font-size: 12px;
-    position : absolute;
-    top      : 1%;
-    left     : 1%;
+    position: absolute;
+    top: 1%;
+    left: 1%;
 }
 
 body {
-    font-size          : 15px;
-    color              : #ffffff;
-    background-color   : black;
-    position           : relative;
+    font-size: 15px;
+    color: #ffffff;
+    background-color: black;
+    position: relative;
     /* 要素選択を無効化 */
-    user-select        : none;
+    user-select: none;
     /* 見切れた要素 */
     /* overflow-x      : visible; */
 }
 
 h1 {
-    font-size : 32px;
+    font-size: 32px;
     text-align: center;
 }
 
@@ -54,14 +54,14 @@ span.small {
 }
 
 .container {
-    width       : var(--borad-width);
-    position    : relative;
-    margin-left : auto;
+    width: var(--borad-width);
+    position: relative;
+    margin-left: auto;
     margin-right: auto;
 }
 
 .wrapper {
-    margin-left : auto;
+    margin-left: auto;
     margin-right: auto;
 }
 
@@ -71,30 +71,30 @@ img {
 
 /* infoBoard */
 div#infoBoard {
-    position       : absolute;
-    top            : 0.0%;
-    left           : calc((var(--borad-width) - 600px) / 2);
-    width          : 600px;
-    height         : 180px;
-    display        : flex;
-    align-items    : center;
+    position: absolute;
+    top: 0%;
+    left: calc((var(--borad-width) - 600px) / 2);
+    width: 600px;
+    height: 180px;
+    display: flex;
+    align-items: center;
     justify-content: center;
 }
 
 div#message {
-    width : 100%;
+    width: 100%;
     height: 100%;
 }
 
-div#message>p {
-    font-size         : 20px;
-    font-weight       : bold;
-    text-align        : center;
+div#message > p {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
     margin-block-start: 0em;
-    margin-block-end  : 0.5em;
+    margin-block-end: 0.5em;
 }
 
-div#message>p:first-child {
+div#message > p:first-child {
     font-size: 32px;
 }
 
@@ -120,27 +120,27 @@ div#message.defeat span {
 div#gameBoard {
     display: grid;
     grid-template-areas:
-        "EN_Hand Blank EN_countNum"
-        "EN_Hand EN_Cards  EN_Cards"
-        "EN_Hand EN_PassiveSP EN_PassiveSP"
-        "MY_Hand MY_PassiveSP MY_PassiveSP"
-        "MY_Hand MY_Cards  MY_Cards"
-        "MY_Hand MYInfo MY_countNum";
-    grid-template-rows   : 60px 125px 70px 70px 125px 60px;
+        'EN_Hand Blank EN_countNum'
+        'EN_Hand EN_Cards  EN_Cards'
+        'EN_Hand EN_PassiveSP EN_PassiveSP'
+        'MY_Hand MY_PassiveSP MY_PassiveSP'
+        'MY_Hand MY_Cards  MY_Cards'
+        'MY_Hand MYInfo MY_countNum';
+    grid-template-rows: 60px 125px 70px 70px 125px 60px;
     grid-template-columns: 160px 1fr 160px;
-    grid-gap             : 10px;
-    width                : 720px;
-    background           : radial-gradient(#619c4a, #305820, #10200a);
-    box-shadow           : inset 0 0 25px 10px #000000ee;
-    padding              : 25px;
-    margin-top           : 50px;
+    grid-gap: 10px;
+    width: 720px;
+    background: radial-gradient(#619c4a, #305820, #10200a);
+    box-shadow: inset 0 0 25px 10px #000000ee;
+    padding: 25px;
+    margin-top: 50px;
 
     /* 3D Transform */
     transform: perspective(720px) translateZ(0px) rotateX(45deg);
 }
 
 /* div#gameBoard>div:not(:empty), */
-#gameBoard>div {
+#gameBoard > div {
     border: 1px solid #ffd8d880;
 }
 
@@ -187,100 +187,98 @@ div#gameBoard {
 div#EN_PassiveSP,
 div#MY_PassiveSP {
     background-color: rgba(16, 4, 25, 0.725);
-    border          : 3px dashed #ffd8d880;
+    border: 3px dashed #ffd8d880;
 }
 
 #EN_Cards,
 #EN_PassiveSP,
 #MY_Cards,
 #MY_PassiveSP {
-    display      : flex;
-    position     : relative;
+    display: flex;
+    position: relative;
     /* overflow-x: hidden; */
 }
 
 #EN_Cards.stay::after,
 #MY_Cards.stay::after {
-    position       : absolute;
+    position: absolute;
     /* top         : 50%; */
-    left           : 7.5%;
-    content        : "STAY";
-    display        : flex;
-    align-items    : center;
+    left: 7.5%;
+    content: 'STAY';
+    display: flex;
+    align-items: center;
     justify-content: center;
-    font-size      : 1.5em;
-    font-weight    : 600;
-    width          : 85%;
-    height         : 2em;
-    background     : rgba(0, 0, 0, 0.40);
+    font-size: 1.5em;
+    font-weight: 600;
+    width: 85%;
+    height: 2em;
+    background: rgba(0, 0, 0, 0.4);
 }
 
 #EN_Cards.stay::after {
     /* 2D Transform : Up side Down */
     transform: rotate(180deg);
-    filter   : drop-shadow(-0px -10px 3px black);
-    bottom   : 55%;
+    filter: drop-shadow(-0px -10px 3px black);
+    bottom: 55%;
 }
 
 #MY_Cards.stay::after {
-    top   : 45%;
+    top: 45%;
     filter: drop-shadow(0px 10px 3px black);
 }
 
-
-#EN_Cards>div.numCard,
-#EN_PassiveSP>div.spCard {
+#EN_Cards > div.numCard,
+#EN_PassiveSP > div.spCard {
     /* 2D Transform : Up side Down */
     transform: rotate(180deg);
-    filter   : drop-shadow(-2px -2px 2px black);
+    filter: drop-shadow(-2px -2px 2px black);
 }
 
 div.numCard {
-    flex            : 0 0 84px;
-    height          : 120px;
-    margin-right    : 10px;
-    margin-top      : auto;
-    margin-bottom   : auto;
-    border-radius   : 5px;
-    font-size       : 48px;
-    color           : black;
-    text-align      : center;
-    filter          : drop-shadow(2px 2px 2px black);
+    flex: 0 0 84px;
+    height: 120px;
+    margin-right: 10px;
+    margin-top: auto;
+    margin-bottom: auto;
+    border-radius: 5px;
+    font-size: 48px;
+    color: black;
+    text-align: center;
+    filter: drop-shadow(2px 2px 2px black);
     background-color: antiquewhite;
 }
 
 div.numCard.back {
-    color           : antiquewhite;
+    color: antiquewhite;
     background-color: #2c2c2c;
 }
 
-div.numCard.back>div {
-    font-size : 24px;
+div.numCard.back > div {
+    font-size: 24px;
     margin-top: 8px;
-    background:
-        linear-gradient(to left, #00000020, #000000cc, #00000020);
+    background: linear-gradient(to left, #00000020, #000000cc, #00000020);
 }
 
 div.spCard {
-    flex            : 0 0 60px;
-    height          : 60px;
-    margin-left     : 10px;
-    margin-right    : 10px;
-    margin-top      : auto;
-    margin-bottom   : auto;
-    border-radius   : 5px;
-    filter          : drop-shadow(2px 2px 2px black);
+    flex: 0 0 60px;
+    height: 60px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: auto;
+    margin-bottom: auto;
+    border-radius: 5px;
+    filter: drop-shadow(2px 2px 2px black);
     background-color: darkgoldenrod;
 }
 
 #EN_countNum,
 #MY_countNum {
-    font-size       : 32px;
-    color           : antiquewhite;
-    display         : flex;
-    align-items     : center;
-    justify-content : center;
-    border          : 1px solid antiquewhite;
+    font-size: 32px;
+    color: antiquewhite;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid antiquewhite;
     background-color: #3535358f;
 }
 
@@ -298,12 +296,12 @@ span#enHandSum.burst {
 @keyframes slide_in {
     0% {
         position: relative;
-        left    : 600px;
+        left: 600px;
     }
 
     100% {
         position: relative;
-        left    : 0px;
+        left: 0px;
     }
 }
 
@@ -318,7 +316,7 @@ span#enHandSum.burst {
 
     81% {
         visibility: visible;
-        transform : scale(1);
+        transform: scale(1);
     }
 
     90% {
@@ -330,15 +328,14 @@ span#enHandSum.burst {
     }
 }
 
-
 /* Draw Animation */
 div.numCard.draw {
-    animation: slide_in 1.0s;
+    animation: slide_in 1s;
 }
 
 span#myHandSum.show,
 span#enHandSum.show {
-    animation: showCount 1.0s;
+    animation: showCount 1s;
 }
 
 /* keyframes animation */
@@ -357,24 +354,24 @@ span#enHandSum.show {
     position: relative;
 }
 
-#EN_Hand>img.Hand {
-    width    : 225px;
-    height   : 325px;
-    position : absolute;
+#EN_Hand > img.Hand {
+    width: 225px;
+    height: 325px;
+    position: absolute;
     transform: translateY(-60px) translateX(-40px);
-    filter   : drop-shadow(2px 2px 2px black);
+    filter: drop-shadow(2px 2px 2px black);
 }
 
-#MY_Hand>img.Hand {
-    width    : 225px;
-    height   : 375px;
-    position : absolute;
+#MY_Hand > img.Hand {
+    width: 225px;
+    height: 375px;
+    position: absolute;
     transform: translateY(-25px) translateX(-30px);
-    filter   : drop-shadow(2px 2px 2px black);
+    filter: drop-shadow(2px 2px 2px black);
 }
 
 img.select.Hand {
-    filter   : none;
+    filter: none;
     animation: fade-in 1s infinite alternate;
 }
 
@@ -383,14 +380,14 @@ img.lost.Hand {
 }
 
 div#user_info {
-    padding   : 8px;
-    height    : 42px;
-    font-size : 12px;
-    color     : yellowgreen;
+    padding: 8px;
+    height: 42px;
+    font-size: 12px;
+    color: yellowgreen;
     background: linear-gradient(90deg, #0000008e, #00000000);
 }
 
 div#user_info:first-line {
-    color    : antiquewhite;
+    color: antiquewhite;
     font-size: 18px;
 }
