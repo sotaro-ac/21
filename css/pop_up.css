@@ -69,7 +69,7 @@
         0px 0px 12px black;
 }
 
-#SPimg {
+#infoSPImg {
     position        : relative;
     z-index         : 5;
     height          : 100px;
@@ -80,7 +80,7 @@
     background-color: darkgoldenrod;
 }
 
-#SPname {
+#infoSPName {
     font-size    : 20px;
     font-weight  : bold;
     color        : #ffffff;
@@ -90,7 +90,7 @@
     border-bottom: 1.2px solid #ffffff;
 }
 
-#SPtext {
+#infoSPText {
     font-size : 16px;
     color     : #ffffff;
     min-height: 2.5em;

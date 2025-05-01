@@ -1,6 +1,10 @@
 // js/main.js
 "use strict";
 
+import { DOM, MAX_SP_HAND } from './domElements.js';
+import { SPCard } from './SPCard.js';
+import { GameStatus, PLAYER, CMD, DEFAULT_PARAMS } from './GameStatus.js';
+
 // FUNCTION
 const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
 
@@ -35,7 +39,7 @@ const MSG = {
     }
 };
 
-class GameController {
+export class GameController {
     // 
     // STATIC
     // 
@@ -44,30 +48,30 @@ class GameController {
     // 
     // CONSTRUCTOR
     // 
-    constructor() {
+    constructor(id) {
+        this.id = id;
         // 
         // SPウィンドウをゲーム開始可能な状態にする
         // 
-        if (!SPWindow.classList.contains("fullfilled")) {
-            const SP_CARD = new SPCard();
-
+        if (!DOM.SPWindow.classList.contains("fullfilled")) {
             // 不要な要素があれば削除
-            while (SPWindow.firstChild.id != "spText") SPWindow.firstChild.remove();
-            while (SPText.firstChild) SPText.firstChild.remove();
+            while (DOM.SPWindow.firstChild != DOM.SPTextContainer) DOM.SPWindow.firstChild.remove();
+            while (DOM.SPTextContainer.firstChild) DOM.SPTextContainer.firstChild.remove();
 
             // SPカードスロットの作成
             for (let i = 0; i < MAX_SP_HAND; i++) {
                 const divSPCard = document.createElement('div');
                 divSPCard.id = `sp${i}`;
                 divSPCard.className = "spSlot";
-                // SPWindow.appendChild(div);   # 要素の位置依存なCSSの影響で不可
-                SPText.before(divSPCard);
+                DOM.SPTextContainer.before(divSPCard);
             }
+
+            // SPカードの詳細を取得
+            const SP_CARD = new SPCard();
 
             // すべてのSPカードの説明文を事前に用意する
             SP_CARD.initPromise.then(() => {
                 const spData = SP_CARD.list;    //: JSON Object #SPカードの詳細
-
                 for (let i = 0; i < spData.length; i++) {
                     const divSPText = document.createElement('div');
                     const pSPname = document.createElement('p');
@@ -79,10 +83,10 @@ class GameController {
                     pSPtext.textContent = spData[i].description;
                     divSPText.appendChild(pSPname);
                     divSPText.appendChild(pSPtext);
-                    SPText.appendChild(divSPText);  // import SPText
+                    DOM.SPTextContainer.appendChild(divSPText);
                 }
             });
-            SPWindow.classList.add("fullfilled");   // 開始可能
+            DOM.SPWindow.classList.add("fullfilled");   // 開始可能
         }
     }
 
@@ -103,9 +107,9 @@ class GameController {
      * メッセージヘッダー/通知を設定する
      * @param {String} textHTML 
      */
-    set setMsgHeader(textHTML) { pHeader.innerHTML = textHTML; }
+    set setMsgHeader(textHTML) { DOM.header.innerHTML = textHTML; }
 
-    set setMsgNotice(textHTML) { pNotice.innerHTML = textHTML; }
+    set setMsgNotice(textHTML) { DOM.notice.innerHTML = textHTML; }
 
     /**
      * ポップアップメッセージを表示する（[OK]ボタンを押すまで待機する）
@@ -117,23 +121,22 @@ class GameController {
     showPopUp(textMsg, { id, name, type, description } = {}) {
         return new Promise((resolve, reject) => {
             // ポップアップとメッセージを表示
-            divInfoPU.hidden = false;
-            divInfoSP.hidden = true;
-            divInfoMsg.textContent = textMsg;
+            DOM.infoPopUp.hidden = false;
+            DOM.infoSP.hidden = true;
+            DOM.infoMsg.textContent = textMsg;
 
             // SPカードの使用
             if (id) {
-                divInfoSP.hidden = false;
-                divSPimg.className = `spID${id}`;
-                pSPname.textContent = name;
-                pSPtext.textContent = description;
+                DOM.infoSP.hidden = false;
+                DOM.infoSPImg.className = `spID${id}`;
+                DOM.infoSPName.textContent = name;
+                DOM.infoSPText.textContent = description;
             }
 
             // ポップアップの[OK]ボタンを押すまで待機
-            btnPop.addEventListener('click', () => {
-                divInfoPU.hidden = true;
-                divInfoSP.hidden = true;
-                // console.log("clicked!");
+            DOM.infoBtnPop.addEventListener('click', () => {
+                DOM.infoPopUp.hidden = true;
+                DOM.infoSP.hidden = true;
                 resolve();  // 待機状態からの解放
             }, { once: true });
         });
@@ -151,82 +154,81 @@ class GameController {
         return new Promise((resolve, reject) => {
             switch (action) {
                 case ACT.GC:
-                    infoBdrImg.hidden = false;
+                    DOM.infoBorderImg.hidden = false;
                 case ACT.GO:
                 case ACT.GS:
-                    infoBdrMsg.innerHTML = MSG.BDR[action];
-                    infoBtnContainer.hidden = false;
-                    infoBorder.hidden = false;
+                    DOM.infoBorderMsg.innerHTML = MSG.BDR[action];
+                    DOM.infoBtnContainer.hidden = false;
+                    DOM.infoBorder.hidden = false;
                     // Button 1st
-                    if (!MSG.BUTTON[action][0]) btn1st.hidden = true;
-                    else btn1st.hidden = false;
-                    btn1st.textContent = MSG.BUTTON[action][0];
+                    if (!MSG.BUTTON[action][0]) DOM.infoBtnFirst.hidden = true;
+                    else DOM.infoBtnFirst.hidden = false;
+                    DOM.infoBtnFirst.textContent = MSG.BUTTON[action][0];
                     // Button 2nd
-                    if (!MSG.BUTTON[action][1]) btn2nd.hidden = true;
-                    else btn2nd.hidden = false;
-                    btn2nd.textContent = MSG.BUTTON[action][1];
+                    if (!MSG.BUTTON[action][1]) DOM.infoBtnSecond.hidden = true;
+                    else DOM.infoBtnSecond.hidden = false;
+                    DOM.infoBtnSecond.textContent = MSG.BUTTON[action][1];
                     break;
 
                 case ACT.YR:
                 case ACT.ER:
-                    infoBdrMsg.innerHTML = MSG.BDR[action];
-                    infoBtnContainer.hidden = false;
-                    infoBorder.hidden = false;
+                    DOM.infoBorderMsg.innerHTML = MSG.BDR[action];
+                    DOM.infoBtnContainer.hidden = false;
+                    DOM.infoBorder.hidden = false;
                     // Button 1st
-                    if (!MSG.BUTTON[ACT.DE][0]) btn1st.hidden = true;
-                    else btn1st.hidden = false;
-                    btn1st.textContent = MSG.BUTTON[ACT.DE][0];
+                    if (!MSG.BUTTON[ACT.DE][0]) DOM.infoBtnFirst.hidden = true;
+                    else DOM.infoBtnFirst.hidden = false;
+                    DOM.infoBtnFirst.textContent = MSG.BUTTON[ACT.DE][0];
                     // Button 2nd
-                    if (!MSG.BUTTON[ACT.DE][1]) btn2nd.hidden = true;
-                    else btn2nd.hidden = false;
-                    btn2nd.textContent = MSG.BUTTON[ACT.DE][1];
+                    if (!MSG.BUTTON[ACT.DE][1]) DOM.infoBtnSecond.hidden = true;
+                    else DOM.infoBtnSecond.hidden = false;
+                    DOM.infoBtnSecond.textContent = MSG.BUTTON[ACT.DE][1];
                     break;
 
                 default:
                     // Button 1st
-                    if (!MSG.BUTTON[ACT.DE][0]) btn1st.hidden = true;
-                    else btn1st.hidden = false;
-                    btn1st.textContent = MSG.BUTTON[ACT.DE][0];
+                    if (!MSG.BUTTON[ACT.DE][0]) DOM.infoBtnFirst.hidden = true;
+                    else DOM.infoBtnFirst.hidden = false;
+                    DOM.infoBtnFirst.textContent = MSG.BUTTON[ACT.DE][0];
                     // Button 2nd
-                    if (!MSG.BUTTON[ACT.DE][1]) btn2nd.hidden = true;
-                    else btn2nd.hidden = false;
-                    btn2nd.textContent = MSG.BUTTON[ACT.DE][1];
+                    if (!MSG.BUTTON[ACT.DE][1]) DOM.infoBtnSecond.hidden = true;
+                    else DOM.infoBtnSecond.hidden = false;
+                    DOM.infoBtnSecond.textContent = MSG.BUTTON[ACT.DE][1];
                 case ACT.NT:
-                    infoBtnContainer.hidden = true;
-                    infoBdrMsg.innerHTML = textMsg;
-                    infoBorder.hidden = false;
+                    DOM.infoBtnContainer.hidden = true;
+                    DOM.infoBorderMsg.innerHTML = textMsg;
+                    DOM.infoBorder.hidden = false;
                     break;
             }
 
             if (action == ACT.NT) {
                 const showTime = 3000;
                 setTimeout(() => {
-                    infoBorder.hidden = true;
-                    infoBdrImg.hidden = true;
-                    infoBtnContainer.hidden = true;
-                    btn1st.hidden = true;
-                    btn2nd.hidden = true;
+                    DOM.infoBorder.hidden = true;
+                    DOM.infoBorderImg.hidden = true;
+                    DOM.infoBtnContainer.hidden = true;
+                    DOM.infoBtnFirst.hidden = true;
+                    DOM.infoBtnSecond.hidden = true;
                     resolve();
                 }, showTime);
             } else {
 
                 // ボーダーウィンドウのボタンを押すまで待機
-                [btn1st, btn2nd].forEach((btn, i) => {
+                [DOM.infoBtnFirst, DOM.infoBtnSecond].forEach((btn, i) => {
                     btn.addEventListener('click', (el) => {
-                        infoBorder.hidden = true;
-                        infoBdrImg.hidden = true;
-                        infoBtnContainer.hidden = true;
-                        btn1st.hidden = true;
-                        btn2nd.hidden = true;
+                        DOM.infoBorder.hidden = true;
+                        DOM.infoBorderImg.hidden = true;
+                        DOM.infoBtnContainer.hidden = true;
+                        DOM.infoBtnFirst.hidden = true;
+                        DOM.infoBtnSecond.hidden = true;
 
                         const target = el.target;
 
                         switch (action) {
                             case ACT.GC:
                             case ACT.GO:
-                                if (target == btn1st) resolve(btn1st); // this.newGame()
-                                if (target == btn2nd) resolve(btn2nd); // location.replace("index.html");
-                                // if (btn == btn2nd) location.replace("index.html");
+                                if (target == DOM.infoBtnFirst) resolve(DOM.infoBtnFirst); // this.newGame()
+                                if (target == DOM.infoBtnSecond) resolve(DOM.infoBtnSecond); // location.replace("index.html");
                                 break;
                             case ACT.YR:
                             case ACT.ER:
@@ -262,32 +264,32 @@ class GameController {
             prevTurn = gs.whoseTurn;
 
             while (true) {  // !gs.isGameEnd
-                btnStay.disabled = true;
-                btnDraw.disabled = true;
+                DOM.btnStay.disabled = true;
+                DOM.btnDraw.disabled = true;
 
                 // 相手のターン処理
                 if (gs.whoseTurn != PLAYER.ME) {
-                    this.setMsgHeader = `<span class="red">ENEMY</span> TURN`;
-                    btnStay.disabled = true;
-                    btnDraw.disabled = true;
-                    btnSP.checked = false;
-                    btnSP.disabled = true;
+                    DOM.setMsgHeader = `<span class="red">ENEMY</span> TURN`;
+                    DOM.btnStay.disabled = true;
+                    DOM.btnDraw.disabled = true;
+                    DOM.btnSP.checked = false;
+                    DOM.btnSP.disabled = true;
                     gs.enStay = false;  // STAYフラグを折る
                     await this.passTurn();
                 }
                 // 自分のターン処理
                 else {
-                    this.setMsgHeader = `<span class="green">YOUR</span> TURN`;
-                    btnStay.disabled = false;
-                    btnDraw.disabled = false;
-                    btnSP.disabled = false;
+                    DOM.setMsgHeader = `<span class="green">YOUR</span> TURN`;
+                    DOM.btnStay.disabled = false;
+                    DOM.btnDraw.disabled = false;
+                    DOM.btnSP.disabled = false;
                     gs.myStay = false;  // STAYフラグを折る
 
                     //* 手札合計値がバースト or 手札が上限の６枚ある場合はドロー不可能
                     if (gs.goal < gs.myHandSum || 6 <= gs.myHand.length) {
-                        btnDraw.disabled = true;
+                        DOM.btnDraw.disabled = true;
                     } else {
-                        btnDraw.disabled = false;
+                        DOM.btnDraw.disabled = false;
                     }
 
                     // どれか１つのボタン押下まで待つ
@@ -297,7 +299,7 @@ class GameController {
                         const spBtns = document.querySelectorAll(".spSlot > input");
 
                         // Draw
-                        btnDraw.addEventListener('click', async () => {
+                        DOM.btnDraw.addEventListener('click', async () => {
                             ac.abort();
                             // 手札合計値がバースト or 手札が上限の６枚ある場合は無効
                             if (gs.goal < gs.myHandSum || 6 <= gs.myHand.length) return;
@@ -306,8 +308,8 @@ class GameController {
                             gs.myHand.push(gs.deck.pop());  // draw from deck
                             // gs.myStay = false;  // STAYフラグを折る
                             await this.reflesh();
-                            divMyCard.lastChild.classList.add("draw");
-                            spanMySum.classList.add("show");
+                            DOM.myCards.lastChild.classList.add("draw");
+                            DOM.myHandSum.classList.add("show");
                             await sleep(slideTime);
                             // 相手のターンに設定
                             gs.whoseTurn = PLAYER.EN;
@@ -315,7 +317,7 @@ class GameController {
                         }, { signal: ac.signal, once: true });
 
                         // Stay
-                        btnStay.addEventListener('click', () => {
+                        DOM.btnStay.addEventListener('click', () => {
                             ac.abort();
                             gs.myStay = true; // STAYフラグを立てる
                             this.reflesh();
@@ -334,11 +336,11 @@ class GameController {
 
                                 gs.myHandSP.splice(idx, 1);
                                 // console.log("called from ", ev.target); // SP効果発動！
-                                this.setMsgNotice = gs.useSP(spID, gs.whoseTurn);
+                                DOM.setMsgNotice = gs.useSP(spID, gs.whoseTurn);
                                 // 一定時間後にNoticeを非表示
                                 if (timerIdNotice) clearTimeout(timerIdNotice);
                                 timerIdNotice = setTimeout(() => {
-                                    this.setMsgNotice = "";
+                                    DOM.setMsgNotice = "";
                                 }, timeOutNotice);
 
                                 gs.bothStay = false;  // 両者のSTAYフラグを折る
@@ -353,26 +355,26 @@ class GameController {
                 // 両者が「STAY」ならラウンドの勝敗を決定する
                 // （ただし，SPカードを使用してSTAYした場合は無視）
                 if (gs.bothStay) {
-                    btnStay.disabled = true;
-                    btnDraw.disabled = true;
-                    btnSP.checked = false;
-                    btnSP.disabled = true;
+                    DOM.btnStay.disabled = true;
+                    DOM.btnDraw.disabled = true;
+                    DOM.btnSP.checked = false;
+                    DOM.btnSP.disabled = true;
                     await this.resultRound();
                     // ゲームの勝敗が付いている時
                     if (gs.isGameEnd) {
                         if (gs.isGameEnd == PLAYER.ME) {
-                            this.setMsgHeader = `YOU ARE THE <span class="green">SURVIVOR!!</span>`;
+                            DOM.setMsgHeader = `YOU ARE THE <span class="green">SURVIVOR!!</span>`;
                             await this.showBdrMsg(MSG.BDR.GAME_CLEAR, ACT.GC).then(async (res) => {
-                                if (res == btn2nd) {
+                                if (res == DOM.infoBtnSecond) {
                                     document.querySelector(".container").style = "filter: blur(5px)";
                                     location.replace("index.html");
                                     await sleep(2000);
                                 }
                             });
                         } else if (gs.isGameEnd == PLAYER.EN) {
-                            this.setMsgHeader = `YOU ARE <span class="red">DEAD...</span>`;
+                            DOM.setMsgHeader = `YOU ARE <span class="red">DEAD...</span>`;
                             await this.showBdrMsg(MSG.BDR.GAME_OVER, ACT.GO).then(async (res) => {
-                                if (res == btn2nd) {
+                                if (res == DOM.infoBtnSecond) {
                                     document.querySelector(".container").style = "filter: blur(5px)";
                                     location.replace("index.html");
                                     await sleep(2000);
@@ -435,16 +437,16 @@ class GameController {
         else if (decision.cmd == CMD.DRAW) {
             gs.enStay = false;  // STAYフラグを折る
             this.reflesh();
-            divEnCard.lastChild.classList.add("draw");
-            spanEnSum.classList.add("show");
+            DOM.enemyCards.lastChild.classList.add("draw");
+            DOM.enemyHandSum.classList.add("show");
 
-            // SPカード使用のポップアップメッセージを表示
+            // ポップアップメッセージを表示
             await this.showPopUp(MSG.POP.DRAW);
             gs.whoseTurn = PLAYER.ME;
         }
         // Stay
         else if (decision.cmd == CMD.STAY) {
-            // SPカード使用のポップアップメッセージを表示
+            // ポップアップメッセージを表示
             await this.showPopUp(MSG.POP.STAY);
             gs.enStay = true; // STAYフラグを立てる
             this.reflesh();
@@ -453,7 +455,7 @@ class GameController {
     }
 
     animateSP = () => new Promise(async (resolve, reject) => {
-        
+
     });
 
     /**
@@ -470,10 +472,10 @@ class GameController {
             const slideTime = 1000;
             const showCount = 1000;
 
-            spanMySum.style.visibility = 'hidden';
-            spanEnSum.style.visibility = 'hidden';
+            DOM.myHandSum.style.visibility = 'hidden';
+            DOM.enemyHandSum.style.visibility = 'hidden';
 
-            const mcards = divMyCard.children;
+            const mcards = DOM.myCards.children;
             for (let i = 0; i < mcards.length; i++) {
                 mcards[i].classList.add("draw");
                 mcards[i].hidden = true;
@@ -482,15 +484,15 @@ class GameController {
                     await sleep(slideTime);
                     // mcards[i].classList.remove("draw");
                     if (i == mcards.length - 1) {
-                        spanMySum.classList.add("show");
-                        spanMySum.style.visibility = 'visible';
+                        DOM.myHandSum.classList.add("show");
+                        DOM.myHandSum.style.visibility = 'visible';
                         await sleep(showCount);
-                        // spanMySum.classList.remove("show");
+                        // DOM.myHandSum.classList.remove("show");
                     }
                 }, slideTime * i);          // タイミングをずらす
             }
 
-            const ecards = divEnCard.children;
+            const ecards = DOM.enemyCards.children;
             for (let i = 0; i < ecards.length; i++) {
                 ecards[i].classList.add("draw");
                 ecards[i].hidden = true;
@@ -499,10 +501,10 @@ class GameController {
                     await sleep(slideTime);
                     // ecards[i].classList.remove("draw");
                     if (i == mcards.length - 1) {
-                        spanEnSum.classList.add("show");
-                        spanEnSum.style.visibility = 'visible';
+                        DOM.enemyHandSum.classList.add("show");
+                        DOM.enemyHandSum.style.visibility = 'visible';
                         await sleep(showCount);
-                        // spanEnSum.classList.remove("show");
+                        // DOM.enemyHandSum.classList.remove("show");
                     }
                 }, msec + slideTime * i);   // タイミングをずらす
             }
@@ -538,10 +540,10 @@ class GameController {
             const slideTime = 1000;
             const showCount = 1000;
 
-            spanMySum.style.visibility = 'hidden';
-            spanEnSum.style.visibility = 'hidden';
+            DOM.myHandSum.style.visibility = 'hidden';
+            DOM.enemyHandSum.style.visibility = 'hidden';
 
-            const mcards = divMyCard.children;
+            const mcards = DOM.myCards.children;
             for (let i = 0; i < mcards.length; i++) {
                 mcards[i].classList.add("draw");
                 mcards[i].hidden = true;
@@ -550,15 +552,15 @@ class GameController {
                     await sleep(slideTime);
                     // mcards[i].classList.remove("draw");
                     if (i == mcards.length - 1) {
-                        spanMySum.classList.add("show");
-                        spanMySum.style.visibility = 'visible';
+                        DOM.myHandSum.classList.add("show");
+                        DOM.myHandSum.style.visibility = 'visible';
                         await sleep(showCount);
-                        // spanMySum.classList.remove("show");
+                        // DOM.myHandSum.classList.remove("show");
                     }
                 }, slideTime * i);          // タイミングをずらす
             }
 
-            const ecards = divEnCard.children;
+            const ecards = DOM.enemyCards.children;
             for (let i = 0; i < ecards.length; i++) {
                 ecards[i].classList.add("draw");
                 ecards[i].hidden = true;
@@ -567,10 +569,10 @@ class GameController {
                     await sleep(slideTime);
                     // ecards[i].classList.remove("draw");
                     if (i == mcards.length - 1) {
-                        spanEnSum.classList.add("show");
-                        spanEnSum.style.visibility = 'visible';
+                        DOM.enemyHandSum.classList.add("show");
+                        DOM.enemyHandSum.style.visibility = 'visible';
                         await sleep(showCount);
-                        // spanEnSum.classList.remove("show");
+                        // DOM.enemyHandSum.classList.remove("show");
                     }
                 }, msec + slideTime * i);   // タイミングをずらす
             }
@@ -628,13 +630,13 @@ class GameController {
         await sleep(1000);
 
         // プレイヤー/相手の指(HP)の表示をリセット
-        while (divMyHand.children.length > 1) { divMyHand.lastChild.remove(); }
-        while (divEnHand.children.length > 1) { divEnHand.lastChild.remove(); }
+        while (DOM.myHand.children.length > 1) DOM.myHand.lastChild.remove();
+        while (DOM.enemyHand.children.length > 1) DOM.enemyHand.lastChild.remove();
 
         // プレイヤーの指(HP)を表示
         const my_lost = DEFAULT_PARAMS.FINGERS - gs.myFingers;
         if (my_lost > 0) {
-            divMyHand.insertAdjacentHTML(
+            DOM.myHand.insertAdjacentHTML(
                 'beforeend',
                 `<img class="Hand lost" src="img/my/lost/0${my_lost}.png"/>`
             );
@@ -643,7 +645,7 @@ class GameController {
         // 相手の(HP)を表示
         const en_lost = DEFAULT_PARAMS.FINGERS - gs.enFingers;
         if (en_lost > 0) {
-            divEnHand.insertAdjacentHTML(
+            DOM.enemyHand.insertAdjacentHTML(
                 'beforeend',
                 `<img class="Hand lost" src="img/en/lost/0${en_lost}.png"/>`
             );
@@ -670,24 +672,24 @@ class GameController {
         const gs = this.gameStatus;
 
         // プレイヤーの手札をオープン
-        const myFirstCard = divMyCard.firstChild;
+        const myFirstCard = DOM.myCards.firstChild;
         myFirstCard.innerHTML = gs.myHand[0];
         myFirstCard.className = "numCard";
 
         // 相手の手札をオープン
-        const enFirstCard = divEnCard.firstChild;
+        const enFirstCard = DOM.enemyCards.firstChild;
         enFirstCard.innerHTML = gs.enHand[0];
         enFirstCard.className = "numCard";
 
         // 相手の手札合計値をオープン
         const enHandSum = gs.enHandSum;
-        spanEnSum.textContent = enHandSum;
+        DOM.enemyHandSum.textContent = enHandSum;
         if (gs.goal == enHandSum) {
-            spanEnSum.className = "just";
+            DOM.enemyHandSum.className = "just";
         } else if (gs.goal < enHandSum) {
-            spanEnSum.className = "burst";
+            DOM.enemyHandSum.className = "burst";
         } else {
-            spanEnSum.className = "";
+            DOM.enemyHandSum.className = "";
         }
 
         resolve();
@@ -702,26 +704,26 @@ class GameController {
 
         // プレイヤーの手札合計値
         const myHandSum = gs.myHandSum;
-        spanMySum.textContent = myHandSum;
-        spanMySum.className = "";
+        DOM.myHandSum.textContent = myHandSum;
+        DOM.myHandSum.className = "";
         if (gs.goal == myHandSum) {
-            spanMySum.className = "just";
+            DOM.myHandSum.className = "just";
         } else if (gs.goal < myHandSum) {
-            spanMySum.className = "burst";
+            DOM.myHandSum.className = "burst";
         } else {
-            spanMySum.className = "";
+            DOM.myHandSum.className = "";
         }
 
         // プレイヤーの STAY 状態の表示
         if (gs.myStay) {
-            divMyCard.classList.add("stay");
+            DOM.myCards.classList.add("stay");
         } else {
-            divMyCard.classList.remove("stay");
+            DOM.myCards.classList.remove("stay");
         }
 
         // プレイヤーの手札の表示
-        while (divMyCard.lastChild) {
-            divMyCard.removeChild(divMyCard.lastChild);
+        while (DOM.myCards.lastChild) {
+            DOM.myCards.removeChild(DOM.myCards.lastChild);
         }
         gs.myHand.forEach((e, i) => {
             const div = document.createElement('div');
@@ -734,17 +736,17 @@ class GameController {
                 div.className = "numCard";
                 div.textContent = e;
             }
-            divMyCard.appendChild(div);
+            DOM.myCards.appendChild(div);
         });
 
         // プレイヤーの Passive SPカードの表示
-        while (divMyPassSP.lastChild) {
-            divMyPassSP.removeChild(divMyPassSP.lastChild);
+        while (DOM.myPassiveSP.lastChild) {
+            DOM.myPassiveSP.removeChild(DOM.myPassiveSP.lastChild);
         }
         gs.myPassiveSP.forEach((e, i) => {
             const div = document.createElement('div');
             div.className = `spCard spID${e}`;
-            divMyPassSP.appendChild(div);
+            DOM.myPassiveSP.appendChild(div);
         });
 
         // 
@@ -753,19 +755,19 @@ class GameController {
 
         // 相手の手札合計値(オープン前)
         const enHandSum = gs.enHandSum - gs.enHand[0];
-        spanEnSum.textContent = `?+${enHandSum}`;
-        spanEnSum.className = "";
+        DOM.enemyHandSum.textContent = `?+${enHandSum}`;
+        DOM.enemyHandSum.className = "";
 
         // 相手の STAY 状態の表示
         if (gs.enStay) {
-            divEnCard.classList.add("stay");
+            DOM.enemyCards.classList.add("stay");
         } else {
-            divEnCard.classList.remove("stay");
+            DOM.enemyCards.classList.remove("stay");
         }
 
         // 相手の手札の表示(オープン前)
-        while (divEnCard.lastChild) {
-            divEnCard.removeChild(divEnCard.lastChild);
+        while (DOM.enemyCards.lastChild) {
+            DOM.enemyCards.removeChild(DOM.enemyCards.lastChild);
         }
         gs.enHand.forEach((e, i) => {
             const div = document.createElement('div');
@@ -775,17 +777,17 @@ class GameController {
                 div.className = "numCard";
                 div.textContent = e;
             }
-            divEnCard.appendChild(div);
+            DOM.enemyCards.appendChild(div);
         });
 
         // 相手の Passive SPカードの表示
-        while (divEnPassSP.lastChild) {
-            divEnPassSP.removeChild(divEnPassSP.lastChild);
+        while (DOM.enemyPassiveSP.lastChild) {
+            DOM.enemyPassiveSP.removeChild(DOM.enemyPassiveSP.lastChild);
         }
         gs.enPassiveSP.forEach((e, i) => {
             const div = document.createElement('div');
             div.className = `spCard spID${e}`;
-            divEnPassSP.appendChild(div);
+            DOM.enemyPassiveSP.appendChild(div);
         });
 
         // 
@@ -793,15 +795,15 @@ class GameController {
         // 
 
         // 手札合計値の目標値を設定
-        spanGoal.forEach((e) => { e.textContent = gs.goal });
+        DOM.goal.forEach((e) => { e.textContent = gs.goal });
 
         // プレイヤーの指(HP)の表示
         const my_lost = DEFAULT_PARAMS.FINGERS - gs.myFingers;
         const my_bet = gs.myBet;
-        // while (divMyHand.lastChild.className != "Hand") {
-        while (divMyHand.children.length > 1) { divMyHand.lastChild.remove(); }
+        // while (DOM.divMyHand.lastChild.className != "Hand") {
+        while (DOM.myHand.children.length > 1) DOM.myHand.lastChild.remove();
         if (my_lost > 0) {
-            divMyHand.insertAdjacentHTML(
+            DOM.myHand.insertAdjacentHTML(
                 'beforeend',
                 `<img class="Hand lost" src="img/my/lost/0${my_lost}.png"/>`
             );
@@ -809,7 +811,7 @@ class GameController {
         if (my_bet > 0) {
             const SELECT = Math.min(my_lost + my_bet, DEFAULT_PARAMS.FINGERS);
             for (let i = my_lost + 1; i <= SELECT; i++) {
-                divMyHand.insertAdjacentHTML(
+                DOM.myHand.insertAdjacentHTML(
                     'beforeend',
                     `<img class="Hand select" src="img/my/select/0${i}.png"/>`
                 );
@@ -819,10 +821,10 @@ class GameController {
         // 相手の指(HP)の表示
         const en_lost = DEFAULT_PARAMS.FINGERS - gs.enFingers;
         const en_bet = gs.enBet;
-        // while (divEnHand.lastChild.className != "Hand") {
-        while (divEnHand.children.length > 1) { divEnHand.lastChild.remove(); }
+        // while (DOM.divEnHand.lastChild.className != "Hand") {
+        while (DOM.enemyHand.children.length > 1) DOM.enemyHand.lastChild.remove();
         if (en_lost > 0) {
-            divEnHand.insertAdjacentHTML(
+            DOM.enemyHand.insertAdjacentHTML(
                 'beforeend',
                 `<img class="Hand lost" src="img/en/lost/0${en_lost}.png"/>`
             );
@@ -830,7 +832,7 @@ class GameController {
         if (en_bet > 0) {
             const SELECT = Math.min(en_lost + en_bet, DEFAULT_PARAMS.FINGERS);
             for (let i = en_lost + 1; i <= SELECT; i++) {
-                divEnHand.insertAdjacentHTML(
+                DOM.enemyHand.insertAdjacentHTML(
                     'beforeend',
                     `<img class="Hand select" src="img/en/select/0${i}.png"/>`
                 );
@@ -844,7 +846,7 @@ class GameController {
         const my_hand_sp = gs.myHandSP; //: Array       #自分のSPカード
 
         // SPカードの所持数をSPボタンのラベルに表示する
-        divSPBtn.innerHTML = `SP CARD <span>${my_hand_sp.length}</span>`;
+        DOM.spBtn.innerHTML = `SP CARD <span>${my_hand_sp.length}</span>`;
 
         // SPウィンドウのSPカードを更新する
         for (let i = 0; i < MAX_SP_HAND; i++) {
@@ -864,7 +866,7 @@ class GameController {
             } else {
                 divSPCard.className = "spSlot";
             }
-            SPText.before(divSPCard);
+            DOM.SPTextContainer.before(divSPCard);
         }
 
         // 
@@ -873,26 +875,26 @@ class GameController {
 
         //* 手札合計値がバースト or 手札が上限の６枚ある場合はドロー不可能
         if (gs.goal < gs.myHandSum || 6 <= gs.myHand.length) {
-            btnDraw.disabled = true;
+            DOM.btnDraw.disabled = true;
         } else {
-            btnDraw.disabled = false;
+            DOM.btnDraw.disabled = false;
         }
 
         if (gs.whoseTurn != PLAYER.ME) {
-            btnStay.disabled = true;
-            btnDraw.disabled = true;
+            DOM.btnStay.disabled = true;
+            DOM.btnDraw.disabled = true;
         } else {
-            btnStay.disabled = false;
-            btnDraw.disabled = false;
+            DOM.btnStay.disabled = false;
+            DOM.btnDraw.disabled = false;
         }
 
         //* 勝敗判定後は新しいラウンド/ゲームを開始するまでSTAY+DRAW不可能
         if (gs.isJudged) {
-            btnStay.disabled = true;
-            btnDraw.disabled = true;
+            DOM.btnStay.disabled = true;
+            DOM.btnDraw.disabled = true;
         } else {
-            btnStay.disabled = false;
-            btnDraw.disabled = false;
+            DOM.btnStay.disabled = false;
+            DOM.btnDraw.disabled = false;
         }
 
         resolve();

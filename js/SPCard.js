@@ -2,7 +2,7 @@
 "use strict";
 
 // export
-class SPCard {
+export class SPCard {
 
     //
     // STATIC (ES2022)

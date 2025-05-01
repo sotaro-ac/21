@@ -1,31 +1,31 @@
 // js/GameStatus.js
 "use strict";
 
-// Does not work in browser
-// import { SPCard } from './SPCard.js';
+import { SPCard } from './SPCard.js';
+import { MAX_SP_HAND } from './domElements.js';
 
 // export default {...}
-const DEFAULT_PARAMS = {
+export const DEFAULT_PARAMS = {
     get DECK() { return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] },
     get FINGERS() { return 5 },
     get GOAL() { return 21 },
     get BET() { return 1 }
 };
 
-const PLAYER = {
+export const PLAYER = {
     ME: "ME",
     EN: "ENEMY",
     get RANDOM() { return (Math.random() > 0.5) ? this.ME : this.EN }
 };
 
-const CMD = {
+export const CMD = {
     STAY: "STAY",
     DRAW: "DRAW",
     SP: "SP"
 };
 
 // export
-class GameStatus {
+export class GameStatus {
     // 
     // PUBLIC LOCAL
     // 

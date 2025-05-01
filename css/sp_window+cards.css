@@ -2,13 +2,13 @@
 
 /* input button */
 #MY_Commands {
-    display        : flex;
-    box-sizing     : border-box;
-    align-items    : center;
+    display: flex;
+    box-sizing: border-box;
+    align-items: center;
     justify-content: center;
-    width          : 1080px;
-    margin         : 20px auto;
-    position       : relative;
+    width: 1080px;
+    margin: 20px auto;
+    position: relative;
 }
 
 #comBtnContainer {
@@ -19,22 +19,22 @@
     /* Reset style */
     /* background: none; */
     /* border: none; */
-    outline           : none;
+    outline: none;
     -webkit-appearance: none;
-    -moz-appearance   : none;
-    appearance        : none;
+    -moz-appearance: none;
+    appearance: none;
     ;
-    font-size    : 1em;
-    color        : #ffffff;
-    font-weight  : bold;
-    margin       : 0 .05em;
-    padding      : .5em 1em;
-    width        : 150px;
-    height       : 3em;
-    background   : #11111133;
-    border       : solid .5px #ffffff1a;
+    font-size: 1em;
+    color: #ffffff;
+    font-weight: bold;
+    margin: 0 .05em;
+    padding: .5em 1em;
+    width: 150px;
+    height: 3em;
+    background: #11111133;
+    border: solid .5px #ffffff1a;
     border-radius: 4px;
-    cursor       : pointer;
+    cursor: pointer;
 }
 
 .clear_btn:hover {
@@ -56,76 +56,76 @@ input#SP_btn {
 }
 
 #label_SP_btn {
-    margin : 0 .05em;
+    margin: 0 .05em;
     padding: 0;
-    cursor : pointer;
+    cursor: pointer;
 }
 
 #label_SP_btn>#divSPBtn {
-    display        : flex;
-    align-items    : center;
+    display: flex;
+    align-items: center;
     justify-content: center;
-    font-size      : 1em;
-    color          : yellowgreen;
-    font-weight    : bold;
-    background     : #11111133;
-    border-radius  : 4px;
-    border         : solid .5px #92ff3d75;
-    margin         : 0 .25em;
-    padding        : 0;
-    width          : 150px;
-    height         : 2.95em;
+    font-size: 1em;
+    color: yellowgreen;
+    font-weight: bold;
+    background: #11111133;
+    border-radius: 4px;
+    border: solid .5px #92ff3d75;
+    margin: 0 .25em;
+    padding: 0;
+    width: 150px;
+    height: 2.95em;
 }
 
 #label_SP_btn>#divSPBtn>span {
-    display        : flex;
-    align-items    : center;
+    display: flex;
+    align-items: center;
     justify-content: center;
-    margin-left    : .5em;
-    width          : 1.6em;
-    height         : 1.6em;
-    font-size      : 1.2em;
-    color          : #111111;
-    background     : yellowgreen;
-    border-radius  : 25%;
+    margin-left: .5em;
+    width: 1.6em;
+    height: 1.6em;
+    font-size: 1.2em;
+    color: #111111;
+    background: yellowgreen;
+    border-radius: 25%;
 }
 
 #label_SP_btn:hover>#divSPBtn {
     transition: 0.4s;
-    color     : #ffffff;
+    color: #ffffff;
     background: #92ff3d75;
 }
 
 #label_SP_btn:hover>#divSPBtn>span {
     transition: 0.4s;
-    color     : #ffffff;
+    color: #ffffff;
     background: transparent;
-    outline   : solid 2.5px #ffffff;
+    outline: solid 2.5px #ffffff;
 }
 
 input#SP_btn:disabled+#label_SP_btn>#divSPBtn {
-    color     : yellowgreen;
+    color: yellowgreen;
 }
 
 input#SP_btn:disabled+#label_SP_btn>#divSPBtn>span {
     background: #ececec33;
-    color     : #111111;
+    color: #111111;
     background: yellowgreen;
-    outline   : none;
+    outline: none;
 }
 
 input#SP_btn:checked+#label_SP_btn>#divSPBtn {
     transition: 0.4s;
-    color     : #ffffff;
+    color: #ffffff;
     box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.2);
     background: yellowgreen;
 }
 
 input#SP_btn:checked+#label_SP_btn>#divSPBtn>span {
     transition: 0.4s;
-    color     : #ffffff;
+    color: #ffffff;
     background: transparent;
-    outline   : solid 2.5px #ffffff;
+    outline: solid 2.5px #ffffff;
 }
 
 /* SP_Window */
@@ -137,17 +137,17 @@ input#SP_btn:checked+#label_SP_btn>#divSPBtn>span {
         "sp8 sp9 sp10 sp11"
         "sp12 sp13 sp14 sp15"
         "spText spText spText spText";
-    grid-template-rows   : 70px 70px 70px 70px 175px;
+    grid-template-rows: 70px 70px 70px 70px 175px;
     grid-template-columns: 70px 70px 70px 70px;
-    grid-gap             : 6px;
-    width                : 300px;
-    height               : 480px;
-    padding              : 6px;
-    background-color     : #0000008e;
-    box-shadow           : 0 0 10px 10px #0000008e;
-    position             : absolute;
-    top                  : -640px;
-    right                : 0;
+    grid-gap: 6px;
+    width: 300px;
+    height: 480px;
+    padding: 6px;
+    background-color: #0000008e;
+    box-shadow: 0 0 10px 10px #0000008e;
+    position: absolute;
+    top: -640px;
+    right: 0;
 }
 
 #sp0 {
@@ -214,16 +214,16 @@ input#SP_btn:checked+#label_SP_btn>#divSPBtn>span {
     grid-area: sp15;
 }
 
-#spText {
-    position     : relative;
-    grid-area    : spText;
-    border       : 1px solid rgba(250, 235, 215, 0.60);
+#SPTextContainer {
+    position: relative;
+    grid-area: spText;
+    border: 1px solid rgba(250, 235, 215, 0.60);
     border-radius: 4px;
 }
 
 .spSlot {
-    position     : relative;
-    border       : 1px solid rgba(250, 235, 215, 0.60);
+    position: relative;
+    border: 1px solid rgba(250, 235, 215, 0.60);
     border-radius: 4px;
 }
 
@@ -257,18 +257,18 @@ input#SP_btn~div#SP_Window {
 }
 
 input#SP_btn:checked~div#SP_Window {
-    animation : fade-in .2s;
+    animation: fade-in .2s;
     visibility: visible;
 }
 
 /* when SP_Card slot is Empty */
 .spSlot:empty::before,
 .spSlot:empty::after {
-    position  : absolute;
-    top       : 50%;
-    left      : 7.5%;
-    content   : "";
-    width     : 85%;
+    position: absolute;
+    top: 50%;
+    left: 7.5%;
+    content: "";
+    width: 85%;
     border-top: solid 1px rgba(250, 235, 215, 0.60);
 }
 
@@ -280,185 +280,185 @@ input#SP_btn:checked~div#SP_Window {
     transform: skewY(45deg);
 }
 
-div#spText p.SPname {
-    color        : #ffffff;
-    font-size    : 20px;
-    font-weight  : bold;
-    padding      : 8px 10px;
-    margin       : 0 auto;
+div#SPTextContainer p.SPname {
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 8px 10px;
+    margin: 0 auto;
     border-bottom: solid 1.2px #ffffff;
 }
 
-div#spText p.SPtext {
-    color      : #ffffff;
-    font-size  : 16px;
-    padding    : 10px 10px;
-    margin     : 0 auto;
+div#SPTextContainer p.SPtext {
+    color: #ffffff;
+    font-size: 16px;
+    padding: 10px 10px;
+    margin: 0 auto;
     white-space: pre-wrap;
 }
 
-div#spText>div[class^="spID"][class$="txt"] {
-    position  : absolute;
+div#SPTextContainer>div[class^="spID"][class$="txt"] {
+    position: absolute;
     visibility: collapse;
-    padding   : 10px;
+    padding: 10px;
 }
 
 div#SP_Window>div.spSlot>input {
-    width  : 100%;
-    height : 100%;
+    width: 100%;
+    height: 100%;
     opacity: 0;
-    cursor : pointer;
+    cursor: pointer;
 }
 
 div.spID1 {
     background-image: url(../img/sp/1.png);
-    background-size : 100% 100%;
+    background-size: 100% 100%;
 }
 
 div.spID2 {
     background-image: url(../img/sp/2.png);
-    background-size : 100% 100%;
+    background-size: 100% 100%;
 }
 
 div.spID3 {
     background-image: url(../img/sp/3.png);
-    background-size : 100% 100%;
+    background-size: 100% 100%;
 }
 
 div.spID4 {
     background-image: url(../img/sp/4.png);
-    background-size : 100% 100%;
+    background-size: 100% 100%;
 }
 
 div.spID5 {
     background-image: url(../img/sp/5.png);
-    background-size : 100% 100%;
+    background-size: 100% 100%;
 }
 
 div.spID6 {
     background-image: url(../img/sp/6.png);
-    background-size : 100% 100%;
+    background-size: 100% 100%;
 }
 
 div.spID7 {
     background-image: url(../img/sp/7.png);
-    background-size : 100% 100%;
+    background-size: 100% 100%;
 }
 
 div.spID8 {
     background-image: url(../img/sp/8.png);
-    background-size : 100% 100%;
+    background-size: 100% 100%;
 }
 
 div.spID9 {
     background-image: url(../img/sp/9.png);
-    background-size : 100% 100%;
+    background-size: 100% 100%;
 }
 
 div.spID10 {
     background-image: url(../img/sp/10.png);
-    background-size : 100% 100%;
+    background-size: 100% 100%;
 }
 
 div.spID11 {
     background-image: url(../img/sp/11.png);
-    background-size : 100% 100%;
+    background-size: 100% 100%;
 }
 
 div.spID12 {
     background-image: url(../img/sp/12.png);
-    background-size : 100% 100%;
+    background-size: 100% 100%;
 }
 
 div.spID13 {
     background-image: url(../img/sp/13.png);
-    background-size : 100% 100%;
+    background-size: 100% 100%;
 }
 
 div.spID14 {
     background-image: url(../img/sp/14.png);
-    background-size : 100% 100%;
+    background-size: 100% 100%;
 }
 
 div.spID15 {
     background-image: url(../img/sp/15.png);
-    background-size : 100% 100%;
+    background-size: 100% 100%;
 }
 
 div.spID16 {
     background-image: url(../img/sp/16.png);
-    background-size : 100% 100%;
+    background-size: 100% 100%;
 }
 
 div.spID17 {
     background-image: url(../img/sp/17.png);
-    background-size : 100% 100%;
+    background-size: 100% 100%;
 }
 
 div.spID18 {
     background-image: url(../img/sp/18.png);
-    background-size : 100% 100%;
+    background-size: 100% 100%;
 }
 
 div.spID21 {
     background-image: url(../img/sp/21.png);
-    background-size : 100% 100%;
+    background-size: 100% 100%;
 }
 
 div.spID22 {
     background-image: url(../img/sp/22.png);
-    background-size : 100% 100%;
+    background-size: 100% 100%;
 }
 
 div.spID23 {
     background-image: url(../img/sp/23.png);
-    background-size : 100% 100%;
+    background-size: 100% 100%;
 }
 
 div.spID24 {
     background-image: url(../img/sp/24.png);
-    background-size : 100% 100%;
+    background-size: 100% 100%;
 }
 
 div.spID25 {
     background-image: url(../img/sp/25.png);
-    background-size : 100% 100%;
+    background-size: 100% 100%;
 }
 
 div.spID26 {
     background-image: url(../img/sp/26.png);
-    background-size : 100% 100%;
+    background-size: 100% 100%;
 }
 
 div.spID27 {
     background-image: url(../img/sp/27.png);
-    background-size : 100% 100%;
+    background-size: 100% 100%;
 }
 
-div.spID1:hover~div#spText>div.spID1txt,
-div.spID2:hover~div#spText>div.spID2txt,
-div.spID3:hover~div#spText>div.spID3txt,
-div.spID4:hover~div#spText>div.spID4txt,
-div.spID5:hover~div#spText>div.spID5txt,
-div.spID6:hover~div#spText>div.spID6txt,
-div.spID7:hover~div#spText>div.spID7txt,
-div.spID8:hover~div#spText>div.spID8txt,
-div.spID9:hover~div#spText>div.spID9txt,
-div.spID10:hover~div#spText>div.spID10txt,
-div.spID11:hover~div#spText>div.spID11txt,
-div.spID12:hover~div#spText>div.spID12txt,
-div.spID13:hover~div#spText>div.spID13txt,
-div.spID14:hover~div#spText>div.spID14txt,
-div.spID15:hover~div#spText>div.spID15txt,
-div.spID16:hover~div#spText>div.spID16txt,
-div.spID17:hover~div#spText>div.spID17txt,
-div.spID18:hover~div#spText>div.spID18txt,
-div.spID21:hover~div#spText>div.spID21txt,
-div.spID22:hover~div#spText>div.spID22txt,
-div.spID23:hover~div#spText>div.spID23txt,
-div.spID24:hover~div#spText>div.spID24txt,
-div.spID25:hover~div#spText>div.spID25txt,
-div.spID26:hover~div#spText>div.spID26txt,
-div.spID27:hover~div#spText>div.spID27txt {
+div.spID1:hover~div#SPTextContainer>div.spID1txt,
+div.spID2:hover~div#SPTextContainer>div.spID2txt,
+div.spID3:hover~div#SPTextContainer>div.spID3txt,
+div.spID4:hover~div#SPTextContainer>div.spID4txt,
+div.spID5:hover~div#SPTextContainer>div.spID5txt,
+div.spID6:hover~div#SPTextContainer>div.spID6txt,
+div.spID7:hover~div#SPTextContainer>div.spID7txt,
+div.spID8:hover~div#SPTextContainer>div.spID8txt,
+div.spID9:hover~div#SPTextContainer>div.spID9txt,
+div.spID10:hover~div#SPTextContainer>div.spID10txt,
+div.spID11:hover~div#SPTextContainer>div.spID11txt,
+div.spID12:hover~div#SPTextContainer>div.spID12txt,
+div.spID13:hover~div#SPTextContainer>div.spID13txt,
+div.spID14:hover~div#SPTextContainer>div.spID14txt,
+div.spID15:hover~div#SPTextContainer>div.spID15txt,
+div.spID16:hover~div#SPTextContainer>div.spID16txt,
+div.spID17:hover~div#SPTextContainer>div.spID17txt,
+div.spID18:hover~div#SPTextContainer>div.spID18txt,
+div.spID21:hover~div#SPTextContainer>div.spID21txt,
+div.spID22:hover~div#SPTextContainer>div.spID22txt,
+div.spID23:hover~div#SPTextContainer>div.spID23txt,
+div.spID24:hover~div#SPTextContainer>div.spID24txt,
+div.spID25:hover~div#SPTextContainer>div.spID25txt,
+div.spID26:hover~div#SPTextContainer>div.spID26txt,
+div.spID27:hover~div#SPTextContainer>div.spID27txt {
     visibility: visible;
 }
