@@ -392,7 +392,7 @@ export class GameController {
 
                                     gs.myHandSP.splice(idx, 1);
                                     // console.log("called from ", ev.target); // SP効果発動！
-                                    DOM.setMsgNotice = gs.useSP(spID, gs.whoseTurn);
+                                    this.setMsgNotice = gs.useSP(spID, gs.whoseTurn);
                                     // 一定時間後にNoticeを非表示
                                     if (timerIdNotice) clearTimeout(timerIdNotice);
                                     timerIdNotice = setTimeout(() => {
