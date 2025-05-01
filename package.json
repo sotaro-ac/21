@@ -1,0 +1,16 @@
+{
+    "name": "21",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "format": "prettier --write \"**/*.{js,html,css,json}\"",
+        "format:check": "prettier --check \"**/*.{js,html,css,json}\""
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "prettier": "^3.5.3"
+    }
+}
